@@ -1320,7 +1320,9 @@ async function loadPollsAI(){
   const el=document.getElementById('poll-ai-results');
   el.innerHTML=`<div class="lmsg">Claude leitar að nýjustu kannaningum...</div>`;
   try{
-    const txt=await aiCall(`Finndu 2-3 nýjustu kosningakannanirnar um borgarstjórnarkosningar í Reykjavík 2026. Gefðu upp: heiti stofnunar, dagsetningu og fylgi eftir flokkum. Skrifaðu svar á íslensku í skýrum texta.`,true);
+    var _mPoll = getMuni();
+    var _mPollKos = _mPoll.councilName.toLowerCase()+'arkosningar';  // borgarstj.- / bæjarstj.-
+    const txt=await aiCall(`Finndu 2-3 nýjustu kosningakannanirnar um ${_mPollKos} í ${_mPoll.name} 2026. Gefðu upp: heiti stofnunar, dagsetningu og fylgi eftir flokkum. Skrifaðu svar á íslensku í skýrum texta.`,true);
     el.innerHTML=`<div class="aibadge">Claude AI · Leitarniðurstöður</div><div style="font-size:13px;line-height:1.8">${txt}</div>`;
   }catch(e){el.innerHTML=`<div class="lmsg">Villa: ${e.message||'Þarf Claude API lykil.'}</div>`;}
 }
@@ -1742,11 +1744,17 @@ function rerenderAllForMuni(){
   try { updateForsidaFooter(); } catch(e){}
   // Endurteikna frambjóðenda-listann og önnur render-föll
   try { if(typeof render === 'function') render(); } catch(e){}
-  try { if(hasPolls && typeof renderForsidaPollSummary === 'function') renderForsidaPollSummary(); } catch(e){}
   try { if(typeof initPartyCards === 'function') initPartyCards(); } catch(e){}
   try { if(typeof initFinance === 'function') initFinance(); } catch(e){}
   try { if(hasPolls && typeof initPolls === 'function') initPolls(); } catch(e){}
   try { if(hasPolls && typeof initCoalitions === 'function') initCoalitions(); } catch(e){}
+  // renderForsidaPollSummary þarf að keyra EFTIR initPolls svo window._POLLS
+  // sé til staðar ef notandi skiptir úr non-rvk aftur í rvk.
+  try { if(typeof renderForsidaPollSummary === 'function') renderForsidaPollSummary(); } catch(e){}
+  // Countdown „dagar til kjördags" — endurteikna þegar skipt er um muni,
+  // því initial-renderið úr initAll getur hlaupið áður en applyRoute hreinsar
+  // textann (eða ef notandi lendir beint á #/<muni>/forsida).
+  try { if(typeof renderCountdown === 'function') renderCountdown(); } catch(e){}
 }
 
 // Opna/loka dropdown-pickerinn.
@@ -2579,7 +2587,10 @@ async function fetchPartyPolicy(id, p, info, el) {
 
 async function fetchPartyHistory(id, p, info, el) {
   try {
-    const txt = await aiCall(`Skrifaðu ítarlega en hlutlæga lýsingu á íslensku á ${info.fullname||p.name}: sögu flokksins, þróun hugmyndafræðinnar, helstu borgarstjórnarmenn síðustu 10 árin í Reykjavík og mikilvægustu ákvörðunum sem flokkurinn tók í borgarstjórn. Leggðu áherslu á borgarstjórnarstigið, ekki þingmál.`, true);
+    var _mmH = getMuni();
+    var _mraadH = _mmH.councilName.toLowerCase(); // borgarstjórn / bæjarstjórn
+    var _mraadMem = _mmH.councilName === 'Borgarstjórn' ? 'borgarfulltrúar' : 'bæjarfulltrúar';
+    const txt = await aiCall(`Skrifaðu ítarlega en hlutlæga lýsingu á íslensku á ${info.fullname||p.name}: sögu flokksins, þróun hugmyndafræðinnar, helstu ${_mraadMem} síðustu 10 árin í ${_mmH.name} og mikilvægustu ákvörðunum sem flokkurinn tók í ${_mraadH}. Leggðu áherslu á ${_mraadH}arstigið, ekki þingmál.`, true);
     el.innerHTML = `<div class="aibadge">Claude AI · Söguleg greining</div><div style="font-size:13px;line-height:1.8">${txt}</div>`;
   } catch(e) { el.innerHTML = `<div class="lmsg">Villa: ${e.message||'Þarf API lykil.'}</div>`; }
 }
@@ -4831,7 +4842,7 @@ function renderAaetlun(){
       budgetAB: b && b.AB ? b.AB.nidurstada : null,
       actualAB: d.AB.nidurstada,
       notes:    b && b.notes ? b.notes : null,
-      borgarstjori: d.borgarstjori,
+      borgarstjori: d.borgarstjori || d.baejarstjori || '',
       meirihluti: d.meirihluti
     };
   });
@@ -5094,7 +5105,7 @@ function renderMainTable(yr, btn) {
       +'<td class="fin-td-num">'+(d.ibuar/1000).toFixed(1)+'þ.</td>'
       +'<td class="fin-td-num">'+fmtN(rv(d,'tekjur')*1e9/d.ibuar)+'</td>'
       +'<td class="fin-td" style="font-size:11px;max-width:240px">'
-        +d.borgarstjori
+        +(d.borgarstjori||d.baejarstjori||'')
         +'<div style="font-size:10px;color:var(--ink3);display:flex;gap:3px;margin-top:2px">'
         +d.meirihluti.map(pid=>'<span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:'+pidColor(pid)+'"></span>').join('')
         +' <span style="margin-left:3px">'+meirihlString+'</span></div>'
@@ -5211,7 +5222,7 @@ function renderSundur(yr, btn) {
     html+='<div style="background:var(--white);border:0.5px solid var(--bdr);border-radius:12px;padding:1.25rem;margin-bottom:12px">'
       +'<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem">'
         +'<div style="font-family:\'Playfair Display\',serif;font-size:18px">'+d.yr+' · '+h+'-hluti</div>'
-        +'<div style="font-size:12px;color:var(--ink2)">'+d.borgarstjori+'</div>'
+        +'<div style="font-size:12px;color:var(--ink2)">'+(d.borgarstjori||d.baejarstjori||'')+'</div>'
       +'</div>'
       +bars
       +'<div style="margin-top:.75rem;padding-top:.75rem;border-top:0.5px solid var(--bdr);font-size:11px;color:var(--ink3);line-height:1.5">'+d.athugasemd+'</div>'
@@ -5296,9 +5307,12 @@ async function loadFinanceAI2() {
   el.innerHTML='<div class="lmsg">Claude greinir fjármál og pólitík 2015–2024...</div>';
   try {
     var summary=FINANCE.map(function(d){
-      return d.yr+': A-tekjur '+d.A.tekjur+'ma, A-niðurst '+d.A.nidurstada+'ma, AB-tekjur '+d.AB.tekjur+'ma, AB-niðurst '+d.AB.nidurstada+'ma, '+d.borgarstjori+' ('+d.meirihluti.join('+')+')';
+      return d.yr+': A-tekjur '+d.A.tekjur+'ma, A-niðurst '+d.A.nidurstada+'ma, AB-tekjur '+d.AB.tekjur+'ma, AB-niðurst '+d.AB.nidurstada+'ma, '+(d.borgarstjori||d.baejarstjori||'')+' ('+d.meirihluti.join('+')+')';
     }).join('\n');
-    var txt=await aiCall('Greindu tengsl pólitíkur og fjármála Reykjavíkurborgar 2015–2024 á íslensku. Gögn úr ársreikningum:\n'+summary+'\n\n1) Hvaða borgarstjórnir skiluðu bestum og verstum fjárhagslegum niðurstöðum og hvers vegna? 2) Hvernig er munurinn á A-hluta og samstæðu (AB) útskýrður? 3) Hvað skýrir rekstrarhallann 2022 raunverulega — verðbólga eða stjórnmál? 4) Hvaða málaflokkar eru líklegast að verða í brennidepli í kosningabaráttunni 2026 miðað við þessa þróun? Vertu hlutlæg og nákvæm.',true);
+    var _m2 = getMuni();
+    var _m2Gen = CURRENT_MUNI === 'rvk' ? 'Reykjavíkurborgar' : _m2.name;
+    var _m2Council = _m2.councilName.toLowerCase()+'ir';  // borgarstjórnir / bæjarstjórnir
+    var txt=await aiCall('Greindu tengsl pólitíkur og fjármála '+_m2Gen+' 2015–2024 á íslensku. Gögn úr ársreikningum:\n'+summary+'\n\n1) Hvaða '+_m2Council+' skiluðu bestum og verstum fjárhagslegum niðurstöðum og hvers vegna? 2) Hvernig er munurinn á A-hluta og samstæðu (AB) útskýrður? 3) Hvaða einstakir þættir skýra sveiflur í niðurstöðu — verðbólga, stjórnmál eða aðrir þættir? 4) Hvaða málaflokkar eru líklegast að verða í brennidepli í kosningabaráttunni 2026 miðað við þessa þróun? Vertu hlutlæg og nákvæm.',true);
     el.innerHTML='<div class="aibadge">Claude AI · Greining fjármála og pólitíkur</div><div style="font-size:13px;line-height:1.8">'+txt+'</div>';
   } catch(e){el.innerHTML='<div class="lmsg">Villa: '+(e.message||'Þarf API lykil.')+'</div>';}
 }
@@ -5335,7 +5349,13 @@ function renderCountdown(){
 
 function renderForsidaPollSummary(){
   var el = document.getElementById('forsida-poll-summary');
-  if(!el || !window._POLLS) return;
+  if(!el) return;
+  // Aðeins Reykjavík er með POLLS-skráð enn. Fyrir önnur muni birtum við
+  // placeholder svo forsíðan sýni ekki Reykjavíkur-kannanir.
+  if(CURRENT_MUNI !== 'rvk' || !window._POLLS){
+    el.innerHTML = '<div style="font-size:12px;color:var(--ink3);line-height:1.6;padding:.5rem 0">Engar kannanir hafa verið birtar fyrir '+getMuni().name+' 2026. Vefurinn sækir þær sjálfkrafa þegar þær birtast.</div>';
+    return;
+  }
   var baldvin = window._POLLS[0];
   var sorted = PARTIES.filter(p=>baldvin.data[p.id]>0).sort((a,b)=>baldvin.data[b.id]-baldvin.data[a.id]).slice(0, 7);
   el.innerHTML = sorted.map(p=>
