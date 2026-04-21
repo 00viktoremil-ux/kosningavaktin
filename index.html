@@ -5293,7 +5293,7 @@ function renderStuttu(){
   html += '<div class="card" style="margin-bottom:1rem;">'
     +'<div style="font-family:\'Playfair Display\',serif;font-size:17px;margin-bottom:3px;">Skuldir yfir tíma</div>'
     +'<div style="font-size:12px;color:var(--ink2);margin-bottom:1rem;">'+skuldSummary+'</div>'
-    +buildStuttuSkuldirChart()
+    +(skuldFin.length >= 2 ? buildStuttuSkuldirChart() : '')
     +'</div>';
 
   // Hvað fegrar myndina? — gagnsæi um bókhaldsaðlaganir
@@ -5303,10 +5303,14 @@ function renderStuttu(){
     +buildStuttuAdjustments()
     +'</div>';
 
-  // Þróun yfir tíma — einfölduð útgáfa
+  // Þróun yfir tíma — einfölduð útgáfa. Ártalabilið endurspeglar raunverulegt
+  // svið FINANCE-gagna í stað hardcoded „2015–2024" sem á ekki við fyrir
+  // hafn/gard/mos þar sem tölur byrja seinna.
+  var barFin = FINANCE.filter(function(d){ return d.AB && d.AB.nidurstada != null; });
+  var barRange = barFin.length ? (barFin[0].yr + '–' + barFin[barFin.length-1].yr) : '';
   html += '<div class="card" style="margin-bottom:1rem;">'
     +'<div style="font-family:\'Playfair Display\',serif;font-size:17px;margin-bottom:3px;">Hvernig hefur fjárhagurinn þróast?</div>'
-    +'<div style="font-size:12px;color:var(--ink2);margin-bottom:1rem;">Rekstrarniðurstaða '+cityN('ef')+' (samstæða) 2015–2024 — grænt = hagnaður, rautt = tap.</div>'
+    +'<div style="font-size:12px;color:var(--ink2);margin-bottom:1rem;">Rekstrarniðurstaða '+cityN('ef')+' (samstæða)'+(barRange?' '+barRange:'')+' — grænt = hagnaður, rautt = tap.</div>'
     +buildStuttuBarChart()
     +'</div>';
 
@@ -6046,7 +6050,8 @@ async function askFinance(q) {
     var summary=FINANCE.map(function(d){return d.yr+': A-niðurst '+d.A.nidurstada+'ma, AB-niðurst '+d.AB.nidurstada+'ma, AB-skuldir '+d.AB.skuldir+'ma';}).join(', ');
     var _mFin = getMuni();
     var _mGen = CURRENT_MUNI === 'rvk' ? 'Reykjavíkurborgar' : _mFin.name;
-    var txt=await aiCall('Þú ert sérfræðingur í fjármálum sveitarfélaga. Svara þessari spurningu á íslensku: '+q+'\n\nGögn '+_mGen+' 2015-2024 (úr opinberum ársreikningum): '+summary,true);
+    var _finYrs = (typeof FINANCE !== 'undefined' && FINANCE && FINANCE.length) ? (FINANCE[0].yr+'-'+FINANCE[FINANCE.length-1].yr) : '';
+    var txt=await aiCall('Þú ert sérfræðingur í fjármálum sveitarfélaga. Svara þessari spurningu á íslensku: '+q+'\n\nGögn '+_mGen+(_finYrs?' '+_finYrs:'')+' (úr opinberum ársreikningum): '+summary,true);
     el.innerHTML='<div style="font-size:12px;font-weight:500;color:var(--gold);margin-bottom:8px">'+q+'</div><div class="aibadge">Claude AI</div><div style="font-size:13px;line-height:1.8">'+txt+'</div>';
   } catch(e){el.innerHTML='<div class="lmsg">Villa: '+(e.message||'Þarf API lykil.')+'</div>';}
 }
