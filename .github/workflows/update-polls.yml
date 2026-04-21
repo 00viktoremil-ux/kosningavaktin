@@ -1,0 +1,50 @@
+name: Uppfæra kannanir daglega
+
+on:
+  # Keyrir á hverjum morgni kl. 09:00 íslenskum tíma (09:00 UTC yfir sumartíma)
+  schedule:
+    - cron: '0 9 * * *'
+  # Leyfir handvirka keyrslu frá Actions-flipanum
+  workflow_dispatch:
+
+permissions:
+  contents: write  # til að geta pushað uppfærslum
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setja upp Python 3.13
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Keyra update-polls.py
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          python3 update-polls.py
+        continue-on-error: false
+
+      - name: Skoða hvort HTML-skrá hafi breyst
+        id: changes
+        run: |
+          if git diff --quiet index.html; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+            echo "Engar breytingar á HTML."
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "HTML breytt — mun commita."
+          fi
+
+      - name: Commita og pusha uppfærslum
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          git config user.name "Kosningavaktin-bot"
+          git config user.email "bot@kosningavaktin.local"
+          git add index.html
+          git commit -m "Sjálfvirk uppfærsla kannana $(date -u +%Y-%m-%d)"
+          git push

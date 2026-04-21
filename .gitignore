@@ -1,0 +1,24 @@
+# API-lyklar og önnur leyndarmál — MEGA ALDREI PUSHAST
+.anthropic-key
+.env
+*.pem
+*.key
+
+# Afrit (bak-skrár) — gagnsemi er staðbundin, ekki í repo
+*.bak
+*.bak1
+*.bak2
+*.bak3
+*.bak.*
+*.bak-*
+kosningavaktin.html.bak*
+
+# Log-skrár
+*.log
+*.err
+
+# macOS
+.DS_Store
+
+# Claude Code
+.claude/

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.viktoremil.kosn-update</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Users/viktoremil/Claude/update-polls.py</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/viktoremil/Claude</string>
+
+    <!-- Keyrir daglega kl. 09:00 -->
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Hour</key>
+        <integer>9</integer>
+        <key>Minute</key>
+        <integer>0</integer>
+    </dict>
+
+    <!-- API-lykill úr ~/.anthropic-key er sjálfkrafa lesinn af scriptinu -->
+    <!-- Ef þú vilt hafa hann hér í staðinn: -->
+    <!--
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>ANTHROPIC_API_KEY</key>
+        <string>sk-ant-xxxx</string>
+    </dict>
+    -->
+
+    <key>StandardOutPath</key>
+    <string>/Users/viktoremil/Claude/update-polls.log</string>
+
+    <key>StandardErrorPath</key>
+    <string>/Users/viktoremil/Claude/update-polls.err</string>
+
+    <key>RunAtLoad</key>
+    <false/>
+</dict>
+</plist>
