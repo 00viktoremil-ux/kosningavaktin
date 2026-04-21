@@ -2613,6 +2613,35 @@ const FINANCE = [
   }
 ];
 
+// Fjárhagsáætlanir borgarinnar — samþykktar í desember fyrir næsta ár.
+// Notaðar til að bera saman við raun (FINANCE). null þar sem heimildir vantar.
+// Heimildir: globenewswire.com (tilkynningar), reykjavik.is/fjarhagsaaetlun, ársreikningsskýrslur.
+// Allar tölur í milljörðum króna (ma.kr.).
+const BUDGETS = {
+  2024: {
+    A:  {tekjur:191.9, gjold:186.1, nidurstada:0.7},
+    AB: {tekjur:null,  gjold:null,  nidurstada:7.7,  skuldir:null},
+    notes:'Tekjur A-hluta 2,6 ma. yfir áætlun, gjöld 0,23 ma. undir áætlun. AB-rekstrarniðurstaða 3,0 ma. betri en áætlun.'
+  },
+  2023: {
+    A:  {tekjur:167.6, gjold:169.7, nidurstada:-5.4},
+    AB: {tekjur:null,  gjold:null,  nidurstada:9.6,  skuldir:null},
+    notes:'A-tekjur 7,6 ma. yfir áætlun (aðallega útsvar), en gjöld 7,7 ma. yfir vegna 2,3 ma. lífeyrisskuldbindinga. AB-niðurstaða 13 ma. verri en áætlun vegna fjármagnsliða Orkuveitu (verðbólga, vextir).'
+  },
+  2022: {
+    A:  {tekjur:null,  gjold:null,  nidurstada:-2.8},
+    AB: {tekjur:null,  gjold:null,  nidurstada:9.0,  skuldir:null},
+    notes:'Stærsta frávik ársins. A-niðurstaða 12,8 ma. verri en áætlun vegna verðbólgu (9,94% í stað 3,3% áætlaðra). Matsbreyting Félagsbústaða 14,5 ma. yfir áætlun.'
+  },
+  2021: {
+    A:  {tekjur:null,  gjold:null,  nidurstada:-11.9},
+    AB: {tekjur:null,  gjold:null,  nidurstada:null, skuldir:null},
+    notes:'A-niðurstaða 8,1 ma. betri en áætlun. Útsvarstekjur 6,3 ma. yfir áætlun en launakostnaður 4,8 ma. yfir vegna COVID-ráðstafana.'
+  },
+  // Eldri ár: heimildir fundust ekki í stuttri rannsókn — fyllist inn eftir þörfum.
+  2020: null, 2019: null, 2018: null, 2017: null, 2016: null, 2015: null
+};
+
 // Viðbótarupplýsingar um 2025 (janúar–september hálfsársuppgjör, ekki lokaður ársreikningur)
 const FINANCE_2025_PARTIAL = {
   yr:2025, timabil:'Jan–sept 2025',
@@ -2983,6 +3012,330 @@ function initFinance() {
   renderYfirlit();
   renderStjornCards();
   renderLeidretting();
+  renderAaetlun();
+  renderStuttu();
+}
+
+// ========================================================================
+// ===== Í STUTTU MÁLI =====
+// Einföld íslenska fyrir venjulegan kjósanda. Engin jargón, engar 10-dálka
+// töflur. Bara: Hvernig gengur? Hvað skuldar borgin? Hvernig þróast þetta?
+// ========================================================================
+function renderStuttu(){
+  var el = document.getElementById('stuttu-content');
+  if(!el) return;
+  var last = FINANCE[FINANCE.length-1];      // 2024
+  var prev = FINANCE[FINANCE.length-2];      // 2023
+  var y2025 = FINANCE_2025_PARTIAL;
+  var budgetLast = BUDGETS[last.yr] || {};
+
+  // Heildarmerki heilsu — byggt á 3 þáttum
+  // 1. Er AB-niðurstaða jákvæð? 2. Er hún betri en fyrra ár? 3. Hefur skuldaviðmið lækkað?
+  var abPos = last.AB.nidurstada >= 0;
+  var abBetter = last.AB.nidurstada > prev.AB.nidurstada;
+  var skuldirLower = last.AB.skuldir < prev.AB.skuldir;
+  var score = (abPos?1:0) + (abBetter?1:0) + (skuldirLower?1:0);
+  var health;
+  if(score >= 2) health = {clr:'#2E7D32', bg:'#E8F5E9', lbl:'Gott', dsc:'Borgin skilar hagnaði, staðan batnar milli ára.'};
+  else if(score === 1) health = {clr:'#854F0B', bg:'#FFF8E1', lbl:'Blandað', dsc:'Sum ljós eru græn, önnur rauð.'};
+  else health = {clr:'#C62828', bg:'#FFEBEE', lbl:'Erfitt', dsc:'Borgin rekur tap og skuldir hækka.'};
+
+  // Hjálpartól til að forsníða stórar tölur sem „á hvern íbúa"
+  function perIbua(val, yr){
+    var fin = FINANCE.find(function(d){return d.yr===yr;});
+    if(!fin) return null;
+    return val * 1e9 / fin.ibuar; // úr ma.kr. í kr.
+  }
+  function fmtISK(v){
+    if(v >= 1e6) return (v/1e6).toFixed(1).replace('.',',') + ' millj.';
+    if(v >= 1e3) return (Math.round(v/1e3)).toLocaleString('is-IS') + ' þ.';
+    return Math.round(v).toLocaleString('is-IS');
+  }
+  function plusMinus(v){ return (v>=0?'+':'') + v.toFixed(1).replace('.',','); }
+
+  // Reikna helstu tölur
+  var abResult = last.AB.nidurstada;                    // ma.kr.
+  var abResultPrev = prev.AB.nidurstada;
+  var abSkuldir = last.AB.skuldir;                      // ma.kr.
+  var skuldirPerIbua = perIbua(abSkuldir, last.yr);     // kr.
+  var resultPerIbua = perIbua(abResult, last.yr);       // kr.
+  var budgetDev = (budgetLast.AB && budgetLast.AB.nidurstada!=null) ? (abResult - budgetLast.AB.nidurstada) : null;
+
+  // Byggja upp HTML
+  var html = '';
+
+  // Heilsumerki-kortið
+  html += '<div class="card" style="background:'+health.bg+';border-color:'+health.clr+'40;margin-bottom:1rem;">'
+    +'<div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">'
+      +'<div style="width:56px;height:56px;border-radius:50%;background:'+health.clr+';display:flex;align-items:center;justify-content:center;color:#fff;font-size:26px;font-family:\'Playfair Display\',serif;font-weight:700;flex-shrink:0;">'+(score>=2?'✓':score===1?'~':'✕')+'</div>'
+      +'<div style="flex:1;min-width:200px;">'
+        +'<div style="font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:'+health.clr+';margin-bottom:2px;">Staða fjárhags · '+last.yr+'</div>'
+        +'<div style="font-family:\'Playfair Display\',serif;font-size:22px;color:var(--ink);margin-bottom:3px;">'+health.lbl+'</div>'
+        +'<div style="font-size:13px;color:var(--ink2);line-height:1.5;">'+health.dsc+'</div>'
+      +'</div>'
+    +'</div></div>';
+
+  // Þrjú lykilkort
+  html += '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin-bottom:1rem;">';
+
+  // Kort 1: Hagnaður / tap
+  html += '<div class="card">'
+    +'<div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.07em;color:var(--ink3);margin-bottom:4px;">Er borgin með hagnað?</div>'
+    +'<div style="font-family:\'Playfair Display\',serif;font-size:32px;color:'+(abResult>=0?'#2E7D32':'#C62828')+';line-height:1;margin-bottom:6px;">'+plusMinus(abResult)+' <span style="font-size:15px;color:var(--ink2);font-family:\'DM Sans\',sans-serif;">ma.</span></div>'
+    +'<div style="font-size:12px;color:var(--ink2);line-height:1.5;">'
+      +(abResult>=0?'Borgin skilaði <strong>hagnaði</strong> í fyrra.':'Borgin rak <strong>tap</strong> í fyrra.')
+      +'<br>Þetta er '+(abResult>abResultPrev?'betra':'verra')+' en árið á undan ('+plusMinus(abResultPrev)+' ma.).'
+      +(budgetDev!=null ? '<br><span style="color:'+(budgetDev>=0?'#2E7D32':'#C62828')+';font-weight:500">'+(budgetDev>=0?'Betri':'Verri')+' en áætlun var</span> ('+plusMinus(budgetDev)+' ma. frávik).' : '')
+    +'</div></div>';
+
+  // Kort 2: Skuldir
+  html += '<div class="card">'
+    +'<div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.07em;color:var(--ink3);margin-bottom:4px;">Hvað skuldar borgin?</div>'
+    +'<div style="font-family:\'Playfair Display\',serif;font-size:32px;color:var(--ink);line-height:1;margin-bottom:6px;">'+abSkuldir.toFixed(0)+' <span style="font-size:15px;color:var(--ink2);font-family:\'DM Sans\',sans-serif;">ma.</span></div>'
+    +'<div style="font-size:12px;color:var(--ink2);line-height:1.5;">'
+      +'Það gerir <strong>'+fmtISK(skuldirPerIbua)+' kr.</strong> á hvern íbúa Reykjavíkur.'
+      +'<br>Inniheldur Orkuveitu, Félagsbústaði, Faxaflóahafnir og fleiri fyrirtæki borgar.'
+      +'<br><span style="color:'+(skuldirLower?'#2E7D32':'#C62828')+';font-weight:500">'+(skuldirLower?'Lækkaði':'Hækkaði')+'</span> frá fyrra ári ('+plusMinus(abSkuldir-prev.AB.skuldir)+' ma.).'
+    +'</div></div>';
+
+  // Kort 3: Íbúar / tekjur per íbúa
+  var tekjurPerI = perIbua(last.A.tekjur, last.yr);
+  html += '<div class="card">'
+    +'<div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.07em;color:var(--ink3);margin-bottom:4px;">Hvað fær borgin frá hverjum íbúa?</div>'
+    +'<div style="font-family:\'Playfair Display\',serif;font-size:32px;color:var(--ink);line-height:1;margin-bottom:6px;">'+fmtISK(tekjurPerI)+' <span style="font-size:15px;color:var(--ink2);font-family:\'DM Sans\',sans-serif;">kr.</span></div>'
+    +'<div style="font-size:12px;color:var(--ink2);line-height:1.5;">'
+      +'Það eru heildartekjur A-hluta borgar ('+last.A.tekjur.toFixed(1)+' ma.) deilt með íbúafjölda ('+fmtISK(last.ibuar)+' íbúar).'
+      +'<br>Aðallega útsvar, jöfnunarsjóður og fasteignagjöld.'
+    +'</div></div>';
+
+  html += '</div>';
+
+  // Þróun yfir tíma — einfölduð útgáfa
+  html += '<div class="card" style="margin-bottom:1rem;">'
+    +'<div style="font-family:\'Playfair Display\',serif;font-size:17px;margin-bottom:3px;">Hvernig hefur fjárhagurinn þróast?</div>'
+    +'<div style="font-size:12px;color:var(--ink2);margin-bottom:1rem;">Rekstrarniðurstaða borgar (samstæða) 2015–2024 — grænt = hagnaður, rautt = tap.</div>'
+    +buildStuttuBarChart()
+    +'</div>';
+
+  // Áberandi atburðir — tímalína
+  html += '<div class="card" style="margin-bottom:1rem;">'
+    +'<div style="font-family:\'Playfair Display\',serif;font-size:17px;margin-bottom:3px;">Hvað hefur gerst?</div>'
+    +'<div style="font-size:12px;color:var(--ink2);margin-bottom:1rem;">Lykilatburðir sem höfðu áhrif á fjárhag borgarinnar.</div>'
+    +buildStuttuTimeline()
+    +'</div>';
+
+  // Hugtök — flettur listi til að skýra hrognamál
+  html += '<div class="card">'
+    +'<div style="font-family:\'Playfair Display\',serif;font-size:17px;margin-bottom:3px;">Útskýrð hugtök</div>'
+    +'<div style="font-size:12px;color:var(--ink2);margin-bottom:1rem;">Smelltu til að opna nánari skýringu.</div>'
+    +buildStuttuGlossary()
+    +'</div>';
+
+  el.innerHTML = html;
+}
+
+function buildStuttuBarChart(){
+  // Einfölduð súlumynd — bara AB-niðurstaða, litakóðuð + ártöl
+  var W = 720, H = 200, PAD = {l:35, r:12, t:20, b:32};
+  var plotW = W - PAD.l - PAD.r, plotH = H - PAD.t - PAD.b;
+  var xStep = plotW / FINANCE.length;
+  var vals = FINANCE.map(function(d){return d.AB.nidurstada;});
+  var minV = Math.floor(Math.min.apply(null, vals.concat([-5]))/5)*5;
+  var maxV = Math.ceil(Math.max.apply(null, vals.concat([25]))/5)*5;
+  function yS(v){ return PAD.t + plotH - (v-minV)/(maxV-minV)*plotH; }
+  var zeroY = yS(0);
+
+  var grid = '';
+  for(var yv=Math.ceil(minV/10)*10; yv<=maxV; yv+=10){
+    var yy = yS(yv);
+    grid += '<line x1="'+PAD.l+'" x2="'+(W-PAD.r)+'" y1="'+yy+'" y2="'+yy+'" stroke="#eee" stroke-width="0.5"/>';
+    if(yv===0) continue;
+    grid += '<text x="'+(PAD.l-4)+'" y="'+(yy+3)+'" text-anchor="end" font-size="9" fill="#888" font-family="DM Sans">'+yv+'</text>';
+  }
+  var zero = '<line x1="'+PAD.l+'" x2="'+(W-PAD.r)+'" y1="'+zeroY+'" y2="'+zeroY+'" stroke="#1A1814" stroke-width="1"/>';
+
+  var bars = '', labels = '';
+  var barW = xStep * 0.7;
+  FINANCE.forEach(function(d, i){
+    var cx = PAD.l + i*xStep + xStep/2;
+    var v = d.AB.nidurstada;
+    var top = v>=0 ? yS(v) : zeroY;
+    var height = Math.abs(yS(v) - zeroY);
+    var clr = v >= 0 ? '#2E7D32' : '#C62828';
+    bars += '<rect x="'+(cx-barW/2)+'" y="'+top+'" width="'+barW+'" height="'+height+'" fill="'+clr+'" rx="2" opacity="0.85"><title>'+d.yr+': '+(v>=0?'+':'')+v.toFixed(1)+' ma.</title></rect>';
+    // Tala á toppi
+    var labelY = v>=0 ? top-3 : top+height+11;
+    bars += '<text x="'+cx+'" y="'+labelY+'" text-anchor="middle" font-size="9" font-weight="500" fill="'+clr+'" font-family="DM Sans">'+(v>=0?'+':'')+v.toFixed(0)+'</text>';
+    // Ár
+    labels += '<text x="'+cx+'" y="'+(H-PAD.b+15)+'" text-anchor="middle" font-size="10" fill="#888" font-family="DM Sans">'+d.yr+'</text>';
+  });
+  return '<svg viewBox="0 0 '+W+' '+H+'" width="100%" style="display:block;min-width:560px">'+grid+zero+bars+labels+'</svg>'
+    +'<div style="font-size:11px;color:var(--ink3);margin-top:8px;line-height:1.5">Tölur í milljörðum króna. Jákvæð tala = hagnaður, neikvæð = tap. Þetta er „samstæða A+B" sem inniheldur bæði aðalsjóð og fyrirtæki eins og Orkuveitu.</div>';
+}
+
+function buildStuttuTimeline(){
+  // Handvalið atburðir sem höfðu merkjanleg áhrif á fjárhag borgarinnar
+  var events = [
+    {yr:2020, clr:'#6A1B9A', icon:'🦠', title:'COVID-heimsfaraldur',    text:'Útsvarstekjur hrundu í apríl-maí 2020. Borgin keyrði á bráðabirgðasamþykktum og aukningu framlags frá ríkinu.'},
+    {yr:2021, clr:'#2E7D32', icon:'↑',  title:'Sterk endurnýjun úr COVID', text:'Útsvar rauk upp (+6,3 ma. yfir áætlun). Rekstrarniðurstaða A-hluta var 8,1 ma. betri en áætlun.'},
+    {yr:2022, clr:'#C62828', icon:'⚠',  title:'Verðbólguhögg',            text:'Verðbólga 9,94% í stað 3,3% áætluðu. A-niðurstaða 12,8 ma. verri en áætlun. Matsbreyting Félagsbústaða stækkar um 14,5 ma.'},
+    {yr:2022, clr:'#1565C0', icon:'⚖',  title:'Meirihlutaskipti maí 2022', text:'Dagur B. Eggertsson (S) heldur áfram með nýjum samstarfsaðilum: S + B + C + P tekur við.'},
+    {yr:2023, clr:'#C62828', icon:'💸', title:'Vextir og lífeyrir',       text:'AB-niðurstaða 13 ma. verri en áætlun vegna fjármagnsliða (vextir, verðbólguuppfærsla) Orkuveitu. A-hluti tekur 2,3 ma. lífeyrisskuldbindingu.'},
+    {yr:2024, clr:'#B8935A', icon:'🔄', title:'Borgarstjóraskipti',       text:'Einar Þorsteinsson (B) tekur við borgarstjórastólnum í janúar 2024 samkvæmt meirihlutasamningi.'},
+    {yr:2024, clr:'#2E7D32', icon:'✓',  title:'Bati í rekstri',            text:'A-tekjur 2,6 ma. yfir áætlun, gjöld aðeins undir. Skuldaviðmið lækkar úr 82% í 77%. EBITDA-hlutfall hækkar úr 4,5% í 9,3%.'},
+    {yr:2025, clr:'#1565C0', icon:'⚖',  title:'Nýr meirihluti feb 2025', text:'Einar Þorsteinsson (B) segir upp samstarfi vegna flugvallar­málsins. Heiða Björg Hilmisdóttir (S) tekur við sem borgarstjóri í nýrri 5-flokka samstarfsmynd.'}
+  ];
+  return events.map(function(e){
+    return '<div style="display:flex;gap:12px;padding:10px 0;border-bottom:0.5px solid var(--bdr);">'
+      +'<div style="width:40px;height:40px;border-radius:8px;background:'+e.clr+'15;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">'+e.icon+'</div>'
+      +'<div style="flex:1">'
+        +'<div style="display:flex;align-items:baseline;gap:8px;margin-bottom:2px;"><span style="font-size:11px;font-weight:500;color:'+e.clr+';">'+e.yr+'</span><span style="font-size:13px;font-weight:500;color:var(--ink);">'+e.title+'</span></div>'
+        +'<div style="font-size:12px;color:var(--ink2);line-height:1.55;">'+e.text+'</div>'
+      +'</div></div>';
+  }).join('')+'<div style="font-size:11px;color:var(--ink3);margin-top:10px;line-height:1.5">Tímalínan nær frá 2020 — elsti atburðir sem enn hafa bein áhrif á núverandi stöðu.</div>';
+}
+
+function buildStuttuGlossary(){
+  var terms = [
+    {term:'A-hluti',            dsc:'Aðalsjóður + eignasjóður borgar — þ.e. „ríkið" í borginni (skólar, leikskólar, velferð, gatna­gerð o.fl.). Þetta eru grunnþjónusturnar sem flestir sjá daglega.'},
+    {term:'Samstæða A+B',       dsc:'A-hluti + öll fyrirtæki borgarinnar saman (Orkuveita Reykjavíkur, Félagsbústaðir, Faxaflóahafnir o.fl.). Sýnir heildarstöðu borgarfyrirtækis­kerfisins.'},
+    {term:'Rekstrarniðurstaða', dsc:'Einfalt: tekjur mínus gjöld. Jákvæð tala = hagnaður, neikvæð = tap. Svipað og „ávöxtun" hjá fyrirtæki.'},
+    {term:'EBITDA',             dsc:'Rekstrarhagnaður áður en afskriftir, vextir og skattar eru dregnir frá. Sýnir hversu vel kjarnareksturinn skilar án áhrifa af fjármögnun eða eldri fjárfestingum.'},
+    {term:'Fjármagnsliðir',     dsc:'Vaxtagjöld, gengismunur og verðbólguuppfærsla skulda. Þegar verðbólga er há stækka lán borgarinnar á móti — og það bitnar mest á Orkuveitu sem á mest af langtíma­lánum.'},
+    {term:'Skuldaviðmið',       dsc:'Lögbundið viðmið sveitarstjórnarlaga: skuldir og skuldbindingar í hlutfalli við tekjur. Má ekki fara yfir 150%. Borgin er núna í 77% (2024).'},
+    {term:'Útsvar',             dsc:'Tekjuskattur sem rennur til sveitarfélags. 14,93% af launum Reykvíkinga fer til borgarinnar. Stærsti einstaki tekjustofn A-hluta.'},
+    {term:'Raunvirði',          dsc:'Tölur leiðréttar fyrir verðbólgu. Ef tekjur 2020 voru 100 og 2024 eru 130, er aukningin bara raunveruleg ef 30% eru MEIRI en verðbólga sama tímabils.'},
+    {term:'Áætlun (fjárhags­áætlun)', dsc:'Plan borgarstjórnar um tekjur og gjöld næsta árs, samþykkt í desember. Segir hvernig hún ÆTLAR að eyða — raunveruleikinn er oft annar vegna verðbólgu, laga­breytinga o.fl.'},
+    {term:'Ársreikningur',      dsc:'Lokareikningur sem sýnir hvað raunverulega gerðist á árinu. Samþykktur í april-maí ári eftir. Borið er saman við áætlun til að meta „frávik".'}
+  ];
+  return terms.map(function(t){
+    return '<details style="padding:8px 0;border-bottom:0.5px solid var(--bdr);">'
+      +'<summary style="cursor:pointer;font-size:13px;font-weight:500;color:var(--ink);padding:4px 0;list-style:none;display:flex;align-items:center;gap:6px;"><span style="color:var(--gold);font-size:12px;">▸</span>'+t.term+'</summary>'
+      +'<div style="font-size:12px;color:var(--ink2);line-height:1.65;padding:6px 0 4px 20px;">'+t.dsc+'</div>'
+    +'</details>';
+  }).join('');
+}
+
+// ===== ÁÆTLUN VS RAUN =====
+// Ber saman fjárhagsáætlun (BUDGETS) við ársreikning (FINANCE).
+// Birtir bæði A-hluta og samstæðu, í einni súlumynd og ítarlegri töflu.
+function renderAaetlun(){
+  var chartEl = document.getElementById('aaetlun-chart');
+  var tableEl = document.getElementById('aaetlun-table');
+  if(!chartEl || !tableEl) return;
+
+  // Gagnasett: [{yr, budgetA, actualA, budgetAB, actualAB, notes}]
+  var rows = FINANCE.map(function(d){
+    var b = BUDGETS[d.yr] || null;
+    return {
+      yr: d.yr,
+      budgetA:  b && b.A  ? b.A.nidurstada  : null,
+      actualA:  d.A.nidurstada,
+      budgetAB: b && b.AB ? b.AB.nidurstada : null,
+      actualAB: d.AB.nidurstada,
+      notes:    b && b.notes ? b.notes : null,
+      borgarstjori: d.borgarstjori,
+      meirihluti: d.meirihluti
+    };
+  });
+
+  // SVG-súlumynd — AB-niðurstaða áætlun vs raun yfir tíma
+  var W = 760, H = 280, PAD = {l:40, r:14, t:20, b:50};
+  var plotW = W - PAD.l - PAD.r, plotH = H - PAD.t - PAD.b;
+  var years = rows.map(function(r){return r.yr;});
+  var xStep = plotW / years.length;
+  var vals = rows.reduce(function(a,r){
+    if(r.budgetA!=null)  a.push(r.budgetA);
+    if(r.actualA!=null)  a.push(r.actualA);
+    if(r.budgetAB!=null) a.push(r.budgetAB);
+    if(r.actualAB!=null) a.push(r.actualAB);
+    return a;
+  }, []);
+  var minV = Math.min(-20, Math.floor(Math.min.apply(null, vals)/5)*5);
+  var maxV = Math.max(30,  Math.ceil(Math.max.apply(null, vals)/5)*5);
+  function yScale(v){ return PAD.t + plotH - (v - minV)/(maxV - minV) * plotH; }
+  var zeroY = yScale(0);
+
+  // Rúðubönd
+  var grid = '';
+  for(var yv=Math.ceil(minV/10)*10; yv<=maxV; yv+=10){
+    var yy = yScale(yv);
+    grid += '<line x1="'+PAD.l+'" x2="'+(W-PAD.r)+'" y1="'+yy+'" y2="'+yy+'" stroke="#eee" stroke-width="0.5"/>';
+    grid += '<text x="'+(PAD.l-4)+'" y="'+(yy+3)+'" text-anchor="end" font-size="9" fill="#888" font-family="DM Sans">'+yv+'</text>';
+  }
+  // Núlllína
+  var zero = '<line x1="'+PAD.l+'" x2="'+(W-PAD.r)+'" y1="'+zeroY+'" y2="'+zeroY+'" stroke="#1A1814" stroke-width="1"/>';
+
+  // Súlur — AB áætlun (blár) og AB raun (gylltur), þéttlega saman
+  var bars = '', labels = '';
+  var barW = Math.max(4, xStep * 0.28);
+  rows.forEach(function(r, i){
+    var cx = PAD.l + i*xStep + xStep/2;
+    // Áætlun (blár)
+    if(r.budgetAB != null){
+      var bY = yScale(r.budgetAB), bH = Math.abs(bY - zeroY);
+      var bTop = r.budgetAB >= 0 ? bY : zeroY;
+      bars += '<rect x="'+(cx - barW - 2)+'" y="'+bTop+'" width="'+barW+'" height="'+bH+'" fill="#1565C0" opacity="0.85"><title>'+r.yr+' áætlun AB: '+r.budgetAB.toFixed(1)+' ma.</title></rect>';
+    }
+    // Raun (gylltur)
+    if(r.actualAB != null){
+      var aY = yScale(r.actualAB), aH = Math.abs(aY - zeroY);
+      var aTop = r.actualAB >= 0 ? aY : zeroY;
+      bars += '<rect x="'+(cx + 2)+'" y="'+aTop+'" width="'+barW+'" height="'+aH+'" fill="#B8935A"><title>'+r.yr+' raun AB: '+r.actualAB.toFixed(1)+' ma.</title></rect>';
+    }
+    // Ár-merki
+    labels += '<text x="'+cx+'" y="'+(H-PAD.b+14)+'" text-anchor="middle" font-size="10" fill="#888" font-family="DM Sans">'+r.yr+'</text>';
+    // Frávik (rauð/græn tala undir árinu) — ef bæði til
+    if(r.budgetAB != null && r.actualAB != null){
+      var dev = r.actualAB - r.budgetAB;
+      var clr = dev >= 0 ? '#2E7D32' : '#C62828';
+      labels += '<text x="'+cx+'" y="'+(H-PAD.b+26)+'" text-anchor="middle" font-size="10" font-weight="500" fill="'+clr+'" font-family="DM Sans">'+(dev>=0?'+':'')+dev.toFixed(1)+'</text>';
+    }
+  });
+
+  // Skýring
+  var legend = ''
+    + '<rect x="'+PAD.l+'" y="2" width="10" height="10" fill="#1565C0" opacity="0.85"/><text x="'+(PAD.l+14)+'" y="11" font-size="10" fill="#1A1814" font-family="DM Sans">Áætlun AB</text>'
+    + '<rect x="'+(PAD.l+95)+'" y="2" width="10" height="10" fill="#B8935A"/><text x="'+(PAD.l+109)+'" y="11" font-size="10" fill="#1A1814" font-family="DM Sans">Raun AB</text>'
+    + '<text x="'+(PAD.l+180)+'" y="11" font-size="10" fill="#888" font-family="DM Sans">rekstrarniðurstaða (ma. kr.)</text>';
+
+  chartEl.innerHTML = '<svg viewBox="0 0 '+W+' '+H+'" width="100%" style="display:block;min-width:640px">'+legend+grid+zero+bars+labels+'</svg>';
+
+  // Ítarleg tafla
+  var tHtml = '<table style="width:100%;border-collapse:collapse;font-size:12px">'
+    +'<thead><tr style="border-bottom:0.5px solid var(--bdr)">'
+      +'<th style="text-align:left;padding:8px 10px;font-size:11px;color:var(--ink3);font-weight:500;text-transform:uppercase;letter-spacing:.07em">Ár</th>'
+      +'<th colspan="3" style="text-align:center;padding:8px 6px;font-size:11px;color:var(--ink3);font-weight:500;text-transform:uppercase;letter-spacing:.07em;background:rgba(21,101,192,0.06)">A-hluti niðurstaða</th>'
+      +'<th colspan="3" style="text-align:center;padding:8px 6px;font-size:11px;color:var(--ink3);font-weight:500;text-transform:uppercase;letter-spacing:.07em;background:rgba(184,147,90,0.08)">Samstæða A+B niðurstaða</th>'
+    +'</tr><tr style="border-bottom:0.5px solid var(--bdr);font-size:10px;color:var(--ink3)">'
+      +'<th></th>'
+      +'<th style="padding:4px 6px;text-align:right;background:rgba(21,101,192,0.06)">Áætlun</th><th style="padding:4px 6px;text-align:right;background:rgba(21,101,192,0.06)">Raun</th><th style="padding:4px 6px;text-align:right;background:rgba(21,101,192,0.06)">Frávik</th>'
+      +'<th style="padding:4px 6px;text-align:right;background:rgba(184,147,90,0.08)">Áætlun</th><th style="padding:4px 6px;text-align:right;background:rgba(184,147,90,0.08)">Raun</th><th style="padding:4px 6px;text-align:right;background:rgba(184,147,90,0.08)">Frávik</th>'
+    +'</tr></thead><tbody>';
+  rows.slice().reverse().forEach(function(r, i){
+    function fmt(v){ return v==null ? '<span style="color:var(--ink3)">—</span>' : (v>=0?'+':'')+v.toFixed(1); }
+    function devCell(a, b){
+      if(a==null || b==null) return '<td style="padding:6px;text-align:right;color:var(--ink3)">—</td>';
+      var d = b - a; // raun - áætlun
+      var clr = d >= 0 ? '#2E7D32' : '#C62828';
+      return '<td style="padding:6px;text-align:right;color:'+clr+';font-weight:500">'+(d>=0?'+':'')+d.toFixed(1)+'</td>';
+    }
+    var bg = i%2 ? 'var(--bg)' : 'var(--white)';
+    tHtml += '<tr style="background:'+bg+';border-bottom:0.5px solid var(--bdr)">'
+      +'<td style="padding:8px 10px;font-weight:500">'+r.yr+'</td>'
+      +'<td style="padding:6px;text-align:right">'+fmt(r.budgetA)+'</td>'
+      +'<td style="padding:6px;text-align:right">'+fmt(r.actualA)+'</td>'
+      +devCell(r.budgetA, r.actualA)
+      +'<td style="padding:6px;text-align:right">'+fmt(r.budgetAB)+'</td>'
+      +'<td style="padding:6px;text-align:right">'+fmt(r.actualAB)+'</td>'
+      +devCell(r.budgetAB, r.actualAB)
+      +'</tr>';
+    if(r.notes){
+      tHtml += '<tr style="background:'+bg+'"><td colspan="7" style="padding:4px 10px 10px;font-size:11px;color:var(--ink2);line-height:1.55">'+r.notes+'</td></tr>';
+    }
+  });
+  tHtml += '</tbody></table>';
+  tableEl.innerHTML = tHtml;
 }
 
 function render2025Banner(){
@@ -3762,16 +4115,23 @@ if (document.readyState === 'loading') {
     <div id="fin-2025-banner" style="display:none;"></div>
 
     <!-- FLIPAR -->
-    <div style="display:flex;gap:3px;border-bottom:0.5px solid var(--bdr);margin-bottom:1.25rem;" id="fin-tabs">
-      <button class="vtab active" onclick="setFinTab('yfirlit',this)">Yfirlit</button>
+    <div style="display:flex;gap:3px;border-bottom:0.5px solid var(--bdr);margin-bottom:1.25rem;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;" id="fin-tabs">
+      <button class="vtab active" onclick="setFinTab('stuttu',this)">Í stuttu máli</button>
+      <button class="vtab" onclick="setFinTab('yfirlit',this)">Ítarlegt yfirlit</button>
+      <button class="vtab" onclick="setFinTab('aaetlun',this)">Áætlun vs raun</button>
       <button class="vtab" onclick="setFinTab('stjorn',this)">Borgarstjórnir</button>
       <button class="vtab" onclick="setFinTab('sundur',this)">Sundurliðun</button>
       <button class="vtab" onclick="setFinTab('leidretting',this)">Leiðréttar tölur</button>
       <button class="vtab" onclick="setFinTab('ai',this)">AI greining</button>
     </div>
 
-    <!-- YFIRLIT -->
-    <div id="fintab-yfirlit" class="fintab vis">
+    <!-- Í STUTTU MÁLI (sjálfgefið) -->
+    <div id="fintab-stuttu" class="fintab vis">
+      <div id="stuttu-content"></div>
+    </div>
+
+    <!-- ÍTARLEGT YFIRLIT -->
+    <div id="fintab-yfirlit" class="fintab">
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin-bottom:1.25rem;" id="fin-stats2"></div>
 
       <!-- YEAR SELECTOR -->
@@ -3783,6 +4143,21 @@ if (document.readyState === 'loading') {
         </table>
       </div>
       <div style="font-size:11px;color:var(--ink3);line-height:1.6">* Tekjur og gjöld A-hluta (aðalsjóður + eignasjóður). B-hluti (Orkuveita, Félagsbústaðir o.fl.) er ekki meðtalinn í þessum tölum nema sérstaklega tekið fram.</div>
+    </div>
+
+    <!-- ÁÆTLUN VS RAUN -->
+    <div id="fintab-aaetlun" class="fintab">
+      <div style="margin-bottom:1rem;">
+        <h3 style="font-family:'Playfair Display',serif;font-size:17px;margin-bottom:3px;">Áætlun vs. raun</h3>
+        <p style="font-size:12px;color:var(--ink2);line-height:1.5;">Bera saman fjárhagsáætlun (samþykkt í desember fyrir næsta ár) við raunverulegan ársreikning. Stór frávik geta gefið til kynna utanaðkomandi áhrif (verðbólga, COVID) eða misræmi í áætlanagerð.</p>
+      </div>
+      <div class="card" style="margin-bottom:1rem;">
+        <div class="card-title" style="font-size:15px;">Rekstrarniðurstaða yfir tíma</div>
+        <div class="card-subtitle">Bláar súlur = áætlun, gylltar súlur = raun. Rauð/græn tala sýnir frávik.</div>
+        <div id="aaetlun-chart" style="overflow-x:auto;min-width:0;"></div>
+      </div>
+      <div id="aaetlun-table"></div>
+      <div style="font-size:11px;color:var(--ink3);line-height:1.6;margin-top:.75rem;">Heimildir áætlunar: globenewswire.com (opinberar tilkynningar), ársreikningsskýrslur Reykjavíkurborgar. Þar sem heimild var ekki staðfest er reiturinn merktur „—". Hjálpaðu til við að fylla út með ábendingu.</div>
     </div>
 
     <!-- BORGARSTJÓRNIR -->
