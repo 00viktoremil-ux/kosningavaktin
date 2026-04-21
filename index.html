@@ -5415,30 +5415,39 @@ function buildSamanburdurCard(){
     mos:  {pct:98.2, yr:2025, txt:'98,2% (2025)'},
     selt: {pct:108,  yr:2025, txt:'108% (áætl. 2025)'}
   };
-  // Nýleg AB-niðurstaða og skuldir: nota 2025 ef birt/fullt, annars 2024.
+  // Nýleg AB-niðurstaða og skuldir: velja síðasta ár úr finance[] þar sem
+  // niðurstaða er skráð, annars nota finance2025Partial (bráðabirgða).
   function latestAB(m){
     var d = MUNI_DATA[m];
     if(!d) return {yr:null, nidurstada:null, skuldir:null, ibuar:null, source:null};
+    // Leita aftur á bak í finance[] að nýjasta ári sem hefur AB.nidurstada.
+    var latest = null;
+    if(d.finance && d.finance.length){
+      for(var i=d.finance.length-1; i>=0; i--){
+        var f = d.finance[i];
+        if(f.AB && f.AB.nidurstada != null){ latest = f; break; }
+      }
+    }
+    // Bráðabirgða 2025 (ef til) — nota ef það er nýrra en latest í finance[]
+    // eða ef engin finance-ársniðurstaða fannst.
     var p = d.finance2025Partial;
-    // Telja 2025 „fullt" þegar nidurstada er skráð; annars lítum við á 2024.
-    if(p && p.AB && p.AB.nidurstada != null){
-      var ibuar2024 = d.finance && d.finance.length ? (d.finance.find(function(x){return x.yr===2024;}) || {}).ibuar : null;
+    if(p && p.AB && p.AB.nidurstada != null && (!latest || p.yr > latest.yr)){
+      var ibuarFromLatest = latest ? latest.ibuar : null;
       return {
         yr: p.yr,
         nidurstada: p.AB.nidurstada,
         skuldir: p.AB.skuldir != null ? p.AB.skuldir : null,
-        ibuar: ibuar2024,
+        ibuar: ibuarFromLatest,
         source: p.timabil || ('bráðabirgða '+p.yr)
       };
     }
-    var fin2024 = d.finance ? d.finance.find(function(x){return x.yr===2024;}) : null;
-    if(fin2024){
+    if(latest){
       return {
-        yr: 2024,
-        nidurstada: fin2024.AB ? fin2024.AB.nidurstada : null,
-        skuldir:    fin2024.AB ? fin2024.AB.skuldir    : null,
-        ibuar:      fin2024.ibuar || null,
-        source: 'ársreikningur 2024'
+        yr: latest.yr,
+        nidurstada: latest.AB.nidurstada,
+        skuldir:    latest.AB.skuldir    != null ? latest.AB.skuldir : null,
+        ibuar:      latest.ibuar || null,
+        source: 'ársreikningur '+latest.yr
       };
     }
     return {yr:null, nidurstada:null, skuldir:null, ibuar:null, source:null};
