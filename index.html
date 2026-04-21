@@ -481,6 +481,11 @@ header{background:var(--ink);color:var(--white);padding:0 1.5rem;display:flex;al
         <div class="nav-card-title">Fjármál borgar</div>
         <div class="nav-card-desc">Ársreikningar 2015–2024 og bráðabirgðatölur 2025 með pólitísku samhengi.</div>
       </button>
+      <button class="nav-card" onclick="goPage('samanburdur')">
+        <div class="nav-card-icon">⇌</div>
+        <div class="nav-card-title">Samanburður sveitarfélaga</div>
+        <div class="nav-card-desc">9 lykilmælikvarðar allra 6 sveitarfélaga höfuðborgarsvæðisins með sögulegri þróun 2015–2024.</div>
+      </button>
       <button class="nav-card" onclick="goPage('frettir')">
         <div class="nav-card-icon">▤</div>
         <div class="nav-card-title">Fréttavakt</div>
@@ -1400,6 +1405,7 @@ const NAV_GROUPS = [
   ]},
   {id:'bakgr',   label:'Bakgrunnur',        icon:'◇', pages:[
     {id:'fjarmal', label:'Fjármál borgar'},
+    {id:'samanburdur', label:'Samanburður sveitarfélaga'},
     {id:'umvefinn', label:'Um vefinn'}
   ]}
 ];
@@ -1478,6 +1484,11 @@ function showPage(id, btn){
     document.title = 'Kosningavaktin — '+muniName+' 16. maí 2026';
   } else if(page){
     document.title = page.label + ' · '+muniName+' · Kosningavaktin';
+  }
+  // Samanburðarsíðan er muni-agnostic — endurteiknum í hvert sinn sem hún er opnuð
+  // (gögn geta hafa breyst ef notandi kom við á annarri síðu fyrst)
+  if(id === 'samanburdur'){
+    try { if(typeof initSamanburdur === 'function') initSamanburdur(); } catch(e){}
   }
   window.scrollTo(0, 0);
 }
@@ -5341,16 +5352,12 @@ function renderFinancePlaceholder(){
     +'<div style="font-family:\'Playfair Display\',serif;font-size:22px;color:#854F0B;margin-bottom:8px;">Fjármálagögn '+m.name+' koma von bráðar</div>'
     +'<div style="font-size:13px;color:var(--ink2);line-height:1.6;">Ársreikningar '+m.name+' 2015–2024 og bráðabirgðatölur 2025 bætast við í næsta áfanga. Fjárhagsáætlun 2026 var samþykkt í '+raadLower+' og inniheldur bæði skattalækkun og hallarekstur — úthugsuð greining fylgir síðar.</div>'
     +'</div>';
-  // „Í stuttu máli" birtir samanburð á öll sveitarfélög jafnvel þegar engin
-  // finance-gögn eru skráð fyrir þetta muni — svo íbúar sjái sína stöðu í
-  // samhengi (og sjálfan „kemur von bráðar" skilaboð fyrir smáatriðin).
-  var stuttuHtml = buildSamanburdurCard() + msg;
-  ['fintab-yfirlit','fintab-aaetlun','fintab-stjorn','fintab-sundur','fintab-leidretting','fintab-ai'].forEach(function(id){
+  // Samanburður milli sveitarfélaga er nú á sér „Samanburður sveitarfélaga"
+  // síðu í aðalnav — hér birtum einfalda placeholder á öllum fjármála-flipum.
+  ['fintab-stuttu','fintab-yfirlit','fintab-aaetlun','fintab-stjorn','fintab-sundur','fintab-leidretting','fintab-ai'].forEach(function(id){
     var el = document.getElementById(id);
     if(el) el.innerHTML = msg;
   });
-  var stuttuEl = document.getElementById('fintab-stuttu');
-  if(stuttuEl) stuttuEl.innerHTML = stuttuHtml;
   // Földum 2025-banner og tæmum rvk-leifar svo ekkert sé í DOM
   var banner = document.getElementById('fin-2025-banner');
   if(banner){ banner.style.display = 'none'; banner.innerHTML = ''; }
@@ -5393,133 +5400,367 @@ function cityCompaniesShort(){
 }
 
 // ========================================================================
-// ===== SAMANBURÐUR MILLI SVEITARFÉLAGA =====
-// Sameiginleg tafla með lykilkennitölum fyrir öll 6 sveitarfélögin.
-// Sýnd efst á „Í stuttu máli"-flipanum svo íbúar sjái mun á milli bæja án
-// þess að skipta handvirkt á milli. Öll tölur koma úr opinberum heimildum
-// sem þegar eru í MUNI_DATA (ársreikningar 2024, Sambandsgögn fyrir útsvar
-// 2026). Núverandi muni er litað ber svo notandinn sjái sig.
+// ===== SAMANBURÐUR SVEITARFÉLAGA (muni-agnostic síða) =====
+// Heilsíða „Samanburður sveitarfélaga" með 9 togglable mælikvörðum,
+// horizontal bar-chart, sögulegu línuriti 2015–2024, töflu og per-muni
+// kortum. Öll gögn koma úr MUNI_DATA (finance[] + finance2025Partial).
+// Útsvar 2026 og fasteignaskattshlutföll eru skráð hér beint svo
+// greining sé sjálfstæð frá MUNI_DATA. Útsvarsprósentur staðfestar af
+// Sambandi íslenskra sveitarfélaga (Útsvarsprósentur_net.xls, apr. 2026).
 // ========================================================================
-function buildSamanburdurCard(){
-  var MUNIS = ['rvk','kopv','hafn','gard','mos','selt'];
-  var names = {rvk:'Reykjavíkurborg', kopv:'Kópavogur', hafn:'Hafnarfjörður', gard:'Garðabær', mos:'Mosfellsbær', selt:'Seltjarnarnes'};
-  // Útsvar 2026 — Samband íslenskra sveitarfélaga (apr. 2026).
-  var utsvar2026 = {rvk:'14,97%', kopv:'14,93%', hafn:'14,93%', gard:'14,71%', mos:'14,97%', selt:'14,54%'};
-  // Skuldaviðmið (nýjasta ársreikningur eða bráðabirgða/áætlun) — tekið úr
-  // athugasemdum ársreikninga/áætlana. Sams konar og í glóssu.
-  var skuldavidmid = {
-    rvk:  {pct:77,   yr:2024, txt:'77% (2024)'},
-    kopv: {pct:77,   yr:2024, txt:'77% (2024)'},
-    hafn: {pct:90,   yr:2024, txt:'90% (2024)'},
-    gard: {pct:86,   yr:2025, txt:'86% (2025)'},
-    mos:  {pct:98.2, yr:2025, txt:'98,2% (2025)'},
-    selt: {pct:108,  yr:2025, txt:'108% (áætl. 2025)'}
+
+// Útsvarsprósentur 2026 — heimild: Samband íslenskra sveitarfélaga.
+var SAMANB_UTSVAR = {
+  rvk:  {pct:14.97, src:'Reykjavíkurborg 2026 (Samband)'},
+  kopv: {pct:14.93, src:'Kópavogsbær 2026 (Samband)'},
+  hafn: {pct:14.93, src:'Hafnarfjarðarkaupstaður 2026 (Samband)'},
+  gard: {pct:14.71, src:'Garðabær 2026 (lægsta á höfuðborgarsv.)'},
+  mos:  {pct:14.97, src:'Mosfellsbær 2026 (hámark)'},
+  selt: {pct:14.54, src:'Seltjarnarnesbær 2026 (óbreytt)'}
+};
+
+// Fasteignaskattur íbúðarhúsnæðis 2026 (álagshlutfall %). Heimildir:
+// samþykktar fjárhagsáætlanir. Hæsta heimild skv. lögum: 0,5%.
+var SAMANB_FAST = {
+  rvk:  {pct:0.19,   src:'Reykjavík 2026'},
+  kopv: {pct:0.24,   src:'Kópavogur 2026 (lækkun)'},
+  hafn: {pct:0.1999, src:'Hafnarfjörður 2026 (lækkun úr 0,217%)'},
+  gard: {pct:0.22,   src:'Garðabær 2026'},
+  mos:  {pct:0.19,   src:'Mosfellsbær 2026 (lækkun)'},
+  selt: {pct:0.18,   src:'Seltjarnarnes 2026'}
+};
+
+var SAMANB_MUNI_ORDER = ['rvk','kopv','hafn','gard','mos','selt'];
+
+function samanbExtractRow(muniId){
+  var d = MUNI_DATA[muniId];
+  if(!d) return null;
+  var m = MUNI_META[muniId];
+  var fin = (d.finance && d.finance.length) ? d.finance[d.finance.length-1] : null;
+  var p25 = d.finance2025Partial;
+  // Forrit: nota 2025 partial ef AB.nidurstada er til, annars nýjasti ársreikningur.
+  var src = null, srcYr = null, srcLabel = null;
+  if(p25 && p25.AB && p25.AB.nidurstada != null){
+    src = p25; srcYr = p25.yr; srcLabel = p25.timabil || ('Árshlutareikningur '+p25.yr);
+  } else if(fin){
+    src = fin; srcYr = fin.yr; srcLabel = 'Ársreikningur '+fin.yr;
+  }
+  // Ef src vantar ákveðnar tölur en fin hefur þær, fallback á fin
+  function pick(path){
+    var val = src;
+    for(var i=0;i<path.length && val!=null;i++){ val = val[path[i]]; }
+    if(val == null && fin && src !== fin){
+      var val2 = fin;
+      for(var j=0;j<path.length && val2!=null;j++){ val2 = val2[path[j]]; }
+      return val2;
+    }
+    return val;
+  }
+  var ibuar = pick(['ibuar']) || m.ibuar;
+  var nid   = pick(['AB','nidurstada']);
+  var tek   = pick(['AB','tekjur']);
+  var skul  = pick(['AB','skuldir']);
+  var eign  = pick(['AB','eignir']);
+  var eigf  = pick(['AB','eiginfe']);
+  var nidA  = pick(['A','nidurstada']);
+  var tekA  = pick(['A','tekjur']);
+  var skatt = pick(['A','skatttekjur']);
+  var uts   = SAMANB_UTSVAR[muniId] ? SAMANB_UTSVAR[muniId].pct : null;
+  var fast  = SAMANB_FAST[muniId]   ? SAMANB_FAST[muniId].pct   : null;
+  var rekPct    = (nid != null && tek != null && tek > 0) ? (nid/tek*100) : null;
+  var rekAPct   = (nidA != null && tekA != null && tekA > 0) ? (nidA/tekA*100) : null;
+  var skulPrIb  = (skul != null && ibuar) ? (skul*1e9 / ibuar / 1000) : null; // þús.kr/íbúa
+  var eigfHlut  = (eigf != null && eign != null && eign > 0) ? (eigf/eign*100) : null;
+  var skuldavidm = (skul != null && tek != null && tek > 0) ? (skul/tek*100) : null;
+  var skattPrIb = (skatt != null && ibuar) ? (skatt*1e9 / ibuar / 1000) : null;
+  var tekPrIb   = (tek != null && ibuar) ? (tek*1e9 / ibuar / 1000) : null;
+  return {
+    id: muniId, name: m.name, shortName: m.shortName,
+    ibuar: ibuar,
+    stjori: pick(['borgarstjori']) || pick(['baejarstjori']) || null,
+    stjoriAf: pick(['bstAf']) || null,
+    meirihluti: pick(['meirihluti']) || null,
+    sourceYr: srcYr, sourceLabel: srcLabel,
+    ABnidurstada: nid, ABtekjur: tek, ABskuldir: skul, ABeignir: eign, ABeiginfe: eigf,
+    Anidurstada: nidA, Atekjur: tekA, Askatttekjur: skatt,
+    utsvar: uts, fasteignaskattur: fast,
+    rekstrarHlutf: rekPct, rekstrAHlutf: rekAPct,
+    skuldirAibua: skulPrIb, skattAibua: skattPrIb, tekjurAibua: tekPrIb,
+    eigfHlutfall: eigfHlut, skuldavidmid: skuldavidm
   };
-  // Nýleg AB-niðurstaða og skuldir: velja síðasta ár úr finance[] þar sem
-  // niðurstaða er skráð, annars nota finance2025Partial (bráðabirgða).
-  function latestAB(m){
-    var d = MUNI_DATA[m];
-    if(!d) return {yr:null, nidurstada:null, skuldir:null, ibuar:null, source:null};
-    // Leita aftur á bak í finance[] að nýjasta ári sem hefur AB.nidurstada.
-    var latest = null;
-    if(d.finance && d.finance.length){
-      for(var i=d.finance.length-1; i>=0; i--){
-        var f = d.finance[i];
-        if(f.AB && f.AB.nidurstada != null){ latest = f; break; }
-      }
+}
+
+// Tímaröð fyrir valinn mælikvarða yfir 2015–2024 (þar sem gögn duga).
+function samanbTimeSeries(muniId, metric){
+  var d = MUNI_DATA[muniId];
+  if(!d || !d.finance) return [];
+  return d.finance.map(function(f){
+    var ibuar = f.ibuar || (MUNI_META[muniId] && MUNI_META[muniId].ibuar);
+    var val;
+    if(metric === 'skuldirAibua'){
+      val = (f.AB && f.AB.skuldir != null && ibuar) ? (f.AB.skuldir*1e9 / ibuar / 1000) : null;
+    } else if(metric === 'rekstrarHlutf'){
+      val = (f.AB && f.AB.nidurstada != null && f.AB.tekjur != null && f.AB.tekjur > 0) ? (f.AB.nidurstada/f.AB.tekjur*100) : null;
+    } else if(metric === 'ABnidurstada'){
+      val = f.AB && f.AB.nidurstada;
+    } else if(metric === 'eigfHlutfall'){
+      val = (f.AB && f.AB.eiginfe != null && f.AB.eignir != null && f.AB.eignir > 0) ? (f.AB.eiginfe/f.AB.eignir*100) : null;
+    } else if(metric === 'skuldavidmid'){
+      val = (f.AB && f.AB.skuldir != null && f.AB.tekjur != null && f.AB.tekjur > 0) ? (f.AB.skuldir/f.AB.tekjur*100) : null;
+    } else if(metric === 'skattAibua'){
+      val = (f.A && f.A.skatttekjur != null && ibuar) ? (f.A.skatttekjur*1e9 / ibuar / 1000) : null;
+    } else {
+      val = null;
     }
-    // Bráðabirgða 2025 (ef til) — nota ef það er nýrra en latest í finance[]
-    // eða ef engin finance-ársniðurstaða fannst.
-    var p = d.finance2025Partial;
-    if(p && p.AB && p.AB.nidurstada != null && (!latest || p.yr > latest.yr)){
-      var ibuarFromLatest = latest ? latest.ibuar : null;
-      return {
-        yr: p.yr,
-        nidurstada: p.AB.nidurstada,
-        skuldir: p.AB.skuldir != null ? p.AB.skuldir : null,
-        ibuar: ibuarFromLatest,
-        source: p.timabil || ('bráðabirgða '+p.yr)
-      };
-    }
-    if(latest){
-      return {
-        yr: latest.yr,
-        nidurstada: latest.AB.nidurstada,
-        skuldir:    latest.AB.skuldir    != null ? latest.AB.skuldir : null,
-        ibuar:      latest.ibuar || null,
-        source: 'ársreikningur '+latest.yr
-      };
-    }
-    return {yr:null, nidurstada:null, skuldir:null, ibuar:null, source:null};
+    return {yr: f.yr, val: val};
+  }).filter(function(p){ return p.val != null; });
+}
+
+function fmtNum(n, dec){
+  if(n == null || isNaN(n)) return '—';
+  dec = dec==null ? 1 : dec;
+  return n.toLocaleString('is-IS',{minimumFractionDigits:dec,maximumFractionDigits:dec});
+}
+function fmtPct(n, dec){
+  if(n == null || isNaN(n)) return '—';
+  dec = dec==null ? 1 : dec;
+  return n.toLocaleString('is-IS',{minimumFractionDigits:dec,maximumFractionDigits:dec})+'%';
+}
+function fmtIbuar(n){ if(n==null) return '—'; return Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g,'.'); }
+
+var SAMANB_METRICS = [
+  {id:'skuldirAibua', label:'Skuldir á íbúa',          unit:'þús.kr/íbúa', lowerBetter:true,  desc:'Heildarskuldir samstæðu (A+B) deilt með íbúafjölda. Lægra = minni skuldabyrði.',      hasTrend:true},
+  {id:'rekstrarHlutf',label:'Rekstur AB (% af tekjum)',unit:'%',           lowerBetter:false, desc:'Rekstrarniðurstaða AB sem hlutfall af tekjum. Jákvætt = afgangur, neikvætt = halli.',  hasTrend:true},
+  {id:'rekstrAHlutf', label:'Rekstur A (% af tekjum)', unit:'%',           lowerBetter:false, desc:'Kjarnarekstur A-hluta (án bæjarfyrirtækja) sem hlutfall af tekjum. Hreinni mælikvarði þar sem einskiptis-liðir í B eru ekki teknir með.', hasTrend:false},
+  {id:'ABnidurstada', label:'AB-niðurstaða',           unit:'ma.kr.',      lowerBetter:false, desc:'Samstæða A+B — hagnaður (+) eða tap (−) í nýjasta ársreikningi eða bráðabirgða­uppgjöri.', hasTrend:true},
+  {id:'eigfHlutfall', label:'Eiginfjárhlutfall AB',    unit:'%',           lowerBetter:false, desc:'Eigið fé deilt með heildareignum samstæðu. Hærra = fjárhagslega sterkara.',             hasTrend:true},
+  {id:'skuldavidmid', label:'Skuldaviðmið AB',         unit:'%',           lowerBetter:true,  desc:'Skuldir sem hlutfall af reglulegum tekjum (sveitarstjórnarlög setja 150% hámark). Lægra = meira svigrúm.', hasTrend:true},
+  {id:'skattAibua',   label:'Skatttekjur á íbúa',      unit:'þús.kr/íbúa', lowerBetter:false, desc:'Útsvar + fasteignaskattur (A-hluti) á hvern íbúa. Hærra gefur sveitarfélagi meira að vinna með.', hasTrend:true},
+  {id:'utsvar',       label:'Útsvar',                  unit:'%',           lowerBetter:true,  desc:'Álagt útsvar 2026 (persónulegur tekjuskattur sveitarfélags). Lægra = minni byrði á íbúa.', hasTrend:false},
+  {id:'fasteignaskattur', label:'Fasteignaskattur íbúða', unit:'%',        lowerBetter:true,  desc:'Álagshlutfall fasteignaskatts á íbúðarhúsnæði 2026. Lægra = minni skattur á heimili.',  hasTrend:false}
+];
+
+var _samanbRows = null;
+var _samanbMetric = 'skuldirAibua';
+var _samanbSortKey = null;
+var _samanbSortDir = 1;
+
+function samanbGetRows(){
+  if(_samanbRows) return _samanbRows;
+  _samanbRows = SAMANB_MUNI_ORDER.map(samanbExtractRow).filter(Boolean);
+  return _samanbRows;
+}
+
+function initSamanburdur(){
+  if(!document.getElementById('samanb-metric-btns')) return;
+  _samanbRows = null; // reset cache svo breytingar á MUNI_DATA uppfæra sig
+  var rows = samanbGetRows();
+  var missing = rows.filter(function(r){ return r.ABnidurstada == null; }).map(function(r){ return r.name; });
+  var warn = document.getElementById('samanb-warnings');
+  if(warn){
+    warn.innerHTML = missing.length
+      ? '<span style="color:#854F0B;">⚠ Fjárhagsgögn fyrir '+missing.join(', ')+' eru enn í vinnslu.</span>'
+      : '';
   }
-  // Safa saman í raðir og raða eftir íbúafjölda minnkandi (þekktur íbúafjöldi).
-  var rows = MUNIS.map(function(m){
-    var ab = latestAB(m);
-    var skPerI = (ab.skuldir != null && ab.ibuar) ? (ab.skuldir * 1e9 / ab.ibuar) : null; // kr./íbúa
-    return {
-      muni: m,
-      name: names[m],
-      utsvar: utsvar2026[m] || '—',
-      yr: ab.yr,
-      ibuar: ab.ibuar,
-      nidurstada: ab.nidurstada,
-      skuldir: ab.skuldir,
-      skPerI: skPerI,
-      sv: skuldavidmid[m] || null,
-      source: ab.source
-    };
-  }).sort(function(a,b){ return (b.ibuar||0) - (a.ibuar||0); });
-  // Forsníða einstakra tölu
-  function fmtMa(v){ if(v==null) return '<span style="color:var(--ink3)">—</span>'; return (v>=0?'+':'')+v.toFixed(1).replace('.',',')+' ma.'; }
-  function fmtSkuld(v){ if(v==null) return '<span style="color:var(--ink3)">—</span>'; return v.toFixed(0)+' ma.'; }
-  // Chromium mis-fer með 'is-IS' (notar ',' sem þúsundaaðskilnað í stað '.').
-  // Handsníðum eins og gert er annars staðar í skránni (fmtN í ~línu 4820).
-  function fmtIb(v){ if(v==null) return '<span style="color:var(--ink3)">—</span>'; return Math.round(v).toString().replace(/\B(?=(\d{3})+(?!\d))/g,'.'); }
-  function fmtKrM(v){ if(v==null) return '<span style="color:var(--ink3)">—</span>'; return (v/1e6).toFixed(1).replace('.',',')+' m.kr.'; }
-  function svBadge(sv){
-    if(!sv) return '<span style="color:var(--ink3)">—</span>';
-    // Litakóðun: grænt <90%, gult 90–120%, rautt >=120% (mörkin eru viðmið, ekki regla).
-    var clr = sv.pct < 90 ? '#2E7D32' : (sv.pct < 120 ? '#854F0B' : '#C62828');
-    return '<span style="color:'+clr+';font-weight:500">'+sv.txt+'</span>';
+  var btns = document.getElementById('samanb-metric-btns');
+  btns.innerHTML = SAMANB_METRICS.map(function(m){
+    return '<button class="subnav-btn'+(m.id===_samanbMetric?' active':'')+'" onclick="setSamanbMetric(\''+m.id+'\')">'+m.label+'</button>';
+  }).join('');
+  renderSamanbChart();
+  renderSamanbTrend();
+  renderSamanbTable();
+  renderSamanbCards();
+}
+
+function setSamanbMetric(id){
+  _samanbMetric = id;
+  var btns = document.querySelectorAll('#samanb-metric-btns .subnav-btn');
+  var metrics = SAMANB_METRICS;
+  btns.forEach(function(b,i){ b.classList.toggle('active', metrics[i] && metrics[i].id===id); });
+  renderSamanbChart();
+  renderSamanbTrend();
+}
+
+function renderSamanbTrend(){
+  var m = SAMANB_METRICS.find(function(x){return x.id===_samanbMetric;}) || SAMANB_METRICS[0];
+  document.getElementById('samanb-trend-title').textContent = 'Þróun: '+m.label;
+  var el = document.getElementById('samanb-trend');
+  if(!m.hasTrend){
+    el.innerHTML = '<div style="padding:1rem;color:var(--ink3);font-size:12px;">Þessi mælikvarði sýnir núverandi stöðu og hefur ekki sögulega tímaröð.</div>';
+    document.getElementById('samanb-trend-sub').textContent = 'Smelltu á annan mælikvarða að ofan til að sjá sögulega þróun.';
+    return;
   }
-  var html = '<div class="card" style="margin-bottom:1rem;">'
-    +'<div style="font-family:\'Playfair Display\',serif;font-size:17px;margin-bottom:3px;">Samanburður á höfuðborgarsvæðinu</div>'
-    +'<div style="font-size:12px;color:var(--ink2);margin-bottom:1rem;line-height:1.5">Lykilkennitölur allra sex sveitarfélaga á höfuðborgarsvæðinu — útsvar 2026 (Samband), íbúar og AB-rekstur úr nýjasta ársreikningi. Smelltu á sveitarfélag til að skoða nánar.</div>'
-    +'<div style="overflow-x:auto;margin:0 -14px;padding:0 14px;"><table style="width:100%;border-collapse:collapse;font-size:12px;min-width:540px;">'
-    +'<thead><tr style="border-bottom:1px solid var(--bdr);color:var(--ink3);text-align:left;">'
-      +'<th style="padding:6px 8px 6px 0;font-weight:500;">Sveitarfélag</th>'
-      +'<th style="padding:6px 8px;font-weight:500;text-align:right;">Útsvar 2026</th>'
-      +'<th style="padding:6px 8px;font-weight:500;text-align:right;">Íbúar</th>'
-      +'<th style="padding:6px 8px;font-weight:500;text-align:right;">AB niðurstaða</th>'
-      +'<th style="padding:6px 8px;font-weight:500;text-align:right;">AB skuldir</th>'
-      +'<th style="padding:6px 8px;font-weight:500;text-align:right;">Skuldir/íbúa</th>'
-      +'<th style="padding:6px 0 6px 8px;font-weight:500;text-align:right;">Skuldaviðmið</th>'
-    +'</tr></thead><tbody>';
-  rows.forEach(function(r){
-    var isCur = r.muni === CURRENT_MUNI;
-    var rowStyle = isCur
-      ? 'background:#FFF8E1;border-left:3px solid var(--gold);'
-      : 'border-bottom:0.5px solid var(--bdr);';
-    var nameCell = isCur
-      ? '<strong>'+r.name+' ·</strong>'
-      : '<a href="#/'+r.muni+'/fjarmal" style="color:var(--ink);text-decoration:none;border-bottom:0.5px dashed var(--ink3);">'+r.name+'</a>';
-    var niClr = r.nidurstada == null ? '' : (r.nidurstada >= 0 ? 'color:#2E7D32;' : 'color:#C62828;');
-    html += '<tr style="'+rowStyle+'">'
-      +'<td style="padding:8px 8px 8px 0;">'+nameCell+(r.yr?' <span style="color:var(--ink3);font-size:10px">'+r.yr+'</span>':'')+'</td>'
-      +'<td style="padding:8px;text-align:right;font-variant-numeric:tabular-nums;">'+r.utsvar+'</td>'
-      +'<td style="padding:8px;text-align:right;font-variant-numeric:tabular-nums;">'+fmtIb(r.ibuar)+'</td>'
-      +'<td style="padding:8px;text-align:right;font-variant-numeric:tabular-nums;'+niClr+'">'+fmtMa(r.nidurstada)+'</td>'
-      +'<td style="padding:8px;text-align:right;font-variant-numeric:tabular-nums;">'+fmtSkuld(r.skuldir)+'</td>'
-      +'<td style="padding:8px;text-align:right;font-variant-numeric:tabular-nums;">'+fmtKrM(r.skPerI)+'</td>'
-      +'<td style="padding:8px 0 8px 8px;text-align:right;font-variant-numeric:tabular-nums;">'+svBadge(r.sv)+'</td>'
-    +'</tr>';
-  });
-  html += '</tbody></table></div>'
-    +'<div style="font-size:11px;color:var(--ink3);margin-top:10px;line-height:1.55;">'
-      +'<strong>Heimildir</strong>: Útsvar 2026 úr Sambandi íslenskra sveitarfélaga (Útsvarsprósentur_net.xls, apr. 2026). Íbúar, rekstur og skuldir: nýjasti birtur ársreikningur eða bráðabirgðauppgjör hvers sveitarfélags (Reykjavík/Kópavogur/Garðabær/Mosfellsbær 2025, Hafnarfjörður bráðab. 2025, Seltjarnarnes — ekki birt). AB = samstæða (aðalsjóður + bæjarfyrirtæki). Skuldaviðmið er í hlutfalli við tekjur; lögbundið hámark 150%. „Skuldir/íbúa" eru AB-skuldir deilt með íbúafjölda þess árs.'
-    +'</div>'
+  document.getElementById('samanb-trend-sub').textContent = 'Sögulegur samanburður allra sveitarfélaga með gögn. Lína sýnir '+m.label.toLowerCase()+' yfir tíma.';
+  var series = SAMANB_MUNI_ORDER.map(function(id){
+    return { id:id, name: MUNI_META[id].name, shortName: MUNI_META[id].shortName, data: samanbTimeSeries(id, _samanbMetric) };
+  }).filter(function(s){ return s.data.length > 0; });
+  if(!series.length){
+    el.innerHTML = '<div style="padding:1rem;color:var(--ink3);font-size:12px;">Engar sögulegar tölur tiltækar fyrir þennan mælikvarða.</div>';
+    return;
+  }
+  var allYrs = {};
+  series.forEach(function(s){ s.data.forEach(function(p){ allYrs[p.yr] = true; }); });
+  var yrs = Object.keys(allYrs).map(Number).sort(function(a,b){return a-b;});
+  var yrMin = yrs[0], yrMax = yrs[yrs.length-1];
+  var allVals = [];
+  series.forEach(function(s){ s.data.forEach(function(p){ allVals.push(p.val); }); });
+  var yMin = Math.min.apply(null, allVals), yMax = Math.max.apply(null, allVals);
+  if(yMin > 0) yMin = 0;
+  if(yMax < 0) yMax = 0;
+  var yPad = (yMax - yMin) * 0.05;
+  yMin -= yPad; yMax += yPad;
+  if(yMax === yMin) yMax = yMin + 1;
+  var W = 760, H = 280, padL = 52, padR = 10, padT = 16, padB = 34;
+  function xPos(yr){ return padL + (yr - yrMin) / Math.max(1, yrMax - yrMin) * (W - padL - padR); }
+  function yPos(v){ return padT + (yMax - v) / (yMax - yMin) * (H - padT - padB); }
+  var COLORS = {rvk:'#1565C0', kopv:'#00796B', hafn:'#D84315', gard:'#6A1B9A', mos:'#1E8A3E', selt:'#C62828'};
+  var gridLines = [];
+  var nGrid = 4;
+  for(var i=0;i<=nGrid;i++){
+    var v = yMin + (yMax - yMin) * (i/nGrid);
+    var y = yPos(v);
+    var label = m.unit === '%' ? v.toFixed(1)+'%' : (m.unit === 'ma.kr.' ? v.toFixed(1) : Math.round(v).toLocaleString('is-IS'));
+    gridLines.push('<line x1="'+padL+'" x2="'+(W-padR)+'" y1="'+y+'" y2="'+y+'" stroke="rgba(26,24,20,0.08)" stroke-width="1"/>'
+      +'<text x="'+(padL-6)+'" y="'+(y+3)+'" text-anchor="end" font-size="9" fill="#A8A4A0" font-family="DM Sans">'+label+'</text>');
+  }
+  if(yMin < 0 && yMax > 0){
+    var y0 = yPos(0);
+    gridLines.push('<line x1="'+padL+'" x2="'+(W-padR)+'" y1="'+y0+'" y2="'+y0+'" stroke="rgba(26,24,20,0.4)" stroke-width="1"/>');
+  }
+  var xTicks = yrs.map(function(y){
+    var x = xPos(y);
+    return '<text x="'+x+'" y="'+(H-padB+14)+'" text-anchor="middle" font-size="9" fill="#A8A4A0" font-family="DM Sans">'+y+'</text>';
+  }).join('');
+  var pathsAndDots = series.map(function(s){
+    var color = COLORS[s.id] || '#888';
+    var path = s.data.map(function(p, i){
+      return (i===0?'M':'L') + xPos(p.yr) + ',' + yPos(p.val);
+    }).join(' ');
+    var dots = s.data.map(function(p){
+      return '<circle cx="'+xPos(p.yr)+'" cy="'+yPos(p.val)+'" r="3" fill="'+color+'"><title>'+s.name+' '+p.yr+': '+(m.unit==='%'?p.val.toFixed(1)+'%':(m.unit==='ma.kr.'?p.val.toFixed(2):Math.round(p.val).toLocaleString('is-IS')+' '+m.unit))+'</title></circle>';
+    }).join('');
+    return '<path d="'+path+'" fill="none" stroke="'+color+'" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>' + dots;
+  }).join('');
+  var legend = series.map(function(s){
+    var color = COLORS[s.id] || '#888';
+    return '<span style="display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--ink2);margin-right:12px;">'
+      +'<span style="display:inline-block;width:12px;height:2px;background:'+color+';"></span>'+s.name+'</span>';
+  }).join('');
+  var svg = '<svg viewBox="0 0 '+W+' '+H+'" width="100%" style="max-width:'+W+'px;display:block;margin:0 auto;">'
+    + gridLines.join('') + xTicks + pathsAndDots
+    +'</svg>';
+  el.innerHTML = svg + '<div style="padding:6px 0 2px;">'+legend+'</div>';
+}
+
+function renderSamanbChart(){
+  var rows = samanbGetRows();
+  var m = SAMANB_METRICS.find(function(x){return x.id===_samanbMetric;}) || SAMANB_METRICS[0];
+  document.getElementById('samanb-chart-title').textContent = m.label;
+  document.getElementById('samanb-chart-sub').textContent = m.desc;
+  var withVal = rows.map(function(r){ return {row:r, val:r[m.id]}; })
+    .filter(function(x){ return x.val != null && !isNaN(x.val); });
+  withVal.sort(function(a,b){ return m.lowerBetter ? a.val-b.val : b.val-a.val; });
+  if(!withVal.length){
+    document.getElementById('samanb-chart').innerHTML = '<div style="padding:1rem;color:var(--ink3);font-size:12px;">Engin gögn tiltæk fyrir þennan mælikvarða.</div>';
+    return;
+  }
+  var maxAbs = withVal.reduce(function(acc,x){ return Math.max(acc, Math.abs(x.val)); }, 0);
+  if(maxAbs === 0) maxAbs = 1;
+  var rowsHtml = withVal.map(function(x, idx){
+    var r = x.row, v = x.val;
+    var widthPct = Math.min(100, Math.abs(v)/maxAbs*100);
+    var isNeg = v < 0;
+    var barColor = isNeg ? '#C62828' : (idx===0 ? '#1E8A3E' : 'var(--gold)');
+    var label = (m.unit === '%' ? fmtPct(v,1) : (m.unit==='ma.kr.' ? fmtNum(v,2)+' ma.kr.' : fmtNum(v,0)+' '+m.unit));
+    return '<div style="display:grid;grid-template-columns:110px 1fr 130px;align-items:center;gap:8px;margin-bottom:6px;">'
+      +'<div style="font-size:12px;color:var(--ink);font-weight:500;text-align:right;">'+r.name+'</div>'
+      +'<div style="background:var(--bg);border-radius:4px;height:26px;position:relative;overflow:hidden;">'
+        +'<div style="width:'+widthPct+'%;height:100%;background:'+barColor+';border-radius:4px;"></div>'
+      +'</div>'
+      +'<div style="font-size:12px;color:var(--ink2);">'+label+' <span style="color:var(--ink3);font-size:10px;">('+(r.sourceYr||'?')+')</span></div>'
     +'</div>';
-  return html;
+  }).join('');
+  document.getElementById('samanb-chart').innerHTML = rowsHtml;
+}
+
+function renderSamanbTable(){
+  var rows = samanbGetRows();
+  var cols = [
+    {k:'name',             l:'Sveitarfélag',       sortable:false, fmt:function(r){ return r.name; }},
+    {k:'ibuar',            l:'Íbúar',              sortable:true,  fmt:function(r){ return fmtIbuar(r.ibuar); }},
+    {k:'utsvar',           l:'Útsvar',             sortable:true,  fmt:function(r){ return fmtPct(r.utsvar,2); }},
+    {k:'fasteignaskattur', l:'Fast.sk.',           sortable:true,  fmt:function(r){ return fmtPct(r.fasteignaskattur,3); }},
+    {k:'ABnidurstada',     l:'AB-niðurst. (ma.kr.)',sortable:true, fmt:function(r){ var v=r.ABnidurstada; if(v==null)return '—'; return '<span style="color:'+(v>=0?'var(--ink)':'#C62828')+'">'+fmtNum(v,2)+'</span>'; }},
+    {k:'rekstrarHlutf',    l:'% af tekjum',        sortable:true,  fmt:function(r){ var v=r.rekstrarHlutf; if(v==null)return '—'; return '<span style="color:'+(v>=0?'var(--ink)':'#C62828')+'">'+fmtPct(v,1)+'</span>'; }},
+    {k:'skuldirAibua',     l:'Skuldir/íbúa (þús.kr)',sortable:true,fmt:function(r){ return r.skuldirAibua==null?'—':fmtNum(r.skuldirAibua,0); }},
+    {k:'skuldavidmid',     l:'Skuldaviðmið',       sortable:true,  fmt:function(r){ return r.skuldavidmid==null?'—':fmtPct(r.skuldavidmid,0); }},
+    {k:'skattAibua',       l:'Skatttekjur/íbúa',   sortable:true,  fmt:function(r){ return r.skattAibua==null?'—':fmtNum(r.skattAibua,0); }},
+    {k:'eigfHlutfall',     l:'Eiginf.hlutf.',      sortable:true,  fmt:function(r){ return fmtPct(r.eigfHlutfall,1); }},
+    {k:'sourceYr',         l:'Heimild',            sortable:false, fmt:function(r){ return r.sourceYr ? '<span style="color:var(--ink3);font-size:11px;">'+r.sourceYr+'</span>' : '—'; }}
+  ];
+  var sorted = rows.slice();
+  if(_samanbSortKey){
+    sorted.sort(function(a,b){
+      var av = a[_samanbSortKey], bv = b[_samanbSortKey];
+      if(av == null && bv == null) return 0;
+      if(av == null) return 1;
+      if(bv == null) return -1;
+      return (av < bv ? -1 : av > bv ? 1 : 0) * _samanbSortDir;
+    });
+  }
+  var head = '<thead><tr style="border-bottom:0.5px solid var(--bdr);">'
+    + cols.map(function(c){
+        var indicator = '';
+        if(c.sortable && _samanbSortKey === c.k) indicator = _samanbSortDir>0 ? ' ↑' : ' ↓';
+        var style = 'padding:8px 10px;text-align:left;font-weight:500;color:var(--ink2);font-size:11px;text-transform:uppercase;letter-spacing:.05em;'
+          + (c.sortable ? 'cursor:pointer;user-select:none;' : '');
+        var onc = c.sortable ? ' onclick="samanbSort(\''+c.k+'\')"' : '';
+        return '<th style="'+style+'"'+onc+'>'+c.l+indicator+'</th>';
+      }).join('')
+    +'</tr></thead>';
+  var body = '<tbody>' + sorted.map(function(r){
+    return '<tr style="border-bottom:0.5px solid var(--bdr);">'
+      + cols.map(function(c,i){
+          var style = 'padding:9px 10px;font-size:12px;'
+            + (i===0 ? 'color:var(--ink);font-weight:500;' : 'color:var(--ink2);');
+          return '<td style="'+style+'">'+c.fmt(r)+'</td>';
+        }).join('')
+      +'</tr>';
+  }).join('') + '</tbody>';
+  document.getElementById('samanb-table').innerHTML = head + body;
+}
+
+function samanbSort(k){
+  if(_samanbSortKey === k) _samanbSortDir = -_samanbSortDir;
+  else { _samanbSortKey = k; _samanbSortDir = 1; }
+  renderSamanbTable();
+}
+
+function renderSamanbCards(){
+  var rows = samanbGetRows();
+  var html = rows.map(function(r){
+    var partyColor = r.stjoriAf ? (
+      {S:'#C62828',D:'#1565C0',B:'#1E8A3E',C:'#D84315',M:'#6A1B9A',V:'#2E7D32',P:'#532C7C',F:'#FBC02D',J:'#B71C1C',G:'#00838F',L:'#00796B'}[r.stjoriAf] || '#888'
+    ) : '#888';
+    return '<div class="card card-hover" onclick="location.hash=\'#/'+r.id+'/fjarmal\'" style="border-left:3px solid '+partyColor+';cursor:pointer;">'
+      +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">'
+        +'<div style="font-family:\'Playfair Display\',serif;font-size:17px;">'+r.name+'</div>'
+        +'<div style="font-size:11px;color:var(--ink3);">'+(r.sourceLabel||'')+'</div>'
+      +'</div>'
+      +'<div style="font-size:12px;color:var(--ink2);margin-bottom:8px;">'
+        +(r.stjori ? r.stjori+(r.stjoriAf?' ('+r.stjoriAf+')':'') : '—')
+        +(r.meirihluti ? ' · meirihluti: '+r.meirihluti.join('+') : '')
+      +'</div>'
+      +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px;">'
+        +'<div><div style="color:var(--ink3);font-size:10px;text-transform:uppercase;letter-spacing:.05em;">Íbúar</div><div style="color:var(--ink);font-weight:500;">'+fmtIbuar(r.ibuar)+'</div></div>'
+        +'<div><div style="color:var(--ink3);font-size:10px;text-transform:uppercase;letter-spacing:.05em;">Útsvar</div><div style="color:var(--ink);font-weight:500;">'+fmtPct(r.utsvar,2)+'</div></div>'
+        +'<div><div style="color:var(--ink3);font-size:10px;text-transform:uppercase;letter-spacing:.05em;">AB-niðurstaða</div><div style="color:'+(r.ABnidurstada>=0?'var(--ink)':'#C62828')+';font-weight:500;">'+(r.ABnidurstada!=null?fmtNum(r.ABnidurstada,2)+' ma.':'—')+'</div></div>'
+        +'<div><div style="color:var(--ink3);font-size:10px;text-transform:uppercase;letter-spacing:.05em;">Skuldir/íbúa</div><div style="color:var(--ink);font-weight:500;">'+(r.skuldirAibua!=null?fmtNum(r.skuldirAibua,0)+' þ.kr.':'—')+'</div></div>'
+      +'</div>'
+      +'<div style="font-size:11px;color:var(--gold);margin-top:8px;">Skoða fjármál '+r.name+' →</div>'
+    +'</div>';
+  }).join('');
+  document.getElementById('samanb-cards').innerHTML = html;
 }
 
 // ========================================================================
@@ -5603,9 +5844,8 @@ function renderStuttu(){
   // Byggja upp HTML
   var html = '';
 
-  // Samanburður við hin sveitarfélögin á höfuðborgarsvæðinu — alltaf efst svo
-  // íbúar sjái hvar þeirra sveitarfélag stendur miðað við hin fimm.
-  html += buildSamanburdurCard();
+  // Samanburður milli sveitarfélaga er nú á sérstakri síðu „Samanburður
+  // sveitarfélaga" í aðalnav, fjarlægðum kortið hér til að forðast tvítöku.
 
   // Heilsumerki-kortið
   html += '<div class="card" style="background:'+health.bg+';border-color:'+health.clr+'40;margin-bottom:1rem;">'
@@ -6890,6 +7130,43 @@ if (document.readyState === 'loading') {
       <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem;" id="topic-btns"></div>
       <div id="comparison-results"></div>
     </div>
+  </div>
+</div>
+
+<!-- SAMANBURÐUR SVEITARFÉLAGA - muni-agnostic síða -->
+<div id="page-samanburdur" class="page">
+  <div style="max-width:1100px;margin:0 auto;padding:1.5rem;">
+    <h2 style="font-family:'Playfair Display',serif;font-size:24px;margin-bottom:6px;">Samanburður sveitarfélaga</h2>
+    <p style="font-size:13px;color:var(--ink2);margin-bottom:1.5rem;line-height:1.6;max-width:720px;">Lykiltölur allra sex sveitarfélaga höfuðborgarsvæðisins, byggðar á nýjasta opinbera ársreikningi sem aðgengilegur er (eða bráðabirgða­uppgjöri 2025 þar sem það á við). Tölur eru sýndar bæði í heildartölum og á hvern íbúa svo hægt sé að bera saman sveitarfélög af ólíkri stærð.</p>
+    <div id="samanb-warnings" style="font-size:11px;color:var(--ink3);line-height:1.6;margin-bottom:1rem;"></div>
+
+    <!-- METRIC SELECTOR -->
+    <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:.8rem;" id="samanb-metric-btns"></div>
+    <div class="card" style="margin-bottom:1.25rem;">
+      <div class="card-title" id="samanb-chart-title">Skuldir á íbúa</div>
+      <div class="card-subtitle" id="samanb-chart-sub">Samstæða A+B, milljarðar króna deilt með íbúafjölda (þús.kr./íbúa)</div>
+      <div id="samanb-chart"></div>
+    </div>
+
+    <!-- TIME SERIES TREND -->
+    <div class="card" style="margin-bottom:1.25rem;">
+      <div class="card-title" id="samanb-trend-title">Þróun yfir tíma</div>
+      <div class="card-subtitle" id="samanb-trend-sub">Línurit fyrir nýjasta mælikvarða, 2015–2024 (eða eins langt aftur og gögn ná).</div>
+      <div id="samanb-trend"></div>
+    </div>
+
+    <!-- COMPARISON TABLE -->
+    <div class="card" style="margin-bottom:1.25rem;overflow-x:auto;">
+      <div class="card-title">Lykiltölur hlið við hlið</div>
+      <div class="card-subtitle">Smelltu á dálkheiti til að raða.</div>
+      <table id="samanb-table" style="width:100%;font-size:12px;border-collapse:collapse;min-width:780px;"></table>
+      <div id="samanb-table-footnote" style="font-size:11px;color:var(--ink3);line-height:1.6;margin-top:.75rem;">Skýringar: „AB" = samstæða (A-hluti + bæjarfyrirtæki). Skuldir á íbúa er gróf mælikvarði — háar skuldir geta endurspeglað fjárfestingar í innviðum og eru ekki sjálfkrafa slæmar. Sjá Fjármál-síðu hvers sveitarfélags fyrir samhengi.</div>
+    </div>
+
+    <!-- PER-MUNI CARDS -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:12px;margin-bottom:1.25rem;" id="samanb-cards"></div>
+
+    <div style="font-size:11px;color:var(--ink3);line-height:1.6;max-width:720px;">Heimildir: ársreikningar sveitarfélaganna (reykjavik.is, kopavogur.is, hafnarfjordur.is, gardabaer.is, mos.is, seltjarnarnes.is), globenewswire.com og opinberar tilkynningar.</div>
   </div>
 </div>
 
