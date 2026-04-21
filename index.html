@@ -5432,6 +5432,61 @@ var SAMANB_FAST = {
 
 var SAMANB_MUNI_ORDER = ['rvk','kopv','hafn','gard','mos','selt'];
 
+// Útgjöld A-hluta eftir málaflokki 2024, ma.kr. Neikvætt = útgjöld, jákvætt =
+// hrein tekja (þegar tekjur málaflokks eru hærri en gjöld — t.d. sund/golf).
+// Heimildir: PDF-ársreikningar á heimasíðum hvers sveitarfélags. Dregið með
+// pdftotext + íslenskri tesseract-OCR fyrir skannaðar síður (hafn 2024).
+// Reykjavík notar „svið" í stað staðlaðra málaflokka — við notum nálgun:
+// Velferðarsvið ≈ Félagsþjónusta; Skóla- og frístundasvið ≈ Fræðslu- og
+// uppeldismál; Menningar- og íþróttasvið skipt 30/70 í Menningar / Æskulýðs-
+// og íþróttamál; Umhverfis- og skipulagssvið skipt 40/20/40 í Umhverfi/
+// Skipulag/Samgöngur. Stjórnsýslusvið öll talin með „Sameiginlegur kostnaður".
+var MALAFLOKKAR_2024 = {
+  rvk: {
+    felagsMal: -46.324, fradsluMal: -79.998, aeskuIthrott: -13.905, menningar: -5.959,
+    umhverfis: -4.732, samgongur: -4.732, skipulag: -2.366, sameiginl: -18.896, fjarm: -6.891
+  },
+  kopv: {
+    felagsMal: -7.942, fradsluMal: -23.858, aeskuIthrott: -4.649, menningar: -0.749,
+    umhverfis: -0.607, samgongur: -1.918, skipulag: -0.324, hreinlaetis: -0.032, bruni: -0.428,
+    atvinnu: -0.031, sameiginl: -2.418, heilbrigdis: -0.003, lifeyris: -0.599
+  },
+  hafn: {
+    felagsMal: -8.576, fradsluMal: -21.020, aeskuIthrott: -2.919, menningar: -0.700,
+    umhverfis: -0.215, samgongur: -1.291, skipulag: -0.079, hreinlaetis: 0.081, bruni: -0.352,
+    atvinnu: -0.013, sameiginl: -2.536, fjarm: 0.976
+  },
+  gard: {
+    felagsMal: -3.924, fradsluMal: -13.957, aeskuIthrott: -3.116, menningar: -0.324,
+    umhverfis: -0.619, samgongur: -2.141, skipulag: -0.288, hreinlaetis: 0.001, bruni: -0.203,
+    sameiginl: -0.905, heilbrigdis: -0.013, lifeyris: -0.098, fjarm: -0.157
+  },
+  mos: {
+    felagsMal: -3.786, fradsluMal: -9.221, aeskuIthrott: -1.770, menningar: -0.248,
+    umhverfis: -0.293, samgongur: -0.702, skipulag: -0.111, hreinlaetis: 0.003, bruni: -0.152,
+    atvinnu: -0.001, sameiginl: -0.926, heilbrigdis: -0.010, lifeyris: -0.219, fjarm: 0.430
+  },
+  selt: {
+    felagsMal: -0.985, fradsluMal: -3.113, aeskuIthrott: -0.821, menningar: -0.166,
+    umhverfis: -0.132, samgongur: -0.227, skipulag: -0.020, hreinlaetis: -0.020, bruni: -0.054,
+    atvinnu: -0.002, sameiginl: -0.247, heilbrigdis: -0.008, lifeyris: -0.219, fjarm: 0.003
+  }
+};
+
+// Skilar útgjöldum málaflokksins (sem jákvæðum krónutölum) deilt með íbúafjölda
+// — þús.kr/íbúa. Ef málaflokk skilar tekjum (jákvæð gildi í MALAFLOKKAR_2024)
+// skilum við 0 (engin útgjaldabyrði).
+function malaflokkPerIbuar(muniId, key){
+  var m = MALAFLOKKAR_2024[muniId];
+  var ibuar = (MUNI_DATA[muniId] && MUNI_DATA[muniId].finance && MUNI_DATA[muniId].finance.length)
+    ? (MUNI_DATA[muniId].finance.find(function(f){return f.yr===2024;}) || {}).ibuar
+    : (MUNI_META[muniId] && MUNI_META[muniId].ibuar);
+  if(!m || m[key] == null || !ibuar) return null;
+  var v = m[key];
+  if(v >= 0) return 0; // hreinar tekjur — engin byrði
+  return Math.abs(v) * 1e9 / ibuar / 1000; // þús.kr/íbúa
+}
+
 function samanbExtractRow(muniId){
   var d = MUNI_DATA[muniId];
   if(!d) return null;
@@ -5486,7 +5541,17 @@ function samanbExtractRow(muniId){
     utsvar: uts, fasteignaskattur: fast,
     rekstrarHlutf: rekPct, rekstrAHlutf: rekAPct,
     skuldirAibua: skulPrIb, skattAibua: skattPrIb, tekjurAibua: tekPrIb,
-    eigfHlutfall: eigfHlut, skuldavidmid: skuldavidm
+    eigfHlutfall: eigfHlut, skuldavidmid: skuldavidm,
+    // Útgjöld eftir málaflokki á íbúa (þús.kr/íbúa) — 2024 A-hluti.
+    // null ef gögn vantar fyrir þennan málaflokk hjá þessu sveitarfélagi.
+    fradsluAibua:   malaflokkPerIbuar(muniId, 'fradsluMal'),
+    felagsAibua:    malaflokkPerIbuar(muniId, 'felagsMal'),
+    aeskuAibua:     malaflokkPerIbuar(muniId, 'aeskuIthrott'),
+    menningarAibua: malaflokkPerIbuar(muniId, 'menningar'),
+    umhverfiAibua:  malaflokkPerIbuar(muniId, 'umhverfis'),
+    samgonguAibua:  malaflokkPerIbuar(muniId, 'samgongur'),
+    skipulagAibua:  malaflokkPerIbuar(muniId, 'skipulag'),
+    sameiginAibua:  malaflokkPerIbuar(muniId, 'sameiginl')
   };
 }
 
@@ -5529,15 +5594,27 @@ function fmtPct(n, dec){
 function fmtIbuar(n){ if(n==null) return '—'; return Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g,'.'); }
 
 var SAMANB_METRICS = [
-  {id:'skuldirAibua', label:'Skuldir á íbúa',          unit:'þús.kr/íbúa', lowerBetter:true,  desc:'Heildarskuldir samstæðu (A+B) deilt með íbúafjölda. Lægra = minni skuldabyrði.',      hasTrend:true},
-  {id:'rekstrarHlutf',label:'Rekstur AB (% af tekjum)',unit:'%',           lowerBetter:false, desc:'Rekstrarniðurstaða AB sem hlutfall af tekjum. Jákvætt = afgangur, neikvætt = halli.',  hasTrend:true},
-  {id:'rekstrAHlutf', label:'Rekstur A (% af tekjum)', unit:'%',           lowerBetter:false, desc:'Kjarnarekstur A-hluta (án bæjarfyrirtækja) sem hlutfall af tekjum. Hreinni mælikvarði þar sem einskiptis-liðir í B eru ekki teknir með.', hasTrend:false},
-  {id:'ABnidurstada', label:'AB-niðurstaða',           unit:'ma.kr.',      lowerBetter:false, desc:'Samstæða A+B — hagnaður (+) eða tap (−) í nýjasta ársreikningi eða bráðabirgða­uppgjöri.', hasTrend:true},
-  {id:'eigfHlutfall', label:'Eiginfjárhlutfall AB',    unit:'%',           lowerBetter:false, desc:'Eigið fé deilt með heildareignum samstæðu. Hærra = fjárhagslega sterkara.',             hasTrend:true},
-  {id:'skuldavidmid', label:'Skuldaviðmið AB',         unit:'%',           lowerBetter:true,  desc:'Skuldir sem hlutfall af reglulegum tekjum (sveitarstjórnarlög setja 150% hámark). Lægra = meira svigrúm.', hasTrend:true},
-  {id:'skattAibua',   label:'Skatttekjur á íbúa',      unit:'þús.kr/íbúa', lowerBetter:false, desc:'Útsvar + fasteignaskattur (A-hluti) á hvern íbúa. Hærra gefur sveitarfélagi meira að vinna með.', hasTrend:true},
-  {id:'utsvar',       label:'Útsvar',                  unit:'%',           lowerBetter:true,  desc:'Álagt útsvar 2026 (persónulegur tekjuskattur sveitarfélags). Lægra = minni byrði á íbúa.', hasTrend:false},
-  {id:'fasteignaskattur', label:'Fasteignaskattur íbúða', unit:'%',        lowerBetter:true,  desc:'Álagshlutfall fasteignaskatts á íbúðarhúsnæði 2026. Lægra = minni skattur á heimili.',  hasTrend:false}
+  {id:'skuldirAibua', label:'Skuldir á íbúa',          unit:'þús.kr/íbúa', lowerBetter:true,  desc:'Heildarskuldir samstæðu (A+B) deilt með íbúafjölda. Lægra = minni skuldabyrði.',      hasTrend:true, group:'fjarhagur'},
+  {id:'rekstrarHlutf',label:'Rekstur AB (% af tekjum)',unit:'%',           lowerBetter:false, desc:'Rekstrarniðurstaða AB sem hlutfall af tekjum. Jákvætt = afgangur, neikvætt = halli.',  hasTrend:true, group:'fjarhagur'},
+  {id:'rekstrAHlutf', label:'Rekstur A (% af tekjum)', unit:'%',           lowerBetter:false, desc:'Kjarnarekstur A-hluta (án bæjarfyrirtækja) sem hlutfall af tekjum. Hreinni mælikvarði þar sem einskiptis-liðir í B eru ekki teknir með.', hasTrend:false, group:'fjarhagur'},
+  {id:'ABnidurstada', label:'AB-niðurstaða',           unit:'ma.kr.',      lowerBetter:false, desc:'Samstæða A+B — hagnaður (+) eða tap (−) í nýjasta ársreikningi eða bráðabirgða­uppgjöri.', hasTrend:true, group:'fjarhagur'},
+  {id:'eigfHlutfall', label:'Eiginfjárhlutfall AB',    unit:'%',           lowerBetter:false, desc:'Eigið fé deilt með heildareignum samstæðu. Hærra = fjárhagslega sterkara.',             hasTrend:true, group:'fjarhagur'},
+  {id:'skuldavidmid', label:'Skuldaviðmið AB',         unit:'%',           lowerBetter:true,  desc:'Skuldir sem hlutfall af reglulegum tekjum (sveitarstjórnarlög setja 150% hámark). Lægra = meira svigrúm.', hasTrend:true, group:'fjarhagur'},
+  {id:'skattAibua',   label:'Skatttekjur á íbúa',      unit:'þús.kr/íbúa', lowerBetter:false, desc:'Útsvar + fasteignaskattur (A-hluti) á hvern íbúa. Hærra gefur sveitarfélagi meira að vinna með.', hasTrend:true, group:'fjarhagur'},
+  {id:'utsvar',       label:'Útsvar',                  unit:'%',           lowerBetter:true,  desc:'Álagt útsvar 2026 (persónulegur tekjuskattur sveitarfélags). Lægra = minni byrði á íbúa.', hasTrend:false, group:'fjarhagur'},
+  {id:'fasteignaskattur', label:'Fasteignaskattur íbúða', unit:'%',        lowerBetter:true,  desc:'Álagshlutfall fasteignaskatts á íbúðarhúsnæði 2026. Lægra = minni skattur á heimili.',  hasTrend:false, group:'fjarhagur'},
+  // ÞJÓNUSTA — útgjöld eftir málaflokki á hvern íbúa 2024.
+  // Hærra = sveitarfélagið eyðir meiru í málaflokkinn (per íbúa). „Lowerbetter"
+  // er ekki sett því hér er hærra = meiri þjónusta en líka meira ríkisvald í
+  // rekstri — kjósandi metur sjálfur hvort hann vill mikla eða litla þjónustu.
+  {id:'fradsluAibua',   label:'Fræðslumál á íbúa',       unit:'þús.kr/íbúa', lowerBetter:false, desc:'Útgjöld í fræðslu- og uppeldismál (leikskólar, grunnskólar, tónlistarskólar) á hvern íbúa. Stærsti einstaki málaflokkurinn hjá flestum sveitarfélögum — oftast 50-55% af A-hluta útgjöldum.', hasTrend:false, group:'thjonusta'},
+  {id:'felagsAibua',    label:'Félagsþjónusta á íbúa',   unit:'þús.kr/íbúa', lowerBetter:false, desc:'Útgjöld í félagsþjónustu (málefni fatlaðs fólks, barnavernd, öldrun, fjárhagsaðstoð, félagslegt húsnæði) á hvern íbúa. Næststærsti flokkurinn — oftast 17-25%.',                                     hasTrend:false, group:'thjonusta'},
+  {id:'aeskuAibua',     label:'Æskulýðs- og íþróttamál á íbúa', unit:'þús.kr/íbúa', lowerBetter:false, desc:'Útgjöld í æskulýðs- og íþróttamál (sundlaugar, íþróttahús, frístundastyrkir, ungmennastarfsemi) á hvern íbúa.',                                                                                  hasTrend:false, group:'thjonusta'},
+  {id:'menningarAibua', label:'Menningarmál á íbúa',     unit:'þús.kr/íbúa', lowerBetter:false, desc:'Útgjöld í menningarmál (bókasöfn, söfn, menningarhús) á hvern íbúa.',                                                                                                                                    hasTrend:false, group:'thjonusta'},
+  {id:'umhverfiAibua',  label:'Umhverfismál á íbúa',     unit:'þús.kr/íbúa', lowerBetter:false, desc:'Útgjöld í umhverfismál (sorphirða, fráveita, náttúruvernd, skógrækt) á hvern íbúa.',                                                                                                                     hasTrend:false, group:'thjonusta'},
+  {id:'samgonguAibua',  label:'Samgöngur og umferð á íbúa', unit:'þús.kr/íbúa', lowerBetter:false, desc:'Útgjöld í umferðar- og samgöngumál (götur, viðhald, ljós, snjómokstur) á hvern íbúa.',                                                                                                                hasTrend:false, group:'thjonusta'},
+  {id:'skipulagAibua',  label:'Skipulags- og byggingarmál á íbúa', unit:'þús.kr/íbúa', lowerBetter:false, desc:'Útgjöld í skipulags- og byggingarmál (deiliskipulag, byggingarleyfi, eftirlit) á hvern íbúa.',                                                                                                hasTrend:false, group:'thjonusta'},
+  {id:'sameiginAibua',  label:'Stjórnsýsla á íbúa',      unit:'þús.kr/íbúa', lowerBetter:true,  desc:'Útgjöld í sameiginlegan kostnað (bæjarstjórn, kjörnir fulltrúar, yfirstjórn, ráðgjöf, sameiginleg þjónusta). Lægra = minni yfirbygging.',                                                               hasTrend:false, group:'thjonusta'}
 ];
 
 var _samanbRows = null;
