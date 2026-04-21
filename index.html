@@ -4597,19 +4597,32 @@ MUNI_DATA.gard = {
 // mbl.is, ruv.is, dv.is, kjarninn.is, heimildin.is.
 var SELT_RAW = [
   // D — Sjálfstæðisflokkurinn (Þór Sigurgeirsson, bæjarstjóri). 50,12% og
-  // 4 sæti 2022. Prófkjör 2026 valdi 5 efstu.
+  // 4 sæti 2022. Fullur listi samþykktur 2. mars 2026. 11 sæti staðfest
+  // + 13/14 heiðurssæti; sæti 12 óstaðfest.
   ['D',1,'Þór Sigurgeirsson','bæjarstjóri'],
   ['D',2,'Elísabet Ingunn Einarsdóttir','framkvæmdastjóri'],
   ['D',3,'Svana Helen Björnsdóttir','verkfræðingur'],
   ['D',4,'Magnús Benediktsson','hagfræðingur'],
   ['D',5,'Björn Jóhannesson','hagfræðingur'],
+  ['D',6,'Dagbjört Snjólaug Oddsdóttir','lögmaður'],
+  ['D',7,'Agnes Sólbjört Helgadóttir','laganemi'],
+  ['D',8,'Ásgeir Bjarnason','viðskiptafræðingur'],
+  ['D',9,'Pétur Már Harðarson','íþróttakennari og þjálfari'],
+  ['D',10,'Anna Björg Erlingsdóttir','viðskiptafræðingur'],
+  ['D',11,'Guðrún Guðmundsdóttir','fjármálastjóri'],
+  ['D',13,'Óli Björn Kárason','fv. alþingismaður (heiðurssæti)'],
+  ['D',14,'Petrea Ingibjörg Jónsdóttir','fv. skrifstofustjóri (heiðurssæti)'],
   // M — Miðflokkurinn (Skafti Harðarson, fyrsta framboð M á Seltjarnarnesi).
-  // Einungis oddviti staðfestur í opinberum heimildum.
-  ['M',1,'Skafti Harðarson','framkvæmdastjóri og formaður Samtaka skattgreiðenda'],
+  // Einungis oddviti staðfestur í opinberum heimildum — PDF-listi á
+  // seltjarnarnes.is (auglysing-frambodslistar-2026.pdf) náðist ekki í vefleit.
+  ['M',1,'Skafti Harðarson','formaður Samtaka skattgreiðenda og stjórnandi'],
   // S — Samfylking, Viðreisn og óháðir (sameiginlegt framboð, Kristinn
   // Ólafsson). 2022 var S einn með 40,81% og 3 sæti; nú sameiginlegt með C.
-  // Fullur listi ekki staðfestur í opinberum heimildum á birtingartíma.
-  ['S',1,'Kristinn Ólafsson','stjórnandi, ráðgjafi og bæjarstjóraefni']
+  // Oddviti + 3 nöfn staðfest án sætaröðunar.
+  ['S',1,'Kristinn Ólafsson','stjórnandi, ráðgjafi og bæjarstjóraefni'],
+  ['S',2,'Sigurþóra Bergsdóttir','varaþingmaður Samfylkingar'],
+  ['S',3,'Helgi Steinar Helgason','arkitekt'],
+  ['S',4,'Auður Halla Rögnvaldsdóttir','háskólanemi']
 ];
 
 MUNI_DATA.selt = {
@@ -4623,18 +4636,90 @@ MUNI_DATA.selt = {
     {id:'S', name:'Samfylking, Viðreisn og óháðir',     color:'#C62828', pct:0, seats:3}
   ],
   rawCands: SELT_RAW,
-  photos: {},
-  bios: {},
+  photos: {},   // oddvita-myndir bætast við í fasa 2b
+  bios: {
+    // Oddvitar allra 3 framboða. Heimildir: seltjarnarnes.is, xd.is, DV, mbl.is,
+    // ruv.is, skattgreidendur.is, visir.is.
+    'D-1': 'Þór Sigurgeirsson (f. 7. apríl 1967) er bæjarstjóri Seltjarnarness frá 9. júní 2022, fjórði bæjarstjóri bæjarins frá kaupstaðarréttindum 1974. Bæjarfulltrúi 2006–2010 (formaður umhverfisnefndar, fulltrúi í stjórn Sorpu). Uppalinn og búsettur á Nesinu; starfaði árum saman við sölu og markaðsmál, m.a. hjá tryggingafélögum og síðast sem sölu- og verkefnastjóri hjá Rými.',
+    'M-1': 'Skafti Harðarson er formaður Samtaka skattgreiðenda (frá 2012) og fyrsti oddviti Miðflokksins í sögu Seltjarnarness — þetta er frumframboð M-listans á Nesinu. Yfirlýstur frjálshyggjumaður, rekur vefinn skafti.is og var Inspector Scholae í MR. Bauð fram sérframboð „Fyrir Seltjarnarnes" 2018.',
+    'S-1': 'Kristinn Ólafsson er stjórnandi og ráðgjafi og bæjarstjóraefni sameinaðs framboðs Samfylkingar, Viðreisnar og óháðra. Hefur skrifað greinar á Vísi gagnrýnandi fjármálastjórn D-meirihlutans og kallar eftir „fagmennsku, raunverulegum vilja til breytinga" og 5 ára fjárhagsáætlun með raunhæfum forsendum.'
+  },
   partyInfo: {
     D: { fullname:'Sjálfstæðisflokkurinn', ideology:'Miðju-hægri, frjálslyndir markaðir', founded:1929 },
     M: { fullname:'Miðflokkurinn',         ideology:'Miðju-hægri, þjóðernisleg áhersla',  founded:2017 },
     S: { fullname:'Samfylking, Viðreisn og óháðir', ideology:'Miðju-vinstri, sameiginlegt framboð', founded:2026 }
   },
-  stefnumal: {},
-  sattmali2022: null,
-  finance: [],
-  budgets: {},
-  finance2025Partial: null,
+  stefnumal: {
+    // Stefnumál Seltjarnarness-framboða 2026. Fjárhagur er langstærsta málið.
+    // Heimildir: seltjarnarnes.is, xseltjarnarnes.is, xd.is, DV, mbl.is, ruv.is,
+    // visir.is, skattgreidendur.is. M-stefnur nánast engar í vefleit — landsstefna
+    // tekin inn með fyrirvörum.
+    'D': {
+      husnaedi:'Stóð fyrir kynningu á deiliskipulagi Valhúsahæðar og nærliggjandi útivistarsvæða í mars 2026. Íbúar höfðu áhyggjur af bílastæðum og gönguleiðum skólabarna á Skólabraut.',
+      samgongur:'Ekki birt ítarleg 2026-stefnuskrá í samgöngumálum.',
+      umhverfi:'Bæjarstjórinn Þór greiddi einn atkvæði gegn stækkun friðlands Gróttu 13. febrúar 2026 (niðurstaða 6–1). Flokkurinn klofnaði — þrír aðrir úr D studdu stækkun. Þór sagði tillöguna „ganga of langt og ekki hagfellda fyrir sveitarfélagið".',
+      menntun:'„Þungi mygluframkvæmda er að renna sitt skeið." Þak Mýrarhúsaskóla stærsta verkefnið sem eftir er, auk klæðningar Valhúsaskóla. Mygla lýsir upp „viðhaldsskuld" á eldri byggingum.',
+      velferd:'Aukið fjármagn til málefna fatlaðra á kjörtímabilinu; skipting grunnskólans í tvær sjálfstæðar einingar.',
+      fjarmal:'Útsvar óbreytt 14,54% (lægra en hámark 14,97%). Engar skattahækkanir þrátt fyrir uppsafnaðan halla. „Dramatískur viðsnúningur í rekstri, byggður á ögunaðri stjórn" — áætlar +144 m.kr. samstæðuafkomu 2025.',
+      atvinnu:'Ekki birt ítarleg 2026-stefnuskrá í atvinnumálum.'
+    },
+    'M': {
+      husnaedi:'Ekki birt ítarleg 2026-stefnuskrá; Skafti er formaður Samtaka skattgreiðenda — líkleg áhersla á aðhald í skipulagi.',
+      samgongur:'Ekki birt ítarleg 2026-stefnuskrá; landsstefna M gagnrýnir Borgarlínu.',
+      umhverfi:'Ekki birt ítarleg 2026-stefnuskrá.',
+      menntun:'Ekki birt ítarleg 2026-stefnuskrá.',
+      velferd:'Ekki birt ítarleg 2026-stefnuskrá.',
+      fjarmal:'Frjálshyggju-sjónarmið — líkleg áhersla á lækkun skatta, aðhald í opinberum útgjöldum og gagnrýni á umsvif hins opinbera. Yfirlýst stefnuskrá ekki birt á kynningarfundi sveitarfélagsins.',
+      atvinnu:'Ekki birt ítarleg 2026-stefnuskrá.'
+    },
+    'S': {
+      husnaedi:'Blönduð byggð (fyrstu kaupendur, fjölskyldur, þeir sem minnka við sig), þróa grænan og lífvænlegan miðbæ við Nesveg, bæta göngu- og hjólastíga, lækka hámarkshraða.',
+      samgongur:'Bæta göngu- og hjólastíga; lækka hámarkshraða innan bæjar.',
+      umhverfi:'Varðveita Gróttu og nágrenni, stofna verndaraðgerðir fyrir vestursvæðið, takmarka drónaflug á varptíma.',
+      menntun:'Bætt skólaaðstæður; útikennslurými; hjólastæði við skóla.',
+      velferd:'Áhersla á þjónustu við alla aldurshópa, sérstaklega eldra fólk. „Framtíðin á að snúast um að bæta þjónustu — ekki lækka skatta eða skera niður."',
+      fjarmal:'„Hreinskilnisleg viðurkenning" á fjárhagsvandanum. Fagmennska, 5 ára áætlanir, raunhæfar forsendur og forgangsröðun sjóða í „grænar, verðmætaskapandi fjárfestingar". Kristinn hefur sagt að bæjarstjórnin hafi ekki uppfyllt jafnvægisreglu í áratug. Hafnar lækkun útsvars en ekki krafa um hækkun.',
+      atvinnu:'Ekki birt ítarleg 2026-stefnuskrá í atvinnumálum.'
+    }
+  },
+  sattmali2022: {
+    titill: 'Hreinn meirihluti Sjálfstæðisflokks (2022–2026) — ENGINN sáttmáli',
+    gildi: '2022–2026',
+    flokkar: ['D'],
+    kjarni: 'Sjálfstæðisflokkur vann hreinan meirihluta með 4 af 7 sætum (50,12% atkvæða) í kosningunum 14. maí 2022. Þór Sigurgeirsson var skipaður bæjarstjóri á fyrsta fundi nýkjörinnar bæjarstjórnar 8.–9. júní 2022 eftir 13 ára þjónustu Ásgerðar Halldórsdóttur. Áratugalöng samfeld yfirráð D-flokks á Nesinu halda áfram.',
+    lykilatridi: [
+      'Óbreytt útsvar 14,54% allt kjörtímabilið — engar skattahækkanir þrátt fyrir uppsafnaðan halla',
+      'Umfangsmikil mygluhreinsun á Mýrarhúsaskóla og Valhúsaskóla',
+      'Skipting grunnskólans í tvær sjálfstæðar einingar',
+      'Aukið fjármagn til málefna fatlaðra',
+      'Skipulagstillaga fyrir Valhúsahæð og nærliggjandi útivistarsvæði (kynnt mars 2026)',
+      'Stækkun friðlands Gróttu og Seltjarnar samþykkt 13. febrúar 2026 með 6–1 (Þór einn á móti)'
+    ],
+    heimild: 'seltjarnarnes.is — formlegt starfsáætlunarplagg fannst ekki í vefleit'
+  },
+  finance: [
+    // Seltjarnarnes — engin árleg ársreikningsgögn frá 2015–2024 aðgengileg í
+    // vefleit (PDF-slóðir á seltjarnarnes.is skiluðu 403). Heildarmynd aðeins:
+    // - Uppsafnaður halli ~3 ma.kr. á áratug
+    // - Skuldir fjórfaldast úr 1,7 ma. (2015) í ~8 ma. (2026)
+    // - 9 af síðustu 10 árum í rekstrarhalla
+    // - Brotið á jafnvægisreglu sveitarstjórnarlaga í áratug
+    // Þessar lykiltölur eru í kjortimabil og sattmali2022; FINANCE-arrays er
+    // tómur þar til PDF-gögn fást.
+  ],
+  budgets: {
+    2025: {
+      A:  {tekjur:null, gjold:null, nidurstada:0.004},
+      AB: {tekjur:null, gjold:null, nidurstada:0.144, skuldir:null},
+      notes:'Samþykkt 11. desember 2024. Áætluð samstæða +144 m.kr. (A +4 m.kr., B +140 m.kr.). Sjóðstreymi samstæðu 764 m.kr. (+553 m.kr. milli ára). Skuldahlutfall 108% (leiðrétt árslok 88%). Engin lán tekin. Skattatekjur +7% (5% launahækkun + 2% mannfjöldi). Jöfnunarsjóðsframlag styrkist um 290 m.kr. Viðsnúningur ~800 m.kr. frá 2024.'
+    },
+    2026: {
+      A:  {tekjur:null, gjold:null, nidurstada:null},
+      AB: {tekjur:null, gjold:null, nidurstada:null, skuldir:null},
+      notes:'Sérstök áætlun 2026 ekki dregin fram í vefleit; hluti af 3 ára áætlun 2026–2028 sem samþykkt var samhliða 2025-áætluninni. Útsvar 14,54% óbreytt.'
+    }
+  },
+  finance2025Partial: null,   // endanlegur ársreikningur 2025 kemur apríl/maí 2026 — ekki birtur enn
   kjortimabil: [
     {
       titill: '2022–2026',
@@ -4644,10 +4729,12 @@ MUNI_DATA.selt = {
       lykilmal: [
         'Hreinn meirihluti Sjálfstæðisflokks (4 af 7 sætum, 50,12% 2022) — áratugalöng hefð óslitin',
         'Þór Sigurgeirsson tók við sem bæjarstjóri af Ásgerði Halldórsdóttur 9. júní 2022 eftir 13 ára þjónustu hennar',
-        'Fjárhagsstaða alvarleg: uppsafnaður halli ~3 ma.kr. á áratug, skuldir fjórfaldast úr 1,7 ma. (2015) í ~8 ma. (2026)',
-        'Brotið á jafnvægisreglu sveitarstjórnarlaga — 9 af síðustu 10 árum í rekstrarhalla',
-        'Samfylking og Viðreisn sameinast 2026 í eitt framboð á móti D-lista; nýr meirihluti hugsanlegur í fyrsta sinn í áratugi',
-        'Deilur um lágskatta-stefnu og viðhald innviða (mygla í Mýrarhúsaskóla, uppsafnað viðhald)'
+        'Fjárhagsstaða alvarleg: uppsafnaður halli ~3 ma.kr. á áratug, skuldir fjórfaldast úr 1,7 ma. (2015) í ~8 ma. (2026); 9 af síðustu 10 árum í rekstrarhalla',
+        'Brotið á jafnvægisreglu sveitarstjórnarlaga í áratug — eftirlitsnefnd með fjármálum sveitarfélaga hefur gert athugasemdir',
+        'Umfangsmikil mygluhreinsun á Mýrarhúsaskóla og Valhúsaskóla; þak Mýrarhúsaskóla stærsta verkefnið eftir',
+        'Áætlun 2025: +144 m.kr. samstæða (viðsnúningur ~800 m.kr. frá 2024) — „ögunuð stjórn" skv. D; S+M segja viðsnúning knúinn af ytri þáttum (jöfnunarsjóður, tímabundin lok myglukostnaðar)',
+        'Stækkun friðlands Gróttu og Seltjarnar samþykkt 13. feb. 2026 með 6–1 — Þór einn á móti; klofningur innan D-flokks',
+        'Samfylking og Viðreisn sameinast 2026 í eitt framboð (Kristinn Ólafsson) á móti D-lista; nýr meirihluti hugsanlegur í fyrsta sinn í áratugi'
       ]
     }
   ]
