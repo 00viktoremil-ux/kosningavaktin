@@ -4876,14 +4876,94 @@ MUNI_DATA.selt = {
     heimild: 'seltjarnarnes.is — formlegt starfsáætlunarplagg fannst ekki í vefleit'
   },
   finance: [
-    // Seltjarnarnes — engin árleg ársreikningsgögn frá 2015–2024 aðgengileg í
-    // vefleit (PDF-slóðir á seltjarnarnes.is skiluðu 403). Heildarmynd aðeins:
-    // - Uppsafnaður halli ~3 ma.kr. á áratug
-    // - Skuldir fjórfaldast úr 1,7 ma. (2015) í ~8 ma. (2026)
-    // - 9 af síðustu 10 árum í rekstrarhalla
-    // - Brotið á jafnvægisreglu sveitarstjórnarlaga í áratug
-    // Þessar lykiltölur eru í kjortimabil og sattmali2022; FINANCE-arrays er
-    // tómur þar til PDF-gögn fást.
+    // Seltjarnarnes — ársreikningar 2015–2024. Heimildir: PDF á
+    // seltjarnarnes.is/stjornsysla/fjarmal/arsreikningar. 2016-2023 voru
+    // skannaðar myndir (Konica Minolta bizhub) — dregið með tesseract OCR
+    // (isl) apríl 2026. 2024 hreint Excel-útflutt PDF. 2015 tölur tekið úr
+    // „prev"-dálki 2016-ársreiknings þar sem PDF er ekki aðgengilegt.
+    // Íbúafjöldi: úr greinargerð hvers ársreiknings (31.12.YYYY).
+    {yr:2015,
+      A:{tekjur:3.21, gjold:null, nidurstada:-0.17, eignir:6.37, skuldir:1.73, eiginfe:4.64},
+      AB:{tekjur:3.46, gjold:null, nidurstada:-0.13, eignir:6.22, skuldir:1.75, eiginfe:4.46},
+      ibuar:null, baejarstjori:'Ásgerður Halldórsdóttir', bstAf:'D',
+      meirihluti:['D'], kjor:'2014–2018',
+      athugasemd:'A-hluti halli -174 m.kr., samstæða -127 m.kr. Lítið B-hluti — rekstur nær eingöngu aðalsjóður. Tölur dregnar úr samanburðardálki 2016-ársreiknings.',
+      adj:[]
+    },
+    {yr:2016,
+      A:{tekjur:3.35, gjold:null, nidurstada:0.004, eignir:6.42, skuldir:1.76, eiginfe:4.66},
+      AB:{tekjur:3.65, gjold:null, nidurstada:0.07, eignir:6.41, skuldir:1.84, eiginfe:4.57},
+      ibuar:4450, baejarstjori:'Ásgerður Halldórsdóttir', bstAf:'D',
+      meirihluti:['D'], kjor:'2014–2018',
+      athugasemd:'Viðsnúningur: A nær jafnvægi, samstæða +70 m.kr.',
+      adj:[]
+    },
+    {yr:2017,
+      A:{tekjur:null, gjold:null, nidurstada:-0.14, eignir:6.82, skuldir:2.26, eiginfe:4.56},
+      AB:{tekjur:null, gjold:null, nidurstada:-0.10, eignir:6.86, skuldir:2.35, eiginfe:4.51},
+      ibuar:4590, baejarstjori:'Ásgerður Halldórsdóttir', bstAf:'D',
+      meirihluti:['D'], kjor:'2014–2018',
+      athugasemd:'A-hluti halli -137 m.kr., samstæða -100 m.kr. Skuldir hækka um 500 m.kr. milli ára.',
+      adj:[]
+    },
+    {yr:2018,
+      A:{tekjur:null, gjold:null, nidurstada:-0.26, eignir:7.63, skuldir:3.26, eiginfe:4.37},
+      AB:{tekjur:null, gjold:null, nidurstada:-0.17, eignir:9.26, skuldir:4.85, eiginfe:4.41},
+      ibuar:4667, baejarstjori:'Ásgerður Halldórsdóttir', bstAf:'D',
+      meirihluti:['D'], kjor:'2018–2022',
+      skipti:'Kjörtímabilaskipti maí 2018. D hélt hreinum meirihluta 4 af 7 sætum. Ásgerður Halldórsdóttir áfram bæjarstjóri.',
+      athugasemd:'Vaxandi halli: A -264 m.kr., AB -174 m.kr. Skuldir samstæðu stökkva úr 2,35 í 4,85 ma. (skoðast vegna veitufyrirtækja).',
+      adj:[]
+    },
+    {yr:2019,
+      A:{tekjur:null, gjold:null, nidurstada:-0.10, eignir:9.29, skuldir:5.02, eiginfe:4.27},
+      AB:{tekjur:null, gjold:null, nidurstada:0.01, eignir:9.48, skuldir:5.06, eiginfe:4.41},
+      ibuar:4726, baejarstjori:'Ásgerður Halldórsdóttir', bstAf:'D',
+      meirihluti:['D'], kjor:'2018–2022',
+      athugasemd:'Samstæða rétt yfir núllinu (+7 m.kr.), en A-hluti áfram í halla -95 m.kr.',
+      adj:[]
+    },
+    {yr:2020,
+      A:{tekjur:null, gjold:null, nidurstada:-0.34, eignir:9.46, skuldir:5.48, eiginfe:3.97},
+      AB:{tekjur:null, gjold:null, nidurstada:-0.23, eignir:9.68, skuldir:5.45, eiginfe:4.23},
+      ibuar:4715, baejarstjori:'Ásgerður Halldórsdóttir', bstAf:'D',
+      meirihluti:['D'], kjor:'2018–2022',
+      athugasemd:'COVID-19. A -344 m.kr., AB -231 m.kr. Skuldir samstæðu hækka í 5,45 ma.',
+      adj:[]
+    },
+    {yr:2021,
+      A:{tekjur:4.70, gjold:null, nidurstada:-0.57, eignir:9.50, skuldir:6.10, eiginfe:3.40},
+      AB:{tekjur:5.03, gjold:null, nidurstada:-0.53, eignir:10.26, skuldir:6.52, eiginfe:3.74},
+      ibuar:4720, baejarstjori:'Ásgerður Halldórsdóttir', bstAf:'D',
+      meirihluti:['D'], kjor:'2018–2022',
+      athugasemd:'Alvarlegri halli: A -566 m.kr., AB -528 m.kr. (áætlun -136 m.kr.). Skuldir samstæðu hækka um 1,07 ma.',
+      adj:[]
+    },
+    {yr:2022,
+      A:{tekjur:null, gjold:null, nidurstada:-0.40, eignir:9.91, skuldir:null, eiginfe:3.74},
+      AB:{tekjur:null, gjold:null, nidurstada:-0.34, eignir:11.07, skuldir:null, eiginfe:null},
+      ibuar:4674, baejarstjori:'Ásgerður Halldórsdóttir → Þór Sigurgeirsson (9. júní)', bstAf:'D',
+      meirihluti:['D'], kjor:'2022–2026',
+      skipti:'Kjörtímabilaskipti maí 2022. D hélt hreinum meirihluta 4 af 7 sætum (50,12%). Þór Sigurgeirsson tók við bæjarstjóra 9. júní 2022 af Ásgerði Halldórsdóttur eftir 13 ára þjónustu hennar.',
+      athugasemd:'Sjötta taprekstrarárið í röð. A -403 m.kr., AB -345 m.kr. OCR-tölur úr PDF-skann; sum efnahagstölu ekki dregin út.',
+      adj:[]
+    },
+    {yr:2023,
+      A:{tekjur:null, gjold:null, nidurstada:-0.87, eignir:null, skuldir:8.08, eiginfe:2.32},
+      AB:{tekjur:null, gjold:null, nidurstada:-0.80, eignir:null, skuldir:8.75, eiginfe:2.88},
+      ibuar:4711, baejarstjori:'Þór Sigurgeirsson', bstAf:'D',
+      meirihluti:['D'], kjor:'2022–2026',
+      athugasemd:'Versta árið: A -867 m.kr., AB -798 m.kr. Skuldir samstæðu ná 8,75 ma. Eigið fé minnkar hratt í 2,88 ma.',
+      adj:[]
+    },
+    {yr:2024,
+      A:{tekjur:6.38, gjold:null, nidurstada:-0.46, eignir:9.75, skuldir:7.76, eiginfe:1.99},
+      AB:{tekjur:7.51, gjold:null, nidurstada:-0.11, eignir:10.95, skuldir:8.05, eiginfe:2.90},
+      ibuar:4719, baejarstjori:'Þór Sigurgeirsson', bstAf:'D',
+      meirihluti:['D'], kjor:'2022–2026',
+      athugasemd:'A enn í halla -464 m.kr., en AB nær -107 m.kr. (betra en 2023). Skuldir lækka aðeins. Eigið fé A-hluta lækkar í 1,99 ma. — í nálægð við 0 ef fer mikið lengra.',
+      adj:[]
+    }
   ],
   budgets: {
     2025: {
