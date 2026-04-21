@@ -4281,21 +4281,70 @@ MUNI_DATA.hafn = {
     heimild: 'hafnarfjordur.is/meirihlutinn-i-hafnarfirdi-2022-2026'
   },
   finance: [
-    // Hafnarfjarðarbær — ársreikningar 2021–2024. Tölur í milljörðum króna (ma.kr.).
-    // Heimildir: hafnarfjordur.is/arsreikningur-... + fjardarfrettir.is. Tölur 2015–2020
-    // eru ekki aðgengilegar í vefleit (2020: A +1,6 / AB +2,3 en skuldir ekki staðfest)
-    // — þarf að sækja úr PDF á hafnarfjordur.is/stjornsysla/rekstur-og-tolfraedi/arsreikningar/.
+    // Hafnarfjarðarbær — ársreikningar 2015–2024. Tölur í milljörðum króna (ma.kr.).
+    // Heimildir: PDF-ársreikningar á hafnarfjordur.is/stjornsysla/rekstur-og-tolfraedi/arsreikningar/.
+    // 2015–2022 dregið með pdftotext -layout; 2023–2024 haldið óbreyttum (PDF á rótuðum skann-síðum, sum
+    // gildi sanngildd á globenewswire/fjardarfrettir 2024 og 2025).
+    {yr:2015,
+      A:{tekjur:18.85, gjold:null, nidurstada:-1.06, eignir:38.26, skuldir:34.41, eiginfe:3.85},
+      AB:{tekjur:20.67, gjold:null, nidurstada:-0.51, eignir:48.48, skuldir:40.18, eiginfe:8.30},
+      ibuar:28126, baejarstjori:'Haraldur L. Haraldsson', bstAf:'S',
+      meirihluti:['S','BF','V'], kjor:'2014–2018',
+      athugasemd:'A-hluti halli -1,06 ma. Skuldir 34,4 ma. í A-hluta. Eigið fé samstæðu 8,3 ma.',
+      adj:[]
+    },
+    {yr:2016,
+      A:{tekjur:21.40, gjold:null, nidurstada:0.03, eignir:38.17, skuldir:33.99, eiginfe:4.18},
+      AB:{tekjur:23.09, gjold:null, nidurstada:0.54, eignir:48.30, skuldir:39.16, eiginfe:9.14},
+      ibuar:28678, baejarstjori:'Haraldur L. Haraldsson', bstAf:'S',
+      meirihluti:['S','BF','V'], kjor:'2014–2018',
+      athugasemd:'Viðsnúningur: A-hluti nær jafnvægi, samstæða +540 m.kr.',
+      adj:[]
+    },
+    {yr:2017,
+      A:{tekjur:23.49, gjold:null, nidurstada:0.74, eignir:41.11, skuldir:35.67, eiginfe:5.44},
+      AB:{tekjur:25.27, gjold:null, nidurstada:1.33, eignir:51.17, skuldir:40.19, eiginfe:10.99},
+      ibuar:29360, baejarstjori:'Haraldur L. Haraldsson', bstAf:'S',
+      meirihluti:['S','BF','V'], kjor:'2014–2018',
+      athugasemd:'Jákvæð þróun: A +740 m.kr., AB +1,33 ma.',
+      adj:[]
+    },
+    {yr:2018,
+      A:{tekjur:24.89, gjold:null, nidurstada:0.49, eignir:45.63, skuldir:39.04, eiginfe:6.59},
+      AB:{tekjur:26.81, gjold:null, nidurstada:1.13, eignir:55.97, skuldir:43.19, eiginfe:12.78},
+      ibuar:29791, baejarstjori:'Haraldur L. Haraldsson → Rósa Guðbjartsdóttir (11. júní)', bstAf:'D',
+      meirihluti:['D','M','B'], kjor:'2018–2022',
+      skipti:'Kjörtímabilaskipti maí 2018. Sjálfstæðisflokkur (D), Miðflokkur (M) og Framsókn (B) mynda meirihluta. Rósa Guðbjartsdóttir (D) tók við bæjarstjóra af Haraldi L. Haraldssyni 11. júní 2018.',
+      athugasemd:'A +490 m.kr., AB +1,13 ma. Eigið fé samstæðu hækkar í 12,8 ma.',
+      adj:[]
+    },
+    {yr:2019,
+      A:{tekjur:26.46, gjold:null, nidurstada:0.43, eignir:48.37, skuldir:41.13, eiginfe:7.24},
+      AB:{tekjur:28.54, gjold:null, nidurstada:1.24, eignir:59.54, skuldir:45.30, eiginfe:14.24},
+      ibuar:29971, baejarstjori:'Rósa Guðbjartsdóttir', bstAf:'D',
+      meirihluti:['D','M','B'], kjor:'2018–2022',
+      athugasemd:'A +430 m.kr., AB +1,24 ma. Eigið fé samstæðu hækkar í 14,2 ma.',
+      adj:[]
+    },
+    {yr:2020,
+      A:{tekjur:28.86, gjold:null, nidurstada:1.62, eignir:55.52, skuldir:46.25, eiginfe:9.27},
+      AB:{tekjur:30.98, gjold:null, nidurstada:2.26, eignir:66.91, skuldir:50.00, eiginfe:16.91},
+      ibuar:29752, baejarstjori:'Rósa Guðbjartsdóttir', bstAf:'D',
+      meirihluti:['D','M','B'], kjor:'2018–2022',
+      athugasemd:'COVID-19. Góð niðurstaða þrátt fyrir heimsfaraldur — A +1,62 ma., AB +2,26 ma.',
+      adj:[]
+    },
     {yr:2021,
-      A:{tekjur:null, gjold:null, nidurstada:null, skatttekjur:null, eignir:null, skuldir:null, eiginfe:null},
-      AB:{tekjur:33.6, nidurstada:-0.71, eignir:72.2, skuldir:50.0, eiginfe:22.2},
+      A:{tekjur:31.23, gjold:null, nidurstada:-1.48, eignir:55.06, skuldir:46.31, eiginfe:8.75},
+      AB:{tekjur:33.59, gjold:null, nidurstada:-0.71, eignir:72.15, skuldir:50.12, eiginfe:22.03},
       ibuar:29742, baejarstjori:'Rósa Guðbjartsdóttir', bstAf:'D',
       meirihluti:['D','M','B'], kjor:'2018–2022',
       athugasemd:'AB-niðurstaða 258 m.kr. betri en áætlun þrátt fyrir hallann. Neikvæð niðurstaða aðallega vegna 2,3 ma.kr. aukningar lífeyrisskuldbindinga. Skuldaviðmið lækkar úr 161% í 149%.',
       adj:[{label:'Lífeyrisskuldbinding (umfram áætlun)', value:2.3, hluti:'AB'}]
     },
     {yr:2022,
-      A:{tekjur:null, gjold:null, nidurstada:0.26, skatttekjur:null, eignir:null, skuldir:null, eiginfe:null},
-      AB:{tekjur:42.6, gjold:37.3, nidurstada:0.89, eignir:84.6, skuldir:56.5, eiginfe:28.2},
+      A:{tekjur:38.13, gjold:null, nidurstada:0.25, eignir:63.05, skuldir:51.79, eiginfe:11.25},
+      AB:{tekjur:42.63, gjold:null, nidurstada:0.89, eignir:84.66, skuldir:56.47, eiginfe:28.19},
       ibuar:30508, baejarstjori:'Rósa Guðbjartsdóttir', bstAf:'D',
       meirihluti:['D','B'], kjor:'2022–2026',
       skipti:'Kjörtímabilaskipti. D+B meirihluti tók við 1. júní 2022 með samstarfsyfirlýsingunni „Gróska, vellíðan, framsýni". Rósa hélt áfram sem bæjarstjóri.',
@@ -4303,19 +4352,19 @@ MUNI_DATA.hafn = {
       adj:[{label:'Söluhagnaður lands (einskiptisliður)', value:-7.4, hluti:'AB'}]
     },
     {yr:2023,
-      A:{tekjur:null, gjold:null, nidurstada:0.25, skatttekjur:null, eignir:null, skuldir:null, eiginfe:null},
+      A:{tekjur:null, gjold:null, nidurstada:0.25, eignir:null, skuldir:null, eiginfe:null},
       AB:{tekjur:47.28, gjold:44.47, nidurstada:0.81, eignir:null, skuldir:null, eiginfe:null},
       ibuar:30616, baejarstjori:'Rósa Guðbjartsdóttir', bstAf:'D',
       meirihluti:['D','B'], kjor:'2022–2026',
-      athugasemd:'Góður rekstrarárangur. Skuldaviðmið 82% (lítilsháttar hækkun).',
+      athugasemd:'Góður rekstrarárangur. Skuldaviðmið 82% (lítilsháttar hækkun). (2023/2024 PDF á rótuðum skann-síðum, einstakar efnahagstölur ekki dregnar út.)',
       adj:[]
     },
     {yr:2024,
-      A:{tekjur:null, gjold:null, nidurstada:0.12, skatttekjur:null, eignir:null, skuldir:null, eiginfe:null},
-      AB:{tekjur:49.3, gjold:43.9, nidurstada:1.21, eignir:101.0, skuldir:65.7, eiginfe:35.3},
-      ibuar:31525, baejarstjori:'Rósa Guðbjartsdóttir', bstAf:'D',
+      A:{tekjur:null, gjold:null, nidurstada:0.12, eignir:76.47, skuldir:61.46, eiginfe:15.01},
+      AB:{tekjur:49.3, gjold:43.9, nidurstada:1.21, eignir:100.99, skuldir:65.74, eiginfe:35.25},
+      ibuar:31525, baejarstjori:'Rósa Guðbjartsdóttir → Valdimar Víðisson (1. jan. 2025)', bstAf:'D',
       meirihluti:['D','B'], kjor:'2022–2026',
-      athugasemd:'Skatttekjur (útsvar + fasteignaskattur) 60,5% af tekjum. Fjárfestingar 8,3 ma.kr. (+17%). Íbúum fjölgaði um 909 á árinu. Skuldaviðmið 90% (hækkun úr 82%). Eiginfjárhlutfall 34,9%.',
+      athugasemd:'Skatttekjur (útsvar + fasteignaskattur) 60,5% af tekjum. Fjárfestingar 8,3 ma.kr. (+17%). Íbúum fjölgaði um 909 á árinu. Skuldaviðmið 90% (hækkun úr 82%). Eiginfjárhlutfall 34,9%. OCR-dregið af skannaðri 2024-PDF: A-eignir 76,47 ma., AB-eignir 100,99 ma., AB-eigið fé 35,25 ma.',
       adj:[]
     }
   ],
@@ -4593,39 +4642,64 @@ MUNI_DATA.gard = {
   },
   finance: [
     // Garðabær — ársreikningar 2021–2024. Tölur í milljörðum króna (ma.kr.).
-    // Heimildir: globenewswire-tilkynningar 2025–2026, gardabaer.is/stjornsysla/fjarmal.
-    // 2015–2020 tölur vantar í vefleit — þarf úr PDF-ársreikningum.
+    // Heimildir: PDF-ársreikningar á gardabaer.is/fjarmal/arsreikningar (2019–2025).
+    // 2015–2018 eru ekki birtir á vefnum; vantar.
+    // Dregið beint úr PDF með pdftotext -layout / OCR (isl) apríl 2026.
+    {yr:2019,
+      A:{tekjur:15.03, gjold:null, nidurstada:0.10, eignir:31.28, skuldir:15.72, eiginfe:15.56},
+      AB:{tekjur:15.86, gjold:null, nidurstada:0.51, eignir:34.24, skuldir:16.47, eiginfe:17.77},
+      ibuar:16920, baejarstjori:'Gunnar Einarsson', bstAf:'D',
+      meirihluti:['D'], kjor:'2018–2022',
+      athugasemd:'A-hluti lítill afgangur +100 m.kr., samstæða +510 m.kr. Skuldir A-sjóðs 15,7 ma.; eigið fé samstæðu 17,8 ma.',
+      adj:[]
+    },
+    {yr:2020,
+      A:{tekjur:17.20, gjold:null, nidurstada:-0.19, eignir:33.33, skuldir:17.46, eiginfe:15.87},
+      AB:{tekjur:18.11, gjold:null, nidurstada:0.77, eignir:37.20, skuldir:18.16, eiginfe:19.05},
+      ibuar:17672, baejarstjori:'Gunnar Einarsson', bstAf:'D',
+      meirihluti:['D'], kjor:'2018–2022',
+      athugasemd:'COVID-19. A-hluti -190 m.kr. halli; samstæða samt jákvæð +770 m.kr. vegna fyrirtækjahluta B.',
+      adj:[]
+    },
     {yr:2021,
-      A:{tekjur:null, gjold:null, nidurstada:null, skatttekjur:null, eignir:null, skuldir:null, eiginfe:null},
-      AB:{tekjur:null, nidurstada:0.41, eignir:null, skuldir:null, eiginfe:null},
-      ibuar:17721, baejarstjori:'Gunnar Einarsson', bstAf:'D',
+      A:{tekjur:19.13, gjold:null, nidurstada:-0.06, eignir:38.52, skuldir:21.88, eiginfe:16.64},
+      AB:{tekjur:20.22, gjold:null, nidurstada:0.41, eignir:42.81, skuldir:22.53, eiginfe:20.28},
+      ibuar:18404, baejarstjori:'Gunnar Einarsson', bstAf:'D',
       meirihluti:['D'], kjor:'2018–2022',
       athugasemd:'Veltufé frá rekstri 3,12 ma.kr. (15,4% af tekjum). Skuldaviðmið 82%, skuldahlutfall AB 111%. Fjárfestingar 23,6% af tekjum. Niðurstaða +0,41 ma. (áætlun 0,13 ma.).',
       adj:[]
     },
     {yr:2022,
-      A:{tekjur:null, gjold:null, nidurstada:null, skatttekjur:null, eignir:null, skuldir:null, eiginfe:null},
-      AB:{tekjur:null, nidurstada:null, eignir:null, skuldir:null, eiginfe:null},
-      ibuar:18239, baejarstjori:'Gunnar Einarsson → Almar Guðmundsson (3. júní)', bstAf:'D',
+      A:{tekjur:23.12, gjold:null, nidurstada:0.74, eignir:48.19, skuldir:28.85, eiginfe:19.34},
+      AB:{tekjur:25.03, gjold:null, nidurstada:0.90, eignir:53.90, skuldir:30.00, eiginfe:23.90},
+      ibuar:18882, baejarstjori:'Gunnar Einarsson → Almar Guðmundsson (3. júní)', bstAf:'D',
       meirihluti:['D'], kjor:'2022–2026',
       skipti:'Kjörtímabilaskipti. Gunnar Einarsson (bæjarstjóri 2005–2022) lét af störfum. Almar Guðmundsson (D) tók við 3. júní 2022 eftir hreinan meirihluta D (7/11 sæti, ~49,1%).',
       athugasemd:'Rekstrarniðurstaða +5,1% af tekjum. Lántaka 1,17 ma.kr. Skuldahlutfall 93%. Fjárfestingar 17% af tekjum.',
       adj:[]
     },
     {yr:2023,
-      A:{tekjur:null, gjold:null, nidurstada:null, skatttekjur:null, eignir:null, skuldir:null, eiginfe:null},
-      AB:{tekjur:null, nidurstada:null, eignir:null, skuldir:null, eiginfe:null},
-      ibuar:19022, baejarstjori:'Almar Guðmundsson', bstAf:'D',
+      A:{tekjur:27.02, gjold:null, nidurstada:1.13, eignir:57.15, skuldir:35.45, eiginfe:21.69},
+      AB:{tekjur:29.15, gjold:null, nidurstada:1.64, eignir:63.41, skuldir:36.63, eiginfe:26.78},
+      ibuar:19088, baejarstjori:'Almar Guðmundsson', bstAf:'D',
       meirihluti:['D'], kjor:'2022–2026',
-      athugasemd:'Skuldir A-sjóðs lækkuðu um 2 ma.kr. milli 2023 og 2024. Skuldahlutfall ~131% (heildarmynd). Nákvæmar tölur ekki aðgengilegar í vefleit — þarf úr PDF.',
+      athugasemd:'Viðsnúningur: A +1,13 ma., AB +1,64 ma. Skuldir A-sjóðs hækka úr 28,9 í 35,5 ma. Skuldahlutfall ~131% (heildarmynd).',
       adj:[]
     },
     {yr:2024,
-      A:{tekjur:null, gjold:null, nidurstada:0.56, skatttekjur:null, eignir:null, skuldir:null, eiginfe:null},
-      AB:{tekjur:30.48, gjold:25.25, nidurstada:1.18, eignir:null, skuldir:null, eiginfe:28.67},
+      A:{tekjur:28.42, gjold:null, nidurstada:0.56, eignir:56.58, skuldir:33.64, eiginfe:22.94},
+      AB:{tekjur:30.48, gjold:25.25, nidurstada:1.18, eignir:65.38, skuldir:36.71, eiginfe:28.67},
       ibuar:20116, baejarstjori:'Almar Guðmundsson', bstAf:'D',
       meirihluti:['D'], kjor:'2022–2026',
       athugasemd:'Markvissar aðgerðir í rekstri skila +0,56 ma. A / +1,18 ma. AB — bæði yfir áætlun (0,09 A / 0,47 AB). Skuldahlutfall 118% (A) / 120% (AB); skuldaviðmið 97%. Eiginfjárhlutfall 43,9%.',
+      adj:[]
+    },
+    {yr:2025,
+      A:{tekjur:32.84, gjold:null, nidurstada:2.22, eignir:62.41, skuldir:35.86, eiginfe:26.55},
+      AB:{tekjur:35.24, gjold:null, nidurstada:2.75, eignir:71.67, skuldir:38.85, eiginfe:32.82},
+      ibuar:20724, baejarstjori:'Almar Guðmundsson', bstAf:'D',
+      meirihluti:['D'], kjor:'2022–2026',
+      athugasemd:'„Sterk afkoma og skuldahlutföll lækka." Tekjur 9,1% yfir áætlun. AB +2,75 ma. (7,8% af tekjum) — rúmlega tvöfalt 2024. Veltufé frá rekstri 2,39 ma. Skuldaviðmið 86% (úr 97% 2024), skuldahlutfall AB 110% (úr 120%). Eiginfjárhlutfall 45,8%. Lántaka 3,16 ma. Fjárfestingar 5,09 ma. (14,4% af tekjum). Íbúar 20.724 (+608).',
       adj:[]
     }
   ],
@@ -4646,14 +4720,7 @@ MUNI_DATA.gard = {
       notes:'Útsvar 14,71% óbreytt (lægsta á höfuðborgarsvæðinu meðal 10 stærstu). Áætlað +0,146 ma. A / +0,594 ma. AB. EBITDA 4,36 ma., veltufé frá rekstri 2,05 ma. Fjárfestingar 6,32 ma. heildar (1,73 ma. fjárheimild). Skuldahlutfall stefnir í 87,2% (-10 prósentustig á 2 árum). Samþykkt 4. desember 2025.'
     }
   },
-  finance2025Partial: {
-    yr:2025, timabil:'Ársreikningur 2025 (birtur 14. apríl 2026)',
-    A:{tekjur:null, nidurstada:null, skatttekjur:null},
-    AB:{tekjur:35.24, nidurstada:2.75, eignir:null, skuldir:null, eiginfe:null},
-    baejarstjori:'Almar Guðmundsson', bstAf:'D',
-    meirihluti:['D'], kjor:'2022–2026',
-    athugasemd:'„Sterk afkoma og skuldahlutföll lækka." Tekjur 9,1% yfir áætlun. Niðurstaða +2,75 ma. AB (7,8% af tekjum) — rúmlega tvöfalt 2024. Veltufé frá rekstri 2,39 ma. Skuldaviðmið 86% (úr 97% 2024), skuldahlutfall AB 110% (úr 120%). Eiginfjárhlutfall 45,8%. Lántaka 3,16 ma. (0,87 ma. undir áætlun). Fjárfestingar 5,09 ma. (14,4% af tekjum). Menntun 61,3% skatttekna (úr 56,3%). Íbúar 20.724 (+608).'
-  },
+  finance2025Partial: null, // 2025 ársreikningur er nú í finance[] (samþykktur 14. apríl 2026).
   kjortimabil: [
     {
       titill: '2018–2022',
