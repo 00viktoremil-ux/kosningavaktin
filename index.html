@@ -821,7 +821,20 @@ const PARTY_LOGO_BG = {
   // M, P, S: eigin ljós/myrk bakgrunnur — default hvítur container passar
 };
 
-function logoFor(pid){ return PARTY_LOGOS[pid] || null; }
+// Sumir listabókstafir tákna mismunandi flokka í mismunandi sveitarfélögum
+// (t.d. G = „Góðan daginn" í Reykjavík en G = „Garðabæjarlistinn" í Garðabæ).
+// Þessi tafla segir til um listabókstafi sem eru sveitarfélags-sértækir og
+// ættu ekki að erfa PARTY_LOGOS-úrtakið.
+const PARTY_LOGO_MUNI_OVERRIDE = {
+  gard: { G: null },   // G = Garðabæjarlistinn — annar flokkur en rvk-G, eigin merki bíður
+  mos:  { L: null }    // L = Vinir Mosfellsbæjar — staðbundinn listi, eigin merki bíður
+};
+function logoFor(pid){
+  var muni = (typeof CURRENT_MUNI !== 'undefined') ? CURRENT_MUNI : 'rvk';
+  var ovr = PARTY_LOGO_MUNI_OVERRIDE[muni];
+  if(ovr && Object.prototype.hasOwnProperty.call(ovr, pid)) return ovr[pid];
+  return PARTY_LOGOS[pid] || null;
+}
 
 // Helper: navigate to candidate detail panel (opens framb page, selects party, opens card)
 function gotoCandidate(candId){
