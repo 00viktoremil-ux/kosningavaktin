@@ -1577,6 +1577,16 @@ function rerenderAllForMuni(){
   var kosnHeiti = m.councilName === 'Borgarstjórn' ? 'Borgarstjórnarkosningar' : 'Bæjarstjórnarkosningar';
   var majority = Math.floor(m.councilSize/2) + 1;
 
+  // Ef núverandi sveitarfélag hefur fjárhagsgögn þarf að endurheimja HTML í
+  // page-fjarmal *áður* en við uppfærum subtitle/footnotes og kallum initFinance.
+  // renderFinancePlaceholder getur hafa eytt innri HTML-i flipanna ef notandi
+  // var áður í sveitarfélagi án gagna (t.d. mos). Án restore vantar ID-ana sem
+  // við uppfærum í rerenderinu.
+  var _md = MUNI_DATA[CURRENT_MUNI];
+  if(_md && _md.finance && _md.finance.length > 0){
+    restorePageSnapshot('page-fjarmal');
+  }
+
   // Forsíða — titlar og tölfræði
   var elTitle = document.getElementById('forsida-title');
   if(elTitle) elTitle.innerHTML = kosnHeiti+'<br>'+m.name+' <em>2026</em>';
@@ -1595,7 +1605,8 @@ function rerenderAllForMuni(){
   if(fhT) fhT.innerHTML = m.name+' 2026 — <em>'+PARTIES.length+' framboð, '+CANDS.length+' frambjóðendur</em>';
   var fhS = document.getElementById('framb-hero-subtitle');
   if(fhS){
-    var gogn = CURRENT_MUNI === 'rvk' ? 'reykjavik.is' : 'kopavogur.is og vefsíðum framboða';
+    var MUNI_SITES = {rvk:'reykjavik.is', kopv:'kopavogur.is', hafn:'hafnarfjordur.is', gard:'gardabaer.is', mos:'mos.is', selt:'seltjarnarnes.is'};
+    var gogn = CURRENT_MUNI === 'rvk' ? 'reykjavik.is' : (MUNI_SITES[CURRENT_MUNI]||'') + ' og vefsíðum framboða';
     fhS.textContent = 'Allir frambjóðendur í '+council+'arkosningum. Gögn sótt af '+gogn+'.';
   }
   var alcnt = document.getElementById('allir-listar-count');
@@ -1612,7 +1623,14 @@ function rerenderAllForMuni(){
     if(CURRENT_MUNI === 'rvk'){
       finS.textContent = 'Tölur úr opinberum ársreikningum borgarinnar. Skipt upp í A-hluta (aðalsjóður + eignasjóður) og samstæðu A+B (inniheldur OR, Félagsbústaði, Faxaflóahafnir o.fl.). Raunvirði (á verðlagi 2024) má virkja í sundurliðun.';
     } else {
-      finS.textContent = 'Tölur úr opinberum ársreikningum '+m.name.toLowerCase()+'. Skipt upp í A-hluta (aðalsjóður) og samstæðu A+B (inniheldur bæjarfyrirtæki). Ársreikningar eru í vinnslu fyrir þetta sveitarfélag.';
+      var hasFinance = (typeof FINANCE !== 'undefined' && FINANCE && FINANCE.length > 0);
+      var GEN = {rvk:'Reykjavíkur', kopv:'Kópavogs', hafn:'Hafnarfjarðar', gard:'Garðabæjar', mos:'Mosfellsbæjar', selt:'Seltjarnarness'};
+      var muniGen = GEN[CURRENT_MUNI] || m.name;
+      if(hasFinance){
+        finS.textContent = 'Tölur úr opinberum ársreikningum '+muniGen+'. Skipt upp í A-hluta (aðalsjóður) og samstæðu A+B (inniheldur bæjarfyrirtæki).';
+      } else {
+        finS.textContent = 'Tölur úr opinberum ársreikningum '+muniGen+'. Skipt upp í A-hluta (aðalsjóður) og samstæðu A+B (inniheldur bæjarfyrirtæki). Ársreikningar eru í vinnslu fyrir þetta sveitarfélag.';
+      }
     }
   }
   // Fjármála-síðuflipanna merkimiði „Borgarstjórnir" → „Bæjarstjórnir"
@@ -1621,6 +1639,44 @@ function rerenderAllForMuni(){
       b.textContent = (CURRENT_MUNI === 'rvk') ? 'Borgarstjórnir' : 'Bæjarstjórnir';
     }
   });
+
+  // Footnotes á ítarlega yfirlits-, áætlunar- og leiðréttingar-tab þurfa að vísa til
+  // rétta sveitarfélagsins (Reykjavíkurborgar / Kópavogs / ...)
+  var GEN2 = {rvk:'Reykjavíkurborgar', kopv:'Kópavogs', hafn:'Hafnarfjarðar', gard:'Garðabæjar', mos:'Mosfellsbæjar', selt:'Seltjarnarness'};
+  var _muniGen = GEN2[CURRENT_MUNI] || m.name;
+  var _isRvk = CURRENT_MUNI === 'rvk';
+  var bhlutiList = _isRvk ? 'Orkuveita, Félagsbústaðir o.fl.' : 'bæjarfyrirtæki í eigu '+(CURRENT_MUNI==='rvk'?'borgarinnar':'bæjarins');
+  var fnMain = document.getElementById('fin-main-table-footnote');
+  if(fnMain) fnMain.textContent = '* Tekjur og gjöld A-hluta (aðalsjóður + eignasjóður). B-hluti ('+bhlutiList+') er ekki meðtalinn í þessum tölum nema sérstaklega tekið fram.';
+  var fnAaetlun = document.getElementById('aaetlun-heimildir');
+  if(fnAaetlun) fnAaetlun.textContent = 'Heimildir áætlunar: globenewswire.com (opinberar tilkynningar), ársreikningsskýrslur '+_muniGen+'. Þar sem heimild var ekki staðfest er reiturinn merktur „—". Hjálpaðu til við að fylla út með ábendingu.';
+  var fnLeidr = document.getElementById('leidretting-intro');
+  if(fnLeidr) fnLeidr.textContent = 'Ársreikningur '+_muniGen+' inniheldur nokkrar liðir sem geta gefið ranga mynd af raunverulegum rekstri. Helstu "bókhaldstillur" sem við leiðréttum:';
+
+  // Hraðspurningahnappar á AI-tabbinum — muni-sértækt
+  var qaBtns = document.getElementById('finance-qa-buttons');
+  if(qaBtns){
+    var cityNdef = _isRvk ? 'borgarinnar' : 'bæjarins';
+    var btns;
+    if(_isRvk){
+      btns = [
+        ['Af hverju var halli á rekstri 2022?',                                                'Hvernig er 2022 halli skýrður?'],
+        ['Hvernig þróuðust skuldir borgarinnar og hverju má það rekja til?',                   'Skuldir — ástæður?'],
+        ['Hvað er vanfjármögnun fatlaðs fólks og hve mikil áhrif hefur hún?',                  'Fatlað fólk — vanfjármögnun?'],
+        ['Hvernig ber rekstur Reykjavíkurborgar saman við önnur stór sveitarfélög?',           'Samanburður við önnur sveitarfélög?']
+      ];
+    } else {
+      btns = [
+        ['Hver eru helstu fjárhagstilhleypir '+_muniGen+' síðustu ár?',                        'Helstu fjárhagstilhleypir?'],
+        ['Hvernig þróuðust skuldir '+cityNdef+' og hverju má það rekja til?',                  'Skuldir — ástæður?'],
+        ['Er rekstur '+_muniGen+' sjálfbær án einskiptis­tekna (t.d. lóðasölu)?',              'Sjálfbær rekstur?'],
+        ['Hvernig ber rekstur '+_muniGen+' saman við önnur stór sveitarfélög?',                'Samanburður við önnur sveitarfélög?']
+      ];
+    }
+    qaBtns.innerHTML = btns.map(function(b){
+      return '<button class="ai-btn" onclick="askFinance('+JSON.stringify(b[0])+')">'+b[1]+'</button>';
+    }).join('');
+  }
 
   // Haus-statusmiði (grænn dot)
   var liveEl = document.querySelector('#muni-picker-label');
@@ -3586,6 +3642,106 @@ MUNI_DATA.kopv = {
   ]
 };
 
+// ============================================================================
+// === MOSFELLSBÆR — FASI 2 ===================================================
+// ============================================================================
+// 6 framboðslistar 2026: B Framsókn, C Viðreisn, D Sjálfstæði, L Vinir Mosfells-
+// bæjar, M Miðflokkur, S Samfylking. VG bauð fram 2022 (5,7%, 0 sæti) en ekki
+// staðfest fyrir 2026 — bætist við ef/þegar staðfest. Meirihluti 2022–2026:
+// B + S + C (6 af 9 sætum) eftir að Framsókn vann stórsigur úr 0 í 4 sæti.
+// Regína Ásvaldsdóttir (S) var bæjarstjóri 2022–2026 en baðst lausnar í feb.
+// 2026. Þóra Margrét Hjaltested, bæjarlögmaður, tók við 1. apríl 2026.
+// Seats dálkurinn sýnir núverandi sæti (2022 úrslit); pct er 0 — engar 2026
+// kannanir birtar enn (UI birtir „engar kannanir" í staðinn fyrir stöpla).
+// Heimildir: mos.is, mosfellingur.is, ruv.is, mbl.is, visir.is, island.is
+// (kjörskráar- og listaupplýsingar), og vefir flokkanna.
+var MOS_RAW = [
+  // B — Framsóknarflokkurinn (Sævar Birgisson — nýr oddviti 2026; Halla Karen
+  // fráfarandi). 4 sæti 2022 — stórsigur úr 0 í 4. Aðeins efsti staðfestur
+  // opinberlega í upphafi fasa 2a; 22 manna listi alls.
+  ['B',1,'Sævar Birgisson','viðskiptafræðingur, bæjarfulltrúi og varaformaður skipulagsnefndar'],
+  // C — Viðreisn (Gylfi Þór Þorsteinsson, nýr oddviti feb. 2026). 1 sæti 2022.
+  ['C',1,'Gylfi Þór Þorsteinsson','deildarstjóri hjá Rauða krossinum'],
+  ['C',2,'Valdimar Birgisson','rekstrarráðgjafi og alþingismaður'],
+  ['C',3,'Elín Anna Gísladóttir','verkfræðingur'],
+  ['C',4,'Berglind Robertson Grétarsdóttir','leikskólastjóri'],
+  // D — Sjálfstæðisflokkurinn (Hilmar Gunnarsson, nýr oddviti jan. 2026 með
+  // 91,9% í prófkjöri; Ásgeir Sveinsson fráfarandi oddviti tók 6. sæti).
+  // 4 sæti 2022. 8 efstu staðfest í prófkjöri.
+  ['D',1,'Hilmar Gunnarsson','ritstjóri Mosfellings'],
+  ['D',2,'Jana Katrín Knútsdóttir','frambjóðandi'],
+  ['D',3,'Elísabet S. Ólafsdóttir','frambjóðandi'],
+  ['D',4,'Hjörtur Örn Arnarson','frambjóðandi'],
+  ['D',5,'Þórarinn Örn Andrésson','frambjóðandi'],
+  ['D',6,'Ásgeir Sveinsson','fyrrverandi oddviti og bæjarfulltrúi'],
+  ['D',7,'Magnús Ingi Ingvarsson','frambjóðandi'],
+  ['D',8,'Brynja Hlíf Hjaltadóttir','frambjóðandi'],
+  // L — Vinir Mosfellsbæjar (Árni Jónsson, nýr oddviti 2026). 1 sæti 2022
+  // (13,0%). Staðbundinn listi — mikil endurnýjun fyrir 2026. 6 efstu staðf.
+  ['L',1,'Árni Jónsson','oddviti Vina Mosfellsbæjar'],
+  ['L',2,'Guðfinna Birta Valgeirsdóttir','frambjóðandi'],
+  ['L',3,'Michele Rebora','frambjóðandi'],
+  ['L',4,'Guðrún Elísa Sævarsdóttir','frambjóðandi'],
+  ['L',5,'Þóranna Rósa Ólafsdóttir','frambjóðandi'],
+  ['L',6,'Katarzyna Królikowska','frambjóðandi'],
+  // M — Miðflokkurinn (Sveinn Óskar Sigurðsson, nýr oddviti apríl 2026).
+  // 0 sæti 2022 (4,9%). 22 manna listi; 3 efstu staðfestir.
+  ['M',1,'Sveinn Óskar Sigurðsson','hagfræðingur og fjármálasérfræðingur'],
+  ['M',2,'Ingibjörg Einarsdóttir','tannsmiður og stundakennari við HÍ'],
+  ['M',3,'Sara Hafbergsdóttir','rekstrarstjóri'],
+  // S — Samfylkingin (Ólafur Ingi Óskarsson, nýr oddviti mars 2026). 1 sæti
+  // 2022. Regína Ásvaldsdóttir fráfarandi bæjarstjóri situr í 7. heiðurssæti.
+  ['S',1,'Ólafur Ingi Óskarsson','netverkfræðingur og formaður velferðarnefndar'],
+  ['S',7,'Regína Ásvaldsdóttir','fráfarandi bæjarstjóri (heiðurssæti)']
+];
+
+MUNI_DATA.mos = {
+  parties: [
+    // Núverandi sæti byggt á 2022 úrslitum (B 4, D 4, L 1, S 1, C 1, M 0).
+    // Pct 0 = engar 2026 kannanir birtar enn; UI sýnir „engar kannanir" en ekki
+    // stöpla. Framsókn vann stórsigur 2022 (úr 0 → 4) og myndaði B+S+C meiri-
+    // hluta sem hefur setið út kjörtímabilið.
+    {id:'B', name:'Framsóknarflokkurinn',  color:'#1E8A3E', pct:0, seats:4},
+    {id:'C', name:'Viðreisn',              color:'#D84315', pct:0, seats:1},
+    {id:'D', name:'Sjálfstæðisflokkurinn', color:'#1565C0', pct:0, seats:4},
+    {id:'L', name:'Vinir Mosfellsbæjar',   color:'#00796B', pct:0, seats:1},
+    {id:'M', name:'Miðflokkurinn',         color:'#6A1B9A', pct:0, seats:0},
+    {id:'S', name:'Samfylkingin',          color:'#C62828', pct:0, seats:1}
+  ],
+  rawCands: MOS_RAW,
+  photos: {},   // oddvita-myndir bætast við í fasa 2b
+  bios: {},     // æviágrip fylgja í fasa 2c
+  partyInfo: {
+    B: { fullname:'Framsóknarflokkurinn',  ideology:'Miðja, búnaðarstefna',                     founded:1916 },
+    C: { fullname:'Viðreisn',              ideology:'Frjálslyndi, miðja',                        founded:2016 },
+    D: { fullname:'Sjálfstæðisflokkurinn', ideology:'Miðju-hægri, frjálslyndir markaðir',        founded:1929 },
+    L: { fullname:'Vinir Mosfellsbæjar',   ideology:'Staðbundið framboð, óháð flokkum',          founded:2018 },
+    M: { fullname:'Miðflokkurinn',         ideology:'Miðju-hægri, þjóðernisleg áhersla',         founded:2017 },
+    S: { fullname:'Samfylkingin',          ideology:'Miðju-vinstri, jafnaðarstefna',             founded:2000 }
+  },
+  stefnumal: {},          // fyllist inn í fasa 2c
+  sattmali2022: null,      // meirihlutasáttmáli B+S+C 2022 bætist við síðar
+  finance: [],             // fjárhagsgögn Mosfellsbæjar bætast við í fasa 2d
+  budgets: {},
+  finance2025Partial: null,
+  kjortimabil: [
+    {
+      titill: '2022–2026',
+      bst: 'Regína Ásvaldsdóttir (S) → Þóra Margrét Hjaltested (1. apríl 2026)',
+      meirihluti: ['B','S','C'],
+      ar: [2022,2023,2024,2025],
+      lykilmal: [
+        'B+S+C meirihluti með 6 af 9 sætum — Framsókn vann stórsigur úr 0 í 4 sæti 2022',
+        'Regína Ásvaldsdóttir tók við sem bæjarstjóri 2022 (fv. sviðsstjóri velferðarsviðs Reykjavíkurborgar og bæjarstjóri á Akranesi)',
+        'Blikastaðaland: 34,8 ha þróunarsvæði með allt að 1.260 íbúðum í 1. áfanga (heildarplan ~3.500 íbúðir) samþykkt 27. janúar 2026',
+        'Regína baðst lausnar sem bæjarstjóri í feb. 2026 og þáði 7. heiðurssæti á lista Samfylkingarinnar',
+        'Þóra Margrét Hjaltested bæjarlögmaður ráðin bæjarstjóri innanbúðar frá 1. apríl 2026 til loka kjörtímabils',
+        '514 m.kr. afgangur í reikningsskilum 2025 — metár í fjárfestingum'
+      ]
+    }
+  ]
+};
+
 // loadMuni — endurstillir allar top-level breytur úr MUNI_DATA[id].
 // Kallað úr: router (hash-breyting), pickeri, og við upphaf síðuhleðslu ef hash
 // inniheldur muni-prefix. Skilar false ef muni er ekki til (t.d. tómt stub).
@@ -3934,9 +4090,45 @@ function renderFinancePlaceholder(){
     var el = document.getElementById(id);
     if(el) el.innerHTML = msg;
   });
-  // Földum 2025-banner og falsar
+  // Földum 2025-banner og tæmum rvk-leifar svo ekkert sé í DOM
   var banner = document.getElementById('fin-2025-banner');
-  if(banner) banner.style.display = 'none';
+  if(banner){ banner.style.display = 'none'; banner.innerHTML = ''; }
+}
+
+// ========================================================================
+// ===== MUNI-AWARE TEXT HELPERS =====
+// Mikið af textanum hér að neðan var skrifað sértækt fyrir Reykjavík
+// („borgin skuldar", „á hvern íbúa Reykjavíkur", „Orkuveitu, Félagsbústaði").
+// Þessar hjálpargripir gera textann réttan fyrir bæjarstjórnir (kopv, mos, o.fl.)
+// án þess að tvítaka allan render-kóðann.
+// ========================================================================
+function cityN(form){
+  // borgin / bærinn o.s.frv. — tekur íslenska föllin fyrir rvk / bæi.
+  var isRvk = CURRENT_MUNI==='rvk';
+  var map = {
+    'nef':    isRvk ? 'borgin'       : 'bærinn',
+    'nef-u':  isRvk ? 'Borgin'       : 'Bærinn',
+    'ef':     isRvk ? 'borgar'       : 'bæjar',
+    'ef-gr':  isRvk ? 'borgarinnar'  : 'bæjarins',
+    'þgf-gr': isRvk ? 'borginni'     : 'bænum',
+    'þf-gr':  isRvk ? 'borgina'      : 'bæinn'
+  };
+  return map[form] || map['nef'];
+}
+// Eignarfall nafn sveitarfélags — notað í „á hvern íbúa {X}"
+function cityGen(){
+  var GEN = {rvk:'Reykjavíkur', kopv:'Kópavogs', hafn:'Hafnarfjarðar', gard:'Garðabæjar', mos:'Mosfellsbæjar', selt:'Seltjarnarness'};
+  return GEN[CURRENT_MUNI] || getMuni().name;
+}
+// Listi fyrirtækja í samstæðu — Reykjavík hefur Orkuveitu, Félagsbústaði,
+// Faxaflóahafnir. Önnur sveitarfélög hafa sín eigin bæjarfyrirtæki.
+function cityCompaniesClause(){
+  if(CURRENT_MUNI==='rvk') return 'Orkuveitu, Félagsbústaði, Faxaflóahafnir og fleiri fyrirtæki borgar';
+  return 'bæjarfyrirtæki í eigu '+cityN('ef-gr');
+}
+function cityCompaniesShort(){
+  if(CURRENT_MUNI==='rvk') return 'fyrirtæki eins og Orkuveitu';
+  return 'bæjarfyrirtæki';
 }
 
 // ========================================================================
@@ -4026,31 +4218,31 @@ function renderStuttu(){
 
   // Kort 1: Hagnaður / tap
   html += '<div class="card">'
-    +'<div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.07em;color:var(--ink3);margin-bottom:4px;">Er borgin með hagnað?</div>'
+    +'<div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.07em;color:var(--ink3);margin-bottom:4px;">Er '+cityN('nef')+' með hagnað?</div>'
     +'<div style="font-family:\'Playfair Display\',serif;font-size:32px;color:'+(abResult>=0?'#2E7D32':'#C62828')+';line-height:1;margin-bottom:6px;">'+plusMinus(abResult)+' <span style="font-size:15px;color:var(--ink2);font-family:\'DM Sans\',sans-serif;">ma.</span></div>'
     +'<div style="font-size:12px;color:var(--ink2);line-height:1.5;">'
-      +(abResult>=0?'Borgin skilaði <strong>hagnaði</strong> í fyrra.':'Borgin rak <strong>tap</strong> í fyrra.')
+      +(abResult>=0?cityN('nef-u')+' skilaði <strong>hagnaði</strong> í fyrra.':cityN('nef-u')+' rak <strong>tap</strong> í fyrra.')
       +'<br>Þetta er '+(abResult>abResultPrev?'betra':'verra')+' en árið á undan ('+plusMinus(abResultPrev)+' ma.).'
       +(budgetDev!=null ? '<br><span style="color:'+(budgetDev>=0?'#2E7D32':'#C62828')+';font-weight:500">'+(budgetDev>=0?'Betri':'Verri')+' en áætlun var</span> ('+plusMinus(budgetDev)+' ma. frávik).' : '')
     +'</div></div>';
 
   // Kort 2: Skuldir
   html += '<div class="card">'
-    +'<div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.07em;color:var(--ink3);margin-bottom:4px;">Hvað skuldar borgin?</div>'
+    +'<div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.07em;color:var(--ink3);margin-bottom:4px;">Hvað skuldar '+cityN('nef')+'?</div>'
     +'<div style="font-family:\'Playfair Display\',serif;font-size:32px;color:var(--ink);line-height:1;margin-bottom:6px;">'+abSkuldir.toFixed(0)+' <span style="font-size:15px;color:var(--ink2);font-family:\'DM Sans\',sans-serif;">ma.</span></div>'
     +'<div style="font-size:12px;color:var(--ink2);line-height:1.5;">'
-      +'Það gerir <strong>'+fmtISK(skuldirPerIbua)+' kr.</strong> á hvern íbúa Reykjavíkur.'
-      +'<br>Inniheldur Orkuveitu, Félagsbústaði, Faxaflóahafnir og fleiri fyrirtæki borgar.'
+      +'Það gerir <strong>'+fmtISK(skuldirPerIbua)+' kr.</strong> á hvern íbúa '+cityGen()+'.'
+      +'<br>Inniheldur '+cityCompaniesClause()+'.'
       +'<br><span style="color:'+(skuldirLower?'#2E7D32':'#C62828')+';font-weight:500">'+(skuldirLower?'Lækkaði':'Hækkaði')+'</span> frá fyrra ári ('+plusMinus(abSkuldir-prev.AB.skuldir)+' ma.).'
     +'</div></div>';
 
   // Kort 3: Íbúar / tekjur per íbúa
   var tekjurPerI = perIbua(last.A.tekjur, last.yr);
   html += '<div class="card">'
-    +'<div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.07em;color:var(--ink3);margin-bottom:4px;">Hvað fær borgin frá hverjum íbúa?</div>'
+    +'<div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.07em;color:var(--ink3);margin-bottom:4px;">Hvað fær '+cityN('nef')+' frá hverjum íbúa?</div>'
     +'<div style="font-family:\'Playfair Display\',serif;font-size:32px;color:var(--ink);line-height:1;margin-bottom:6px;">'+fmtISK(tekjurPerI)+' <span style="font-size:15px;color:var(--ink2);font-family:\'DM Sans\',sans-serif;">kr.</span></div>'
     +'<div style="font-size:12px;color:var(--ink2);line-height:1.5;">'
-      +'Það eru heildartekjur A-hluta borgar ('+last.A.tekjur.toFixed(1)+' ma.) deilt með íbúafjölda ('+fmtISK(last.ibuar)+' íbúar).'
+      +'Það eru heildartekjur A-hluta '+cityN('ef')+' ('+last.A.tekjur.toFixed(1)+' ma.) deilt með íbúafjölda ('+fmtISK(last.ibuar)+' íbúar).'
       +'<br>Aðallega útsvar, jöfnunarsjóður og fasteignagjöld.'
     +'</div></div>';
 
@@ -4075,21 +4267,21 @@ function renderStuttu(){
   // Hvað fegrar myndina? — gagnsæi um bókhaldsaðlaganir
   html += '<div class="card" style="margin-bottom:1rem;border-left:3px solid #854F0B;">'
     +'<div style="font-family:\'Playfair Display\',serif;font-size:17px;margin-bottom:3px;">Hvað getur fegrað myndina?</div>'
-    +'<div style="font-size:12px;color:var(--ink2);margin-bottom:1rem;">AB-niðurstaðan (samstæða) inniheldur oft stórar færslur sem eiga ekki uppruna í raunverulegum rekstri. Sum ár er „hagnaður" borgar að mestu knúinn af þessum bókhaldsaðlögunum.</div>'
+    +'<div style="font-size:12px;color:var(--ink2);margin-bottom:1rem;">AB-niðurstaðan (samstæða) inniheldur oft stórar færslur sem eiga ekki uppruna í raunverulegum rekstri. Sum ár er „hagnaður" '+cityN('ef')+' að mestu knúinn af þessum bókhaldsaðlögunum.</div>'
     +buildStuttuAdjustments()
     +'</div>';
 
   // Þróun yfir tíma — einfölduð útgáfa
   html += '<div class="card" style="margin-bottom:1rem;">'
     +'<div style="font-family:\'Playfair Display\',serif;font-size:17px;margin-bottom:3px;">Hvernig hefur fjárhagurinn þróast?</div>'
-    +'<div style="font-size:12px;color:var(--ink2);margin-bottom:1rem;">Rekstrarniðurstaða borgar (samstæða) 2015–2024 — grænt = hagnaður, rautt = tap.</div>'
+    +'<div style="font-size:12px;color:var(--ink2);margin-bottom:1rem;">Rekstrarniðurstaða '+cityN('ef')+' (samstæða) 2015–2024 — grænt = hagnaður, rautt = tap.</div>'
     +buildStuttuBarChart()
     +'</div>';
 
   // Áberandi atburðir — tímalína
   html += '<div class="card" style="margin-bottom:1rem;">'
     +'<div style="font-family:\'Playfair Display\',serif;font-size:17px;margin-bottom:3px;">Hvað hefur gerst?</div>'
-    +'<div style="font-size:12px;color:var(--ink2);margin-bottom:1rem;">Lykilatburðir sem höfðu áhrif á fjárhag borgarinnar.</div>'
+    +'<div style="font-size:12px;color:var(--ink2);margin-bottom:1rem;">Lykilatburðir sem höfðu áhrif á fjárhag '+cityN('ef-gr')+'.</div>'
     +buildStuttuTimeline()
     +'</div>';
 
@@ -4139,7 +4331,7 @@ function buildStuttuBarChart(){
     labels += '<text x="'+cx+'" y="'+(H-PAD.b+15)+'" text-anchor="middle" font-size="10" fill="#888" font-family="DM Sans">'+d.yr+'</text>';
   });
   return '<svg viewBox="0 0 '+W+' '+H+'" width="100%" style="display:block;min-width:560px">'+grid+zero+bars+labels+'</svg>'
-    +'<div style="font-size:11px;color:var(--ink3);margin-top:8px;line-height:1.5">Tölur í milljörðum króna. Jákvæð tala = hagnaður, neikvæð = tap. Þetta er „samstæða A+B" sem inniheldur bæði aðalsjóð og fyrirtæki eins og Orkuveitu.</div>';
+    +'<div style="font-size:11px;color:var(--ink3);margin-top:8px;line-height:1.5">Tölur í milljörðum króna. Jákvæð tala = hagnaður, neikvæð = tap. Þetta er „samstæða A+B" sem inniheldur bæði aðalsjóð og '+cityCompaniesShort()+'.</div>';
 }
 
 // Skuldir-chart: línurit sem sýnir samfellda hækkun samstæðuskulda 2015–2024
@@ -4186,7 +4378,7 @@ function buildStuttuSkuldirChart(){
     +'<path d="'+skuldPath+'" fill="none" stroke="#C62828" stroke-width="2"/>'
     +dots+valLabels+labels
     +'</svg>'
-    +'<div style="font-size:11px;color:var(--ink3);margin-top:8px;line-height:1.5">Samstæðuskuldir í milljörðum króna. Hækkunin á sér að hluta skýringar í fjárfestingum (Orkuveita), verðbólgu­uppfærslu lána og uppbyggingu Félagsbústaða — en þróunin er samfelld og krefst athygli.</div>';
+    +'<div style="font-size:11px;color:var(--ink3);margin-top:8px;line-height:1.5">Samstæðuskuldir í milljörðum króna. '+(CURRENT_MUNI==='rvk' ? 'Hækkunin á sér að hluta skýringar í fjárfestingum (Orkuveita), verðbólgu­uppfærslu lána og uppbyggingu Félagsbústaða — en þróunin er samfelld og krefst athygli.' : 'Þróun skulda endurspeglar bæði fjárfestingar '+cityN('ef-gr')+' og verðbólguuppfærslur lána.')+'</div>';
 }
 
 // Bókhaldsaðlaganir sem fegra AB-niðurstöðu — tekið úr adj-reit í FINANCE
@@ -4201,14 +4393,29 @@ function buildStuttuAdjustments(){
   });
   if(adjs.length===0) return '<div style="font-size:12px;color:var(--ink2);">Engar skráðar aðlaganir í gagnasafni.</div>';
 
-  // Helstu dæmi útskýrð fyrst
-  var examples = [
-    {title:'Matsbreyting Félagsbústaða', dsc:'Fasteignir Félagsbústaða eru endurmetnar árlega á „gangvirði". Þegar markaðsverð hækkar er mismunurinn <strong>tekjufærður sem hagnaður</strong> í samstæðu — þótt ekkert lausafé komi inn og engin eign hafi verið seld.', hits:'2016, 2017, 2021 (+19,4 ma.), 2022 (+14,5 ma. yfir áætlun)'},
-    {title:'Afleiðubreytingar OR', dsc:'Orkuveitan er með langtímasamninga um raforkusölu og lán. Breytingar á gengi álmarkaða eða vöxtum breyta „gangvirði" þessara samninga — sem kemur í gegn um rekstrarreikning þótt reiðufé hreyfist ekki.', hits:'2016, 2017, 2021 (+6,6 ma.)'},
-    {title:'Verðbólguáhrif á fjármagn', dsc:'Þegar verðbólga er há hækka verðtryggð lán Orkuveitu sjálfkrafa. Það birtist sem <strong>tap í AB</strong> — hins vegar sama fyrirbæri veldur matsbreytingum fasteigna sem birtast sem <strong>hagnaður</strong>. Þessir tveir liðir geta vegið hvor annan upp á óljósan hátt.', hits:'2022 (12,7 ma. tap), 2023 (13 ma.)'},
-    {title:'Lífeyrisskuldbindingar', dsc:'Borgin á skuldbindingu gagnvart gömlum B-deilda­lífeyri. Þegar forsendur breytast (t.d. um langlífi) er <strong>stór einskiptis­færsla</strong> gjalda- eða tekjufærð — óskyld rekstri ársins.', hits:'2015 (+14,7 ma. gjaldfært umfram áætlun), 2024 (0,8 ma. tekjufært)'},
-    {title:'Málefni fatlaðs fólks', dsc:'Ríkið flutti málaflokk fatlaðs fólks til sveitarfélaga 2011 án fullrar fjármögnunar. Borgin hefur síðan rekið hann með margra milljarða halla á ári — <strong>án þessa halla væri A-hluti jákvæður</strong>.', hits:'2022 (9,3 ma.), 2023 (8,2 ma.)'}
-  ];
+  // Reykjavík: nákvæm útskýrð dæmi (Félagsbústaðir, Orkuveita, lífeyrir, málefni fatlaðs fólks)
+  // Önnur sveitarfélög: byggt beint upp úr adj-færslum í FINANCE-gögnum sveitarfélagsins.
+  var examples;
+  if(CURRENT_MUNI==='rvk'){
+    examples = [
+      {title:'Matsbreyting Félagsbústaða', dsc:'Fasteignir Félagsbústaða eru endurmetnar árlega á „gangvirði". Þegar markaðsverð hækkar er mismunurinn <strong>tekjufærður sem hagnaður</strong> í samstæðu — þótt ekkert lausafé komi inn og engin eign hafi verið seld.', hits:'2016, 2017, 2021 (+19,4 ma.), 2022 (+14,5 ma. yfir áætlun)'},
+      {title:'Afleiðubreytingar OR', dsc:'Orkuveitan er með langtímasamninga um raforkusölu og lán. Breytingar á gengi álmarkaða eða vöxtum breyta „gangvirði" þessara samninga — sem kemur í gegn um rekstrarreikning þótt reiðufé hreyfist ekki.', hits:'2016, 2017, 2021 (+6,6 ma.)'},
+      {title:'Verðbólguáhrif á fjármagn', dsc:'Þegar verðbólga er há hækka verðtryggð lán Orkuveitu sjálfkrafa. Það birtist sem <strong>tap í AB</strong> — hins vegar sama fyrirbæri veldur matsbreytingum fasteigna sem birtast sem <strong>hagnaður</strong>. Þessir tveir liðir geta vegið hvor annan upp á óljósan hátt.', hits:'2022 (12,7 ma. tap), 2023 (13 ma.)'},
+      {title:'Lífeyrisskuldbindingar', dsc:'Borgin á skuldbindingu gagnvart gömlum B-deilda­lífeyri. Þegar forsendur breytast (t.d. um langlífi) er <strong>stór einskiptis­færsla</strong> gjalda- eða tekjufærð — óskyld rekstri ársins.', hits:'2015 (+14,7 ma. gjaldfært umfram áætlun), 2024 (0,8 ma. tekjufært)'},
+      {title:'Málefni fatlaðs fólks', dsc:'Ríkið flutti málaflokk fatlaðs fólks til sveitarfélaga 2011 án fullrar fjármögnunar. Borgin hefur síðan rekið hann með margra milljarða halla á ári — <strong>án þessa halla væri A-hluti jákvæður</strong>.', hits:'2022 (9,3 ma.), 2023 (8,2 ma.)'}
+    ];
+  } else {
+    // Generalt: safna saman adj-merkimiðum með ártölum
+    var grouped = {};
+    adjs.forEach(function(a){
+      var k = a.label;
+      if(!grouped[k]) grouped[k] = {title:a.label, yrs:[], hluti:a.hluti};
+      grouped[k].yrs.push(a.yr+' ('+(a.value>=0?'+':'')+a.value.toFixed(1)+' ma.)');
+    });
+    examples = Object.keys(grouped).map(function(k){
+      return {title:grouped[k].title, dsc:'Einskiptis­færsla í '+(grouped[k].hluti==='A'?'A-hluta':'samstæðu A+B')+' sem er óskyld daglegum rekstri '+cityN('ef-gr')+'.', hits:grouped[k].yrs.join(', ')};
+    });
+  }
 
   var html = '<div style="display:flex;flex-direction:column;gap:10px;">';
   examples.forEach(function(e){
@@ -4219,22 +4426,52 @@ function buildStuttuAdjustments(){
       +'</div>';
   });
   html += '</div>';
-  html += '<div style="font-size:11px;color:var(--ink3);margin-top:10px;line-height:1.5">Heimildir: athugasemdir í ársreikningum borgarinnar 2015–2024. Þessir liðir eru allir lögformlega réttir og í samræmi við reikningsskilavenjur — en þeir eiga ekki uppruna í daglegum rekstri borgar og ber að lesa með því.</div>';
+  html += '<div style="font-size:11px;color:var(--ink3);margin-top:10px;line-height:1.5">Heimildir: athugasemdir í ársreikningum '+cityN('ef-gr')+' 2015–2024. Þessir liðir eru allir lögformlega réttir og í samræmi við reikningsskilavenjur — en þeir eiga ekki uppruna í daglegum rekstri '+cityN('ef')+' og ber að lesa með því.</div>';
   return html;
 }
 
 function buildStuttuTimeline(){
-  // Handvalið atburðir sem höfðu merkjanleg áhrif á fjárhag borgarinnar
-  var events = [
-    {yr:2020, clr:'#6A1B9A', icon:'🦠', title:'COVID-heimsfaraldur',    text:'Útsvarstekjur hrundu í apríl-maí 2020. Borgin keyrði á bráðabirgðasamþykktum og aukningu framlags frá ríkinu.'},
-    {yr:2021, clr:'#2E7D32', icon:'↑',  title:'Sterk endurnýjun úr COVID', text:'Útsvar rauk upp (+6,3 ma. yfir áætlun). Rekstrarniðurstaða A-hluta var 8,1 ma. betri en áætlun.'},
-    {yr:2022, clr:'#C62828', icon:'⚠',  title:'Verðbólguhögg',            text:'Verðbólga 9,94% í stað 3,3% áætluðu. A-niðurstaða 12,8 ma. verri en áætlun. Matsbreyting Félagsbústaða stækkar um 14,5 ma.'},
-    {yr:2022, clr:'#1565C0', icon:'⚖',  title:'Meirihlutaskipti maí 2022', text:'Dagur B. Eggertsson (S) heldur áfram með nýjum samstarfsaðilum: S + B + C + P tekur við.'},
-    {yr:2023, clr:'#C62828', icon:'💸', title:'Vextir og lífeyrir',       text:'AB-niðurstaða 13 ma. verri en áætlun vegna fjármagnsliða (vextir, verðbólguuppfærsla) Orkuveitu. A-hluti tekur 2,3 ma. lífeyrisskuldbindingu.'},
-    {yr:2024, clr:'#B8935A', icon:'🔄', title:'Borgarstjóraskipti',       text:'Einar Þorsteinsson (B) tekur við borgarstjórastólnum í janúar 2024 samkvæmt meirihlutasamningi.'},
-    {yr:2024, clr:'#2E7D32', icon:'✓',  title:'Bati í rekstri',            text:'A-tekjur 2,6 ma. yfir áætlun, gjöld aðeins undir. Skuldaviðmið lækkar úr 82% í 77%. EBITDA-hlutfall hækkar úr 4,5% í 9,3%.'},
-    {yr:2025, clr:'#1565C0', icon:'⚖',  title:'Nýr meirihluti feb 2025', text:'Einar Þorsteinsson (B) slítur meirihluta 7. feb — nefnir húsnæðis- og þéttingarstefnu, leikskólamál, flugvöll, bílastæði og skort á hagræðingu. Gagnrýnendur benda á fall Framsóknar í könnunum. Heiða Björg Hilmisdóttir (S) tekur við 21. feb í nýrri 5-flokka samstarfsmynd.'}
-  ];
+  // Reykjavík: handvalið atburðir (COVID, verðbólga, meirihlutaskipti, o.fl.).
+  // Önnur sveitarfélög: byggt beint úr FINANCE-gögnum (skipti/athugasemd-reitum)
+  // og úr kjortimabil-reitum.
+  var events;
+  if(CURRENT_MUNI==='rvk'){
+    events = [
+      {yr:2020, clr:'#6A1B9A', icon:'🦠', title:'COVID-heimsfaraldur',    text:'Útsvarstekjur hrundu í apríl-maí 2020. Borgin keyrði á bráðabirgðasamþykktum og aukningu framlags frá ríkinu.'},
+      {yr:2021, clr:'#2E7D32', icon:'↑',  title:'Sterk endurnýjun úr COVID', text:'Útsvar rauk upp (+6,3 ma. yfir áætlun). Rekstrarniðurstaða A-hluta var 8,1 ma. betri en áætlun.'},
+      {yr:2022, clr:'#C62828', icon:'⚠',  title:'Verðbólguhögg',            text:'Verðbólga 9,94% í stað 3,3% áætluðu. A-niðurstaða 12,8 ma. verri en áætlun. Matsbreyting Félagsbústaða stækkar um 14,5 ma.'},
+      {yr:2022, clr:'#1565C0', icon:'⚖',  title:'Meirihlutaskipti maí 2022', text:'Dagur B. Eggertsson (S) heldur áfram með nýjum samstarfsaðilum: S + B + C + P tekur við.'},
+      {yr:2023, clr:'#C62828', icon:'💸', title:'Vextir og lífeyrir',       text:'AB-niðurstaða 13 ma. verri en áætlun vegna fjármagnsliða (vextir, verðbólguuppfærsla) Orkuveitu. A-hluti tekur 2,3 ma. lífeyrisskuldbindingu.'},
+      {yr:2024, clr:'#B8935A', icon:'🔄', title:'Borgarstjóraskipti',       text:'Einar Þorsteinsson (B) tekur við borgarstjórastólnum í janúar 2024 samkvæmt meirihlutasamningi.'},
+      {yr:2024, clr:'#2E7D32', icon:'✓',  title:'Bati í rekstri',            text:'A-tekjur 2,6 ma. yfir áætlun, gjöld aðeins undir. Skuldaviðmið lækkar úr 82% í 77%. EBITDA-hlutfall hækkar úr 4,5% í 9,3%.'},
+      {yr:2025, clr:'#1565C0', icon:'⚖',  title:'Nýr meirihluti feb 2025', text:'Einar Þorsteinsson (B) slítur meirihluta 7. feb — nefnir húsnæðis- og þéttingarstefnu, leikskólamál, flugvöll, bílastæði og skort á hagræðingu. Gagnrýnendur benda á fall Framsóknar í könnunum. Heiða Björg Hilmisdóttir (S) tekur við 21. feb í nýrri 5-flokka samstarfsmynd.'}
+    ];
+  } else {
+    // Byggt úr FINANCE.skipti (stjóra- eða meirihlutaskipti) og FINANCE.athugasemd
+    events = [];
+    FINANCE.forEach(function(d){
+      if(d.skipti){
+        events.push({yr:d.yr, clr:'#1565C0', icon:'⚖', title:'Stjórnaskipti', text:d.skipti});
+      }
+      if(d.athugasemd){
+        var clr = d.AB.nidurstada < 0 ? '#C62828' : (d.AB.nidurstada > 2 ? '#2E7D32' : '#854F0B');
+        var icon = d.AB.nidurstada < 0 ? '⚠' : (d.AB.nidurstada > 2 ? '✓' : '•');
+        events.push({yr:d.yr, clr:clr, icon:icon, title:'Ársreikningur '+d.yr, text:d.athugasemd});
+      }
+    });
+    // Kjörtímabil — lykilmál sem sögulegar upplýsingar
+    if(typeof KJORTIMABIL !== 'undefined' && KJORTIMABIL.length){
+      KJORTIMABIL.forEach(function(k){
+        if(!k.ar || !k.ar.length) return;
+        var yr = k.ar[0];
+        events.push({yr:yr, clr:'#B8935A', icon:'🏛', title:'Kjörtímabil '+k.titill, text:(k.bst?('Bæjarstjóri: '+k.bst+'. '):'') + (k.meirihluti?'Meirihluti: '+k.meirihluti.join('+')+'.':'')});
+      });
+    }
+    events.sort(function(a,b){return a.yr-b.yr;});
+  }
+  if(!events.length){
+    return '<div style="font-size:12px;color:var(--ink2);">Engin skráð atburðartímalína fyrir þetta sveitarfélag.</div>';
+  }
   return events.map(function(e){
     return '<div style="display:flex;gap:12px;padding:10px 0;border-bottom:0.5px solid var(--bdr);">'
       +'<div style="width:40px;height:40px;border-radius:8px;background:'+e.clr+'15;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">'+e.icon+'</div>'
@@ -4242,20 +4479,23 @@ function buildStuttuTimeline(){
         +'<div style="display:flex;align-items:baseline;gap:8px;margin-bottom:2px;"><span style="font-size:11px;font-weight:500;color:'+e.clr+';">'+e.yr+'</span><span style="font-size:13px;font-weight:500;color:var(--ink);">'+e.title+'</span></div>'
         +'<div style="font-size:12px;color:var(--ink2);line-height:1.55;">'+e.text+'</div>'
       +'</div></div>';
-  }).join('')+'<div style="font-size:11px;color:var(--ink3);margin-top:10px;line-height:1.5">Tímalínan nær frá 2020 — elsti atburðir sem enn hafa bein áhrif á núverandi stöðu.</div>';
+  }).join('')+'<div style="font-size:11px;color:var(--ink3);margin-top:10px;line-height:1.5">'+(CURRENT_MUNI==='rvk' ? 'Tímalínan nær frá 2020 — elsti atburðir sem enn hafa bein áhrif á núverandi stöðu.' : 'Byggt á athugasemdum úr ársreikningum og kjörtímabila­færslum '+cityN('ef-gr')+'.')+'</div>';
 }
 
 function buildStuttuGlossary(){
+  var m = getMuni();
+  var councilLc = m.councilName.toLowerCase();                    // borgarstjórn/bæjarstjórn
+  var isRvk = CURRENT_MUNI==='rvk';
   var terms = [
-    {term:'A-hluti',            dsc:'Aðalsjóður + eignasjóður borgar — þ.e. „ríkið" í borginni (skólar, leikskólar, velferð, gatna­gerð o.fl.). Þetta eru grunnþjónusturnar sem flestir sjá daglega.'},
-    {term:'Samstæða A+B',       dsc:'A-hluti + öll fyrirtæki borgarinnar saman (Orkuveita Reykjavíkur, Félagsbústaðir, Faxaflóahafnir o.fl.). Sýnir heildarstöðu borgarfyrirtækis­kerfisins.'},
+    {term:'A-hluti',            dsc:'Aðalsjóður + eignasjóður '+cityN('ef')+' — þ.e. „ríkið" í '+cityN('þgf-gr')+' (skólar, leikskólar, velferð, gatna­gerð o.fl.). Þetta eru grunnþjónusturnar sem flestir sjá daglega.'},
+    {term:'Samstæða A+B',       dsc:'A-hluti + öll fyrirtæki '+cityN('ef-gr')+' saman'+(isRvk?' (Orkuveita Reykjavíkur, Félagsbústaðir, Faxaflóahafnir o.fl.)':'')+'. Sýnir heildarstöðu '+(isRvk?'borgarfyrirtækis­kerfisins':'bæjarfyrirtækja­kerfisins')+'.'},
     {term:'Rekstrarniðurstaða', dsc:'Einfalt: tekjur mínus gjöld. Jákvæð tala = hagnaður, neikvæð = tap. Svipað og „ávöxtun" hjá fyrirtæki.'},
     {term:'EBITDA',             dsc:'Rekstrarhagnaður áður en afskriftir, vextir og skattar eru dregnir frá. Sýnir hversu vel kjarnareksturinn skilar án áhrifa af fjármögnun eða eldri fjárfestingum.'},
-    {term:'Fjármagnsliðir',     dsc:'Vaxtagjöld, gengismunur og verðbólguuppfærsla skulda. Þegar verðbólga er há stækka lán borgarinnar á móti — og það bitnar mest á Orkuveitu sem á mest af langtíma­lánum.'},
-    {term:'Skuldaviðmið',       dsc:'Lögbundið viðmið sveitarstjórnarlaga: skuldir og skuldbindingar í hlutfalli við tekjur. Má ekki fara yfir 150%. Borgin er núna í 77% (2024).'},
-    {term:'Útsvar',             dsc:'Tekjuskattur sem rennur til sveitarfélags. 14,93% af launum Reykvíkinga fer til borgarinnar. Stærsti einstaki tekjustofn A-hluta.'},
+    {term:'Fjármagnsliðir',     dsc:'Vaxtagjöld, gengismunur og verðbólguuppfærsla skulda. Þegar verðbólga er há stækka lán '+cityN('ef-gr')+' á móti'+(isRvk?' — og það bitnar mest á Orkuveitu sem á mest af langtíma­lánum':'')+'.'},
+    {term:'Skuldaviðmið',       dsc:'Lögbundið viðmið sveitarstjórnarlaga: skuldir og skuldbindingar í hlutfalli við tekjur. Má ekki fara yfir 150%.'+(isRvk?' Borgin er núna í 77% (2024).':'')},
+    {term:'Útsvar',             dsc:'Tekjuskattur sem rennur til sveitarfélags.'+(isRvk?' 14,93% af launum Reykvíkinga fer til borgarinnar.':'')+' Stærsti einstaki tekjustofn A-hluta.'},
     {term:'Raunvirði',          dsc:'Tölur leiðréttar fyrir verðbólgu. Ef tekjur 2020 voru 100 og 2024 eru 130, er aukningin bara raunveruleg ef 30% eru MEIRI en verðbólga sama tímabils.'},
-    {term:'Áætlun (fjárhags­áætlun)', dsc:'Plan borgarstjórnar um tekjur og gjöld næsta árs, samþykkt í desember. Segir hvernig hún ÆTLAR að eyða — raunveruleikinn er oft annar vegna verðbólgu, laga­breytinga o.fl.'},
+    {term:'Áætlun (fjárhags­áætlun)', dsc:'Plan '+councilLc+' um tekjur og gjöld næsta árs, samþykkt í desember. Segir hvernig hún ÆTLAR að eyða — raunveruleikinn er oft annar vegna verðbólgu, laga­breytinga o.fl.'},
     {term:'Ársreikningur',      dsc:'Lokareikningur sem sýnir hvað raunverulega gerðist á árinu. Samþykktur í april-maí ári eftir. Borið er saman við áætlun til að meta „frávik".'}
   ];
   return terms.map(function(t){
@@ -4491,7 +4731,7 @@ function renderCharts(){
     charts.push({title:'Heildareignir AB', series:[{label:'Eignir (ma.kr.)', color:'#2E7D32', data:build('eignir')}]});
   } else {
     charts.push({title:'Skatttekjur A-hluta', series:[{label:'Skatttekjur (ma.kr.)', color:'#6A1B9A', data:build('skatttekjur')}]});
-    charts.push({title:'Íbúafjöldi Reykjavíkur', series:[{label:'Íbúar (þúsund)', color:'#2E7D32', data:ibuarData}]});
+    charts.push({title:'Íbúafjöldi '+cityGen(), series:[{label:'Íbúar (þúsund)', color:'#2E7D32', data:ibuarData}]});
   }
   el.innerHTML = charts.map(c=>
     '<div style="background:var(--white);border:0.5px solid var(--bdr);border-radius:10px;padding:.75rem 1rem;">'
@@ -4676,16 +4916,36 @@ function renderSundur(yr, btn) {
 function renderLeidretting() {
   var fel=document.getElementById('leidretting-forklaring');
   if(fel){
-    var items=[
-      {titill:'Matsbreyting Félagsbústaða (B-hluti)',
-       lysing:'Félagsbústaðir hf. eru í eigu borgar. Þegar fasteignaverð hækkar eru eignir endurmetnar og „hagnaður" kemur inn í rekstrarreikning AB-samstæðunnar — án þess að peningar flæði inn. Sést greinilega 2016–2017 (+) og 2023 (-).'},
-      {titill:'Afleiðubreyting raforkusölusamninga',
-       lysing:'Orkuveita Reykjavíkur hefur innbyggðar afleiður í langtíma raforkusölusamningum. Verðbreytingar á áli og gengi valda sveiflum á matsvirði sem fara í gegnum rekstrarreikning án þess að vera beinn rekstur.'},
-      {titill:'Einskiptisfærslur lífeyris',
-       lysing:'Langtímalífeyrisskuldbindingar eru endurmetnar árlega. Breytingar á forsendum (langlífi, ávöxtun) valda óreglulegum sveiflum sem skekja rekstrarniðurstöðu. 2015: +14,7 ma. gjaldfærsla. 2024: +0,8 ma. tekjufærsla.'},
-      {titill:'Verðbólguáhrif á fjármagn',
-       lysing:'Reykjavíkurborg á talsverðar verðtryggðar skuldir. Verðbólgusveiflur 2022–2023 (8–10%) ýttu fjármagnsgjöldum upp um marga milljarða — án þess að vera pólitísk stjórnunarákvörðun.'},
-    ];
+    var items;
+    if(CURRENT_MUNI==='rvk'){
+      items=[
+        {titill:'Matsbreyting Félagsbústaða (B-hluti)',
+         lysing:'Félagsbústaðir hf. eru í eigu borgar. Þegar fasteignaverð hækkar eru eignir endurmetnar og „hagnaður" kemur inn í rekstrarreikning AB-samstæðunnar — án þess að peningar flæði inn. Sést greinilega 2016–2017 (+) og 2023 (-).'},
+        {titill:'Afleiðubreyting raforkusölusamninga',
+         lysing:'Orkuveita Reykjavíkur hefur innbyggðar afleiður í langtíma raforkusölusamningum. Verðbreytingar á áli og gengi valda sveiflum á matsvirði sem fara í gegnum rekstrarreikning án þess að vera beinn rekstur.'},
+        {titill:'Einskiptisfærslur lífeyris',
+         lysing:'Langtímalífeyrisskuldbindingar eru endurmetnar árlega. Breytingar á forsendum (langlífi, ávöxtun) valda óreglulegum sveiflum sem skekja rekstrarniðurstöðu. 2015: +14,7 ma. gjaldfærsla. 2024: +0,8 ma. tekjufærsla.'},
+        {titill:'Verðbólguáhrif á fjármagn',
+         lysing:'Reykjavíkurborg á talsverðar verðtryggðar skuldir. Verðbólgusveiflur 2022–2023 (8–10%) ýttu fjármagnsgjöldum upp um marga milljarða — án þess að vera pólitísk stjórnunarákvörðun.'},
+      ];
+    } else {
+      // Byggt upp úr adj-færslum FINANCE — hópað eftir label
+      var grouped = {};
+      FINANCE.forEach(function(d){
+        if(!d.adj) return;
+        d.adj.forEach(function(a){
+          if(!grouped[a.label]) grouped[a.label] = {titill:a.label, yrs:[], hluti:a.hluti};
+          grouped[a.label].yrs.push(d.yr+' ('+(a.value>=0?'+':'')+a.value.toFixed(1)+' ma.)');
+        });
+      });
+      items = Object.keys(grouped).map(function(k){
+        var g = grouped[k];
+        return {titill:g.titill+' ('+g.hluti+'-hluti)', lysing:'Einskiptis­færsla sem er óskyld daglegum rekstri '+cityN('ef-gr')+'. Ár: '+g.yrs.join(', ')+'.'};
+      });
+      if(!items.length){
+        items = [{titill:'Engar skráðar leiðréttingar', lysing:'Engar einskiptis­færslur sem skekja mynd rekstrar eru skráðar fyrir '+cityN('ef-gr')+' í gagnasafni vefsins.'}];
+      }
+    }
     fel.innerHTML = items.map(function(f){
       return '<div style="background:var(--bg);border-radius:8px;padding:.875rem">'
         +'<div style="font-size:12px;font-weight:500;color:var(--ink);margin-bottom:4px">'+f.titill+'</div>'
@@ -5200,7 +5460,7 @@ if (document.readyState === 'loading') {
         <table style="width:100%;font-size:12px;border-collapse:collapse;" id="fin-main-table">
         </table>
       </div>
-      <div style="font-size:11px;color:var(--ink3);line-height:1.6">* Tekjur og gjöld A-hluta (aðalsjóður + eignasjóður). B-hluti (Orkuveita, Félagsbústaðir o.fl.) er ekki meðtalinn í þessum tölum nema sérstaklega tekið fram.</div>
+      <div id="fin-main-table-footnote" style="font-size:11px;color:var(--ink3);line-height:1.6">* Tekjur og gjöld A-hluta (aðalsjóður + eignasjóður). B-hluti (Orkuveita, Félagsbústaðir o.fl.) er ekki meðtalinn í þessum tölum nema sérstaklega tekið fram.</div>
     </div>
 
     <!-- ÁÆTLUN VS RAUN -->
@@ -5215,7 +5475,7 @@ if (document.readyState === 'loading') {
         <div id="aaetlun-chart" style="overflow-x:auto;min-width:0;"></div>
       </div>
       <div id="aaetlun-table"></div>
-      <div style="font-size:11px;color:var(--ink3);line-height:1.6;margin-top:.75rem;">Heimildir áætlunar: globenewswire.com (opinberar tilkynningar), ársreikningsskýrslur Reykjavíkurborgar. Þar sem heimild var ekki staðfest er reiturinn merktur „—". Hjálpaðu til við að fylla út með ábendingu.</div>
+      <div id="aaetlun-heimildir" style="font-size:11px;color:var(--ink3);line-height:1.6;margin-top:.75rem;">Heimildir áætlunar: globenewswire.com (opinberar tilkynningar), ársreikningsskýrslur Reykjavíkurborgar. Þar sem heimild var ekki staðfest er reiturinn merktur „—". Hjálpaðu til við að fylla út með ábendingu.</div>
     </div>
 
     <!-- BORGARSTJÓRNIR -->
@@ -5233,7 +5493,7 @@ if (document.readyState === 'loading') {
     <div id="fintab-leidretting" class="fintab">
       <div class="card" style="margin-bottom:1rem;">
         <div style="font-family:'Playfair Display',serif;font-size:16px;margin-bottom:.5rem;">Um leiðréttar tölur</div>
-        <div style="font-size:13px;color:var(--ink2);line-height:1.7;margin-bottom:.75rem;">Ársreikningur Reykjavíkurborgar inniheldur nokkrar liðir sem geta gefið ranga mynd af raunverulegum rekstri. Helstu "bókhaldstillur" sem við leiðréttum:</div>
+        <div id="leidretting-intro" style="font-size:13px;color:var(--ink2);line-height:1.7;margin-bottom:.75rem;">Ársreikningur Reykjavíkurborgar inniheldur nokkrar liðir sem geta gefið ranga mynd af raunverulegum rekstri. Helstu "bókhaldstillur" sem við leiðréttum:</div>
         <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:8px;" id="leidretting-forklaring"></div>
       </div>
       <div style="background:var(--white);border:0.5px solid var(--bdr);border-radius:12px;overflow:hidden;margin-bottom:1rem;">
@@ -5261,7 +5521,7 @@ if (document.readyState === 'loading') {
             <div style="font-size:12px;color:var(--ink2)">Spurðu Claude um ársreikninginn</div>
           </div>
         </div>
-        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:.75rem;">
+        <div id="finance-qa-buttons" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:.75rem;">
           <button class="ai-btn" onclick="askFinance('Af hverju var halli á rekstri 2022?')">Hvernig er 2022 halli skýrður?</button>
           <button class="ai-btn" onclick="askFinance('Hvernig þróuðust skuldir borgarinnar og hverju má það rekja til?')">Skuldir — ástæður?</button>
           <button class="ai-btn" onclick="askFinance('Hvað er vanfjármögnun fatlaðs fólks og hve mikil áhrif hefur hún?')">Fatlað fólk — vanfjármögnun?</button>
