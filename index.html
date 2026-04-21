@@ -358,7 +358,15 @@ header{background:var(--ink);color:var(--white);padding:0 1.5rem;display:flex;al
   <div style="display:flex;align-items:center;gap:10px">
     <button class="hdr-search" onclick="openSearch()" title="Leita í öllu (⌘K)"><span class="hdr-search-label">Leita í öllu</span><span class="hdr-search-kbd">⌘K</span></button>
     <button id="api-status-chip" onclick="promptApiKey()" title="Stilla Anthropic API-lykil" style="font-size:10px;padding:3px 8px;border-radius:99px;border:none;cursor:pointer;font-family:inherit;font-weight:500;background:#FFF8E1;color:#854F0B">AI óvirkt</button>
-    <div class="live"><div class="dot"></div>Reykjavík · 16. maí 2026</div>
+    <div class="muni-picker" id="muni-picker" style="position:relative;">
+      <button id="muni-picker-btn" onclick="toggleMuniPicker()" class="live" style="cursor:pointer;border:0.5px solid var(--bdr);background:#fff;display:flex;align-items:center;gap:6px;padding:4px 10px;border-radius:99px;font-family:inherit;font-size:11px;color:var(--ink2);">
+        <div class="dot"></div>
+        <span id="muni-picker-label">Reykjavík</span>
+        <span style="font-size:10px;color:var(--ink3);">· 16. maí 2026</span>
+        <span style="font-size:9px;color:var(--ink3);margin-left:2px;">▾</span>
+      </button>
+      <div id="muni-picker-menu" style="display:none;position:absolute;right:0;top:calc(100% + 4px);background:#fff;border:0.5px solid var(--bdr);border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.08);min-width:180px;z-index:100;overflow:hidden;"></div>
+    </div>
   </div>
 </header>
 
@@ -631,7 +639,33 @@ header{background:var(--ink);color:var(--white);padding:0 1.5rem;display:flex;al
 </div>
 
 <script>
-const PARTIES=[
+// ============================================================================
+// === SVEITARFÉLÖG Á HÖFUÐBORGARSVÆÐINU ======================================
+// ============================================================================
+// Hvert sveitarfélag hefur sér framboðslista, frambjóðendur, fjármál o.s.frv.
+// Þegar notandinn velur sveitarfélag er CURRENT_MUNI sett og top-level gögnin
+// (PARTIES, CANDS, PHOTOS, ...) endurstilltar úr MUNI_DATA[id] með loadMuni().
+// Reykjavík er vefgrundvöllur; Kópavogur, Hafnarfjörður, Garðabær, Mosfellsbær
+// og Seltjarnarnes bætast við í áföngum.
+const MUNI_META = {
+  rvk:  {id:'rvk',  name:'Reykjavík',      shortName:'Reykjavík',      koen:'Rvk',  councilName:'Borgarstjórn',  councilSize:23, stjoriTitle:'borgarstjóri',  ibuar:145931},
+  kopv: {id:'kopv', name:'Kópavogur',      shortName:'Kópavogur',      koen:'Kóp',  councilName:'Bæjarstjórn',    councilSize:11, stjoriTitle:'bæjarstjóri',    ibuar:40870},
+  hafn: {id:'hafn', name:'Hafnarfjörður',  shortName:'Hafnarfj.',      koen:'Hfj',  councilName:'Bæjarstjórn',    councilSize:11, stjoriTitle:'bæjarstjóri',    ibuar:30817},
+  gard: {id:'gard', name:'Garðabær',       shortName:'Garðabær',       koen:'Gbr',  councilName:'Bæjarstjórn',    councilSize:11, stjoriTitle:'bæjarstjóri',    ibuar:19022},
+  mos:  {id:'mos',  name:'Mosfellsbær',    shortName:'Mosfellsb.',     koen:'Mos',  councilName:'Bæjarstjórn',    councilSize:9,  stjoriTitle:'bæjarstjóri',    ibuar:13699},
+  selt: {id:'selt', name:'Seltjarnarnes',  shortName:'Seltjarnarn.',   koen:'Slt',  councilName:'Bæjarstjórn',    councilSize:7,  stjoriTitle:'bæjarstjóri',    ibuar:4760}
+};
+const MUNI_ORDER = ['rvk','kopv','hafn','gard','mos','selt'];
+// Öll per-muni gögn vistuð hér (parties, rawCands, photos, finance, …). Fyllist inn
+// í áföngum; aðeins rvk er fullbúið í fasa 1.
+const MUNI_DATA = {};
+// Núverandi valin sveitarfélag — uppfærist af router og UI-pickeri. Default rvk.
+let CURRENT_MUNI = 'rvk';
+function getMuni(){ return MUNI_META[CURRENT_MUNI]; }
+
+// Breyttu const → let til að leyfa endurstillingu þegar notandi velur sveitarfélag.
+// Þessar breytur eru „view" ofan á MUNI_DATA[CURRENT_MUNI] — loadMuni() endurstillir þær.
+let PARTIES=[
   {id:'A',name:'Vinstrið',color:'#2E7D32',pct:12,seats:3},
   {id:'B',name:'Framsóknarflokkurinn',color:'#1E8A3E',pct:5,seats:1},
   {id:'C',name:'Viðreisn',color:'#D84315',pct:12,seats:3},
@@ -644,14 +678,14 @@ const PARTIES=[
   {id:'R',name:'Okkar borg',color:'#37474F',pct:1,seats:0},
   {id:'S',name:'Samfylkingin',color:'#C62828',pct:23,seats:6},
 ];
-const RAW=[['A',1,'Sanna Magdalena Mörtudóttir','mannfræðingur og borgarfulltrúi'],['A',2,'Líf Magneudóttir','grunnskólakennari og borgarfulltrúi'],['A',3,'Stefán Pálsson','sagnfræðingur og varaborgarfulltrúi'],['A',4,'Ásta Þ. Skjalddal Guðjónsdóttir','viðurkenndur bókari og varaborgarfulltrúi'],['A',5,'Arna Magnea Danks','leikkona, áhættuleikstjóri og kennari'],['A',6,'Finnur Ricart Andrason','sérfræðingur í umhverfis- og loftslagsmálum'],['A',7,'Laufey Líndal Ólafsdóttir','tæknistjóri á Samstöðinni'],['A',8,'Riitta Anne Maarit Kaipainen','rekstrarstjóri'],['A',9,'Tinna Rut Jóhannsdóttir','skrifstofukona og athafnastýra'],['A',10,'Steinar Harðarson','athafnastjóri og vinnuverndarráðgjafi'],['A',11,'Viðar Gunnarsson','fyrrum teymisstjóri Reykjavíkurborgar'],['A',12,'Bergrún Andradóttir','skrifstofustjóri Samtakanna 78'],['A',13,'María Hjálmtýsdóttir','kennari og aktívisti'],['A',14,'Illugi Gunnarsson','formaður Ungra vinstri grænna'],['A',15,'Halldór Auðar Svansson','tölvunarfræðingur'],['A',16,'Brynhildur Björnsdóttir','söngkona og háskólanemi'],['A',17,'Signý Sigurðardóttir','verkakona á leikskóla og litakona'],['A',18,'Sveinn Rúnar Hauksson','læknir'],['A',19,'Armando Garcia Teixeira','doktorsnemi og aðgerðasinni'],['A',20,'Nína Aradóttir','jarðfræðingur'],['A',21,'Þórdís Nadia Semichat','sviðshöfundur og danskennari'],['A',22,'Kristinn Helgi Magnússon Schram','dósent við Háskóla Íslands'],['A',23,'Sigurður Andrés Sigurðarson','ökuleiðsögumaður'],['A',24,'Ragnhildur Björt Björnsdóttir','sagnfræðinemi'],['A',25,'Davíð Sól Páls','umsjónarkennari'],['A',26,'Ari Orrason','frístundaráðgjafi'],['A',27,'Ragnheiður Guðmundsdóttir','stjórnmálafræðingur'],['A',28,'Birna Björg Guðmundsdóttir','tollmiðlari og ritari Trans vina'],['A',29,'Björn Rúnar Guðmundsson','sagnfræðingur'],['A',30,'Sæmundur Helgason','grunnskólakennari og UT verkefnastjóri'],['A',31,'Sóley Lóa Smáradóttir','nemi'],['A',32,'Auður Alfífa Ketilsdóttir','smíðaleiðbeinandi'],['A',33,'Þórir Jónsson Hraundal','lektor við Háskóla Íslands'],['A',34,'Ingileif Jónsdóttir','prófessor emerita í ónæmisfræðum'],['A',35,'Silva Á. Skjalddal Eggertsdóttir','leiðbeinandi í leikskóla'],['A',36,'Viktor Árnason','líffræðingur'],['A',37,'Alexandre Amaral Da Silva','persónulegur aðstoðarmaður og aktívisti'],['A',38,'Sigrún Jóhannsdóttir','líffræðingur'],['A',39,'Rakel Hildardóttir','starfsmaður í Konukoti'],['A',40,'Anna Lára Steindal','framkvæmdastjóri Þroskahjálpar'],['A',41,'Jón Helgi Þórarinsson','tölvuleikjahönnuður'],['A',42,'René Biasone','svæðasérfræðingur hjá Náttúruverndarstofnun'],['A',43,'Úlfhildur Melkorka Magnadóttir','hjúkrunarfræðinemi og frístundaleiðbeinandi'],['A',44,'Sjöfn Ingólfsdóttir','fyrrverandi formaður Starfsmannafélags Reykjavíkur'],['A',45,'Sigrún Jónsdóttir','sjúkraliði á eftirlaunum'],['A',46,'Guðrún Ágústsdóttir','hópstjóri hjá Sorgarmiðstöð'],['B',1,'Einar Þorsteinsson','borgarfulltrúi'],['B',2,'Magnea Gná Jóhannsdóttir','borgarfulltrúi'],['B',3,'Þorvaldur Daníelsson','varaborgarfulltrúi og framkvæmdastjóri Hjólakrafts'],['B',4,'Halldór Bachmann','kynningarstjóri'],['B',5,'Andrea Edda Guðlaugsdóttir','hagfræðinemi og stúdentaráðsliði'],['B',6,'Þórdís Jóna Jakobsdóttir','fíkniráðgjafi'],['B',7,'Ína Holoyad','úkraínskumælandi brúarsmiður hjá MMS'],['B',8,'Guðmundur Ingi Þorvaldsson','leikari'],['B',9,'Ásrún Kristjánsdóttir','myndlistarmaður og hönnuður'],['B',10,'Skúli Bragi Geirdal','sviðsstjóri'],['B',11,'Kristjana Þórarinsdóttir','sálfræðingur'],['B',12,'Dagbjört S Höskuldsdóttir','formaður Sambands eldri Framsóknarmanna'],['B',13,'Jón Finnbogason','ráðgjafi'],['B',14,'Þórdís Arna Bjarkarsdóttir','læknir í sérnámsgrunni'],['B',15,'Fanný Gunnarsdóttir','náms- og starfsráðgjafi og kennari'],['B',16,'Haraldur Þorvarðarson','kennari og handboltaþjálfari'],['B',17,'Ragnhildur Helga Ragnarsdóttir','tæknistjóri'],['B',18,'Hörður Ragnarsson','hugbúnaðarsérfræðingur'],['B',19,'Sæþór Már Hinriksson','tónlistarmaður og háskólanemi'],['B',20,'Ásta Björg Björgvinsdóttir','kennari og tónlistarkona'],['B',21,'Gísli J. Jónatansson','fyrrverandi kaupfélagsstjóri'],['B',22,'Dröfn Skorradóttir','móttökuritari'],['B',23,'Ágúst Guðjónsson','lögfræðingur'],['B',24,'Hafsteinn Bergmann Gunnarsson','byggingafræðingur og forstöðumaður'],['B',25,'Björg Ósk Gunnarsdóttir','lögfræðingur'],['B',26,'Björn Ívar Björnsson','fjármálastjóri og hagfræðingur'],['B',27,'Gyða Björg Olgeirsdóttir','aðstoðarmaður framkvæmdastjóra'],['B',28,'Arnar Már Davíðsson','framleiðandi'],['B',29,'Linda Björk Hávarðardóttir','aðstoðarforstöðukona á frístundaheimili'],['B',30,'Arnþór Árni Logason','tölvunarfræðingur'],['B',31,'Bragi Ingólfsson','efnafræðingur'],['B',32,'Steinþór Ólafur Guðrúnarson','atvinnubílstjóri'],['B',33,'Olga Hrönn Olgeirsdóttir','deildarstjóri í grunnskóla'],['B',34,'Breki Halldórsson Bachmann','námsmaður og stuðningsfulltrúi í grunnskóla'],['B',35,'Inga Þyri Kjartansdóttir','formaður eldri borgara í Fossvogi'],['B',36,'Ólafur Ólafsson','sérfræðingur'],['B',37,'Jóhann Karl Sigurðsson','eldri borgari'],['B',38,'Ívar Orri Aronsson','íþróttastjóri'],['B',39,'Milla Ósk Magnúsdóttir','kvikmynda- og sjónvarpsþáttaframleiðandi'],['B',40,'Lárus Sigurður Lárusson','söngvari og lögmaður'],['B',41,'Hulda Finnlaugsdóttir','fyrrv. sérkennari'],['B',42,'Aðalsteinn Haukur Sverrisson','framkvæmdastjóri og fráfarandi borgarfulltrúi'],['B',43,'Árelía Eydís Guðmundsdóttir','dósent við HÍ og fráfarandi borgarfulltrúi'],['B',44,'Níels Árni Lund','fyrrv. skrifstofustjóri'],['B',45,'Hjálmar Waag Árnason','fyrrv. þingmaður og skólameistari'],['B',46,'Sigrún Magnúsdóttir','fyrrv. borgarfulltrúi og ráðherra'],['C',1,'Björg Magnúsdóttir','fjölmiðlakona og handritshöfundur'],['C',2,'Róbert Ragnarsson','stjórnsýsluráðgjafi'],['C',3,'Þorvaldur Davíð Kristjánsson','leikari'],['C',4,'Margrét Rós Sigurjónsdóttir','umhverfisfræðingur og framkvæmdastjóri'],['C',5,'Eyþór Máni Steinarsson','frumkvöðull'],['C',6,'Sandra Hlín Guðmundsdóttir','náms- og starfsráðgjafi'],['C',7,'Sverrir Páll Einarsson','forseti Uppreisnar'],['C',8,'Monika Katarzyna Waleszczynska','mannauðsstjóri'],['C',9,'Samúel Torfi Pétursson','skipulagsverkfræðingur'],['C',10,'Ingunn Rós Kristjánsdóttir','sálfræðikandídat og starfsmaður íbúðakjarna'],['C',11,'Hákon Skúlason','framkvæmdastjóri'],['C',12,'Emma Ósk Ragnarsdóttir','kennari og stjórnmálafræðingur'],['C',13,'Oddgeir Páll Georgsson','hugbúnaðarverkfræðingur'],['C',14,'Helga Dögg Björgvinsdóttir','viðskiptafræðingur'],['C',15,'Bjartur Hrafn Jóhannsson','starfsmaður neyðarskýlis'],['C',16,'Ragnheiður Dóra H. Jónsdóttir','nemi og frístundaleiðbeinandi'],['C',17,'Jón Steindór Valdimarsson','lögfræðingur'],['C',18,'Ester Ósk Gestsdóttir Waage','verkefnastjóri'],['C',19,'Bjarki Fjalar Guðjónsson','lögfræðingur'],['C',20,'Diljá Ámundadóttir Zoega','varaþingmaður og guðfræðinemi'],['C',21,'Hjálmar Gíslason','framkvæmdastjóri'],['C',22,'Emilía Björt Írisard. Bachmann','starfsmaður þingflokks'],['C',23,'Sverrir Örn Kaaber','fyrrv. skrifstofustjóri'],['C',24,'Noorina Khalikyar','læknir'],['C',25,'Steinar Logi Hafsteinsson','fyrirtækjaráðgjafi'],['C',26,'Ólöf Hugrún Valdimarsdóttir','deildarfulltrúi og verkefnastjóri'],['C',27,'Gústaf Berg Guðnýjarson','stjórnmálafræðingur'],['C',28,'Íris Arnlaugsdóttir','verkefnastjóri'],['C',29,'Unnar Geir Unnarsson','deildarstjóri'],['C',30,'Jana Guðrún Jahzara T. Maillard','nemi'],['C',31,'Jakob Rafn Löve','nemi'],['C',32,'Jóhanna Fjóla Ólafsdóttir','leiklistar- og tónlistarfræðingur'],['C',33,'Rúnar Guðjónsson','hagfræðingur'],['C',34,'María Svanfríður Malmquist','nemi'],['C',35,'Ásmundur Helgason','bókaútgefandi'],['C',36,'Draumey Ósk Ómarsdóttir','leikskólaleiðbeinandi'],['C',37,'Helgi Hrafn Gunnarsson','hugbúnaðarsmiður og tækniráðgjafi'],['C',38,'Kristín A. Árnadóttir','fyrrverandi sendiherra'],['C',39,'Haukur Árnason','kennari'],['C',40,'Andrea Þormar','list- og safnafræðingur'],['C',41,'Árni Grétar Jóhannsson','leikstjóri og leiðsögumaður'],['C',42,'Anna Hildigunnur Jónasdóttir','gagnasérfræðingur'],['C',43,'Úlfur Atli Stefaníuson','launaráðgjafi'],['C',44,'Ingileif Friðriksdóttir','aðstoðarmaður utanríkisráðherra'],['C',45,'Jón Gnarr','þingmaður og fyrrverandi borgarstjóri'],['C',46,'Þórdís Lóa Þórhallsdóttir','borgarfulltrúi og fráfarandi oddviti'],['D',1,'Hildur Björnsdóttir','borgarfulltrúi'],['D',2,'Bjarni Eggerts Guðjónsson','forstöðumaður fyrirtækjasviðs'],['D',3,'Brynjar Níelsson','lögfræðingur'],['D',4,'Ragnhildur Alda Vilhjálmsdóttir','borgarfulltrúi'],['D',5,'Rúnar Freyr Gíslason','leikari og framleiðandi'],['D',6,'Guðný María Jóhannsdóttir','viðskiptafræðingur'],['D',7,'Albert Guðmundsson','lögfræðingur og formaður Varðar'],['D',8,'Bjarni Fritzson','rithöfundur og bókaútgefandi'],['D',9,'Sigrún Ásta Einarsdóttir','framkvæmdastjóri'],['D',10,'Björn Gíslason','borgarfulltrúi'],['D',11,'Friðjón R Friðjónsson','borgarfulltrúi'],['D',12,'Hafrún Kristjánsdóttir','sálfræðingur'],['D',13,'Helga Margrét Marzellíusardóttir','tónlistarmaður'],['D',14,'Safa Jemai','hugbúnaðarverkfræðingur og frumkvöðull'],['D',15,'Daníel Hjörvar Guðmundsson','verslunarmaður og lögfræðingur'],['D',16,'Elínborg Ásdís Árnadóttir','kennari'],['D',17,'Aðalsteinn Örn Aðalsteinsson','viðskiptastjóri'],['D',18,'Már Másson','ráðgjafi og eigandi hjá Athygli'],['D',19,'Katla Guðjónsdóttir','framkvæmdastjóri'],['D',20,'Kristjón Jónsson','byggingatæknifræðingur og MBA'],['D',21,'Ásthildur Bertha Bjarkadóttir','uppeldis- og menntunarfræðingur'],['D',22,'Elías Blöndal Guðjónsson','verslunarmaður'],['D',23,'Arna Arnardóttir','gullsmiður'],['D',24,'Luka Lúkas Kostic','knattspyrnuþjálfari'],['D',25,'Auður Jónsdóttir','viðskiptafræðingur'],['D',26,'Eva Dögg M Sigurgeirsdóttir','viðskipta- og markaðsfræðingur'],['D',27,'Stefán Karl Snorrason','mannauðsstjóri'],['D',28,'Hlíf Sturludóttir','framkvæmdastjóri'],['D',29,'Atli Guðjónsson','fagstjóri landupplýsinga'],['D',30,'Tómas Orri Tryggvason','nemi'],['D',31,'Kolbrún Ólafsdóttir','fyrrum sérhæfður leikskólastarfsmaður'],['D',32,'Þórarinn Hjaltason','samgönguverkfræðingur'],['D',33,'Anna Fríða Ingvarsdóttir','nemi'],['D',34,'Logi Stefánsson','verslunarmaður'],['D',35,'Georg Ingi Kulp','tónlistarmaður og rafvirkjanemi'],['D',36,'Ingibjörg H Sverrisdóttir','varaformaður SES'],['D',37,'Alda María Þórðardóttir','formaður Heimdallar'],['D',38,'Guðmundur Snorrason','endurskoðandi'],['D',39,'Erna Birgisdóttir','laganemi'],['D',40,'Eydís Helga Viðarsdóttir','sagnfræðinemi'],['D',41,'Bertha Biering','fv. skrifstofufulltrúi'],['D',42,'Bjarni Pálsson','framkvæmdastjóri'],['D',43,'Gunnar Örn Ólafsson','eftirlaunaþegi'],['D',44,'Gestur Ólafsson','arkitekt og skipulagsfræðingur'],['D',45,'Svava Þorgerður Johansen','kaupmaður'],['D',46,'Ragnar Jónasson','rithöfundur'],['F',1,'Guðmundur Ingi Þóroddsson','formaður Afstöðu'],['F',2,'Einar Sveinbjörn Guðmundsson','kerfisfræðingur og varaborgarfulltrúi'],['F',3,'Guðbjörg Ingunn Magnúsdóttir','kennari'],['F',4,'Sigurveig Jóhannsdóttir','ráðgjafi ungmenna með fjölþættan vanda'],['F',5,'Rúnar Sigurjónsson','vélvirki'],['F',6,'Lilja Sigríður Steingrímsdóttir','hjúkrunarfræðingur'],['F',7,'Sigurður Rúnarsson','kerfisfræðingur'],['F',8,'Helga Þórðardóttir','borgarfulltrúi'],['F',9,'Tristan Gribbin','frumkvöðull og stofnandi Flow'],['F',10,'Heimir Már Pétursson','framkvæmdastjóri þingflokks Flokks fólksins'],['F',11,'Atli Jónasson','knattspyrnuþjálfari'],['F',12,'Ingi Björgvin Karlsson','prentari'],['F',13,'Gefn Baldursdóttir','læknaritari'],['F',14,'Inga Þóra Þóroddsdóttir','leikskólastarfsmaður'],['F',15,'Halldóra Gestsdóttir','listkennari'],['F',16,'Hreggviður Emil Eðvarðsson','tæknifræðingur'],['F',17,'Freyja Dís Númadóttir','tölvufræðingur'],['F',18,'Birgir Jóhann Birgisson','skrifstofumaður'],['F',19,'Stefanía Sesselja Hinriksdóttir','tækjavörður'],['F',20,'Kristján Salvar Davíðsson','fyrrum leigubílstjóri'],['F',21,'Valur Sigurðsson','lífeyrisþegi'],['F',22,'Oddný Árnadóttir','framkvæmdarstjóri LEB'],['F',23,'Jóna Marvinsdóttir','fyrrum matráður'],['F',24,'Ingvar Gíslason','námsmaður'],['F',25,'Siriprapaporn Taemsungnoen','starfsmaður á Hrafnistu'],['F',26,'Kristján Karlsson','verkamaður'],['F',27,'Katrín Viktoría Leiva','lögfræðingur'],['F',28,'Gunnar Skúli Ármannsson','læknir'],['F',29,'Ómar Örn Ómarsson','skrifstofumaður'],['F',30,'Ívar Már Jónsson','framhaldsskólakennari og verkfræðingur'],['F',31,'Alexander Jakob Dubik','aðstoðarmaður ráðherra'],['F',32,'Óli Már Guðmundsson','eldri borgari'],['F',33,'Þórarinn Kristinsson','fyrrum sjómaður'],['F',34,'Hilmar Guðmundsson','eldri borgari'],['F',35,'Margrét Víkingsdóttir','ferðamálafræðingur'],['F',36,'Bjarni Guðmundsson','bifreiðastjóri'],['F',37,'Sigríður Sæland Óladóttir','hjúkrunarfræðingur'],['F',38,'Kristján Arnar Helgason','eldri borgari'],['F',39,'Baldur Örn Ólason','skrifstofustjóri'],['F',40,'Daníel Dúi Ragnarsson','nemi'],['F',41,'Eysteinn Lester Batson','húsasmiður'],['F',42,'Sigríður G. Kristjánsdóttir','heimavinnandi'],['F',43,'Kolbrún Áslaugar Baldursdóttir','alþingismaður'],['F',44,'Ragnar Þór Ingólfsson','alþingismaður'],['F',45,'Sigríður Sæland Jónsdóttir','húsmóðir'],['F',46,'Inga Sæland Ástvaldsdóttir','formaður Flokks fólksins'],['G',1,'Ingimar Þór Friðriksson','framkvæmdastjóri'],['G',2,'Hjördís Dröfn Vilhjálmsdóttir','leiðtoga- og teymisþjálfi'],['G',3,'Torfi Markússon','rekstrarfræðingur'],['G',4,'Nathalia B. Tómasdóttir','vörumerkjahönnuður'],['G',5,'Jón L. Árnason','framkvæmdastjóri'],['G',6,'Björn Jóhann Þórsson','verkfræðingur'],['G',7,'Andri Ívarsson','tónlistarmaður og uppistandari'],['G',8,'Inga María Friðriksdóttir','grunnskólakennari'],['G',9,'Jónas Gunnarsson','markaðssérfræðingur'],['G',10,'Unnur Sól Ingimarsdóttir','tölvunarfræðingur'],['G',11,'Markús Karl Torfason','stærðfræðikennari og verkfræðingur'],['G',12,'Birta Hrönn Ingimarsdóttir','læknanemi'],['G',13,'Dagur Adam Ólafsson','húsasmiður'],['G',14,'Jón Bjarni Geirsson','húsgagnasmíðameistari'],['G',15,'Þorleifur Þorleifsson','tæknifræðingur'],['G',16,'Sunnefa Pálsdóttir','tölvunarfræðingur'],['G',17,'Jóhann Jökull Bæhrenz','háskólanemi'],['G',18,'Súsanna Sif Terrazas','fararstjóri og túlkur'],['G',19,'Sigfús Þór Guðbjartsson','kerfisfræðingur'],['G',20,'Páll Kristinn Guðjónsson','rafvirkjameistari'],['G',21,'Pétur Bjarni Pétursson','tölvunarfræðingur'],['G',22,'Guðmundur Óskar Hauksson','húsasmíðameistari'],['G',23,'Rakel Árnadóttir','öryrki'],['J',1,'Silja Sóley Birgisdóttir','stuðningsfulltrúi'],['J',2,'Sigrún E Unnsteinsdóttir','athafnakona'],['J',3,'Hannes Pétursson','verslunarmaður'],['J',4,'Geirdís Hanna Kristjánsdóttir','öryrki'],['J',5,'Jón Ferdínand Estherarson','stjórnmálasagnfræðingur'],['J',6,'Birna Gunnlaugsdóttir','kennari'],['J',7,'Rósa Guðný Arnardóttir','nemi'],['J',8,'Halldór Ísak Ólafsson','kvikmyndagerðarmaður'],['J',9,'Jökull Sólberg Auðunsson','forritari'],['J',10,'Júnía Líf Sigurjónsdóttir','sálfræðinemi'],['J',11,'Guðmundur Guðmundsson','sagnfræðinemi'],['J',12,'Þórhildur Katrín Pálsdóttir','nemandi'],['J',13,'Davíð Aron Routley','starfsmaður á velferðarsviði'],['J',14,'Anita da Silva Bjarnadóttir','öryrki'],['J',15,'Guðröður Atli Jónsson','tæknimaður'],['J',16,'Eyjólfur B. Eyvindarson','tónlistar- og kvikmyndagerðarmaður'],['J',17,'Uldarico Castillo de Luna','hjúkrunarfræðingur'],['J',18,'Berglind Rut Terrazas','umönnun'],['J',19,'Anna Jonna Ármannsdóttir','rafvirkjameistari'],['J',20,'Katrín Baldursdóttir','blaðamaður og heldri borgari'],['J',21,'Helgi Páll Einarsson','hönnuður'],['J',22,'Bryndís Ýrr Baldursdóttir','listakona'],['J',23,'Esther Jónsdóttir','stuðningsfulltrúi'],['J',24,'Tinna Þorvaldsdóttir Önnudóttir','listamaður'],['J',25,'Hjörtur Birgir Jóhönnuson','verkamaður'],['J',26,'Hermann Karl Gunnarsson','stuðningsfulltrúi'],['J',27,'Auður Mist Eydal Halldórsdóttir','myndlistarmaður'],['J',28,'Þorvaldur Þorvaldsson','trésmiður'],['J',29,'Björgvin Már Karlsson','námsmaður'],['J',30,'Magnús Bergsson','rafvirki'],['J',31,'Sólrún Freyja Sen','kvikmyndagerðarmaður'],['J',32,'Hjörtur Þorgeirsson','deildarstjóri'],['J',33,'Hjálmar Friðriksson','atvinnulaus'],['J',34,'Valtýr Kári Daníelsson','eðlisfræðingur'],['J',35,'Kristbjörg Eva Andersen Ramos','deildarstjóri í íbúðakjarna'],['J',36,'Stefán Örn Ingvarsson Olsen','rafvirki'],['J',37,'Kristófer Andrésson','myndlistarmaður'],['J',38,'Björn Guðmundsson','verkefna- og gæðastjóri'],['J',39,'Þorbjörg Inga Þórisdóttir','öryrki'],['J',40,'Árni Daníel Júlíusson','sagnfræðingur'],['J',41,'Björgvin Máni Ársælsson','tæknimaður'],['J',42,'Ólafur Pétur Georgsson','kvikmyndagerðarmaður'],['J',43,'Sherry Ruth Espino Buot','athafnakona'],['J',44,'Guðmundur Erlendsson','ellilífeyrisþegi'],['J',45,'Júlíus K. Valdimarsson','húmanisti'],['J',46,'Sólveig Hauksdóttir','hjúkrunarfræðingur'],['M',1,'Ari Edwald','lögmaður og rekstrarhagfræðingur'],['M',2,'Kristín Kolbrún Kolbeinsdóttir','kennari og uppeldisráðgjafi'],['M',3,'Lárus Sigurðsson','framkvæmdastjóri'],['M',4,'Hlédís Maren Guðmundsdóttir','félagsfræðingur'],['M',5,'Helgi Áss Grétarsson','varaborgarfulltrúi og stórmeistari'],['M',6,'Páll Edwald','yfirlögfræðingur'],['M',7,'Eva Þorsteinsdóttir','athafnakona'],['M',8,'Katrín H. Magnúsdóttir','náms- og starfsráðgjafi'],['M',9,'Breki Atlason','alþjóðafulltrúi'],['M',10,'Salma Björk Önnudóttir','háskólanemi'],['M',11,'Sóldís Birta Reynisdóttir','grunnskólakennari'],['M',12,'Jón Múli Egilsson Prunner','myndlistarmaður og rappari'],['M',13,'Marta Guðjónsdóttir','borgarfulltrúi'],['M',14,'Ásgeir Theodór Jóhannesson','framkvæmdastjóri'],['M',15,'Kjartan Magnússon','borgarfulltrúi'],['M',16,'Jón Ingi Gíslason','grunnskólakennari'],['M',17,'Margrét Edda Gnarr','einkaþjálfari'],['M',18,'Símon Þorkell Símonarson Olsen','tómstunda- og félagsmálafræðingur'],['M',19,'Marcin Szafranowicz','verslunarmaður'],['M',20,'Arnór Valdimarsson','flugvirki'],['M',21,'Karolína M Jónsdóttir','fv. kennari'],['M',22,'Eliso Kalandia','ljósmyndari og túlkur'],['M',23,'Bóas Sigurjónsson','laganemi'],['M',24,'Krzysztof Giewiel','sjómaður'],['M',25,'Ómar Örn Karlsson','sjómaður'],['M',26,'Steinunn Anna Baldursdóttir','prestur'],['M',27,'Davíð Bergmann Davíðsson','unglingaráðgjafi'],['M',28,'Dorota Anna Zaorska','fornleifafræðingur'],['M',29,'Ellert Scheving Markússon','framkvæmdastjóri'],['M',30,'Kristín Linda Sævarsdóttir','húsmóðir'],['M',31,'Símon Ólafsson','tæknistjóri hjá BL'],['M',32,'Ævar Daníel Guðrúnarson','gæðastjóri'],['M',33,'Eiður Fannar Erlendsson','yfirmaður vetrarþjónustu Reykjavíkurborgar'],['M',34,'Halldór Örn Írisarson','laganemi'],['M',35,'Sonja Ólafsdóttir','einkaþjálfari'],['M',36,'Jón A Jónsson','vélvirkjameistari'],['M',37,'Fjóla Hrund Björnsdóttir','framkvæmdastjóri þingflokks'],['M',38,'Jón Sigurðsson','framkvæmdastjóri'],['M',39,'Elínbjörg Ingólfsdóttir','verslunareigandi'],['M',40,'Ingibjörg Lilja Jónsdóttir','húsmóðir'],['M',41,'Valey Ýr Mörk Valgeirsdóttir','sjúkraliði'],['M',42,'Guðlaugur Sverrisson','viðskiptastjóri'],['M',43,'Valdimar Ármann Þórhallsson','ellilífeyrisþegi'],['M',44,'Erna Valsdóttir','fv. fasteignasali'],['M',45,'Gunnlaugur A. Júlíusson','hagfræðingur og leiðsögumaður'],['M',46,'Vigdís Hauksdóttir','lögfr., fv. alþingism. og borgarfulltrúi'],['P',1,'Kristinn Jón Ólafsson','fyrsti varaborgarfulltrúi Pírata'],['P',2,'Alexandra Briem','borgarfulltrúi'],['P',3,'Oktavía Hrund Guðrúnar Jóns','formaður Pírata'],['P',4,'Unnar Þór Sæmundsson','framkvæmdastjóri í eigin fyrirtæki og laganemi'],['P',5,'Olga Margrét Kristínardóttir Cilia','sjálfstætt starfandi lögmaður'],['P',6,'Hans Alexander Margrétarson Hansen','deildarstjóri á leikskóla'],['P',7,'Oddur Björn Jónsson','stuðningsfulltrúi á íbúðakjarna'],['P',8,'Jökull Leuschner Veigarsson','framkvæmdastjóri og atvinnubílstjóri'],['P',9,'Guðni Freyr Öfjörð','urbanisti'],['P',10,'Katla María Unnþórsdóttir','ritari Pírata í Reykjavík'],['P',11,'Derek Terell Allen','kennari'],['P',12,'Ari Logn Yndu','listakvár'],['P',13,'Alexandra Ýrr Ford','tónlistarkona og nemi'],['P',14,'Kjartan Jónsson','framkvæmdastjóri Múltíkúltí'],['P',15,'Andie Sophia Fontaine','rithöfundur og tónlistarkona'],['P',16,'Reyn Alpha Magnúsdóttir','kennaranemi og forseti Trans Ísland'],['P',17,'Steinar Guðlaugsson','jarðeðlisfræðingur og ellilífeyrisþegi'],['P',18,'Hulda Biering','listnemi'],['P',19,'Stefán Atli Thoroddsen','jógakennari'],['P',20,'Shruthi Basappa','arkitekt'],['P',21,'Snorri Sturluson','leikstjóri'],['P',22,'María Eldey Kristínardóttir','öryggisvörður'],['P',23,'Arnór Dan Arnarson','tónlistarmaður'],['P',24,'Agnes Jónasdóttir','sagnfræðingur'],['P',25,'Móberg Ordal','háskólanemi'],['P',26,'Viktoría Ziliute','í eigin rekstri og viðskiptafræðinemi'],['P',27,'Veigar Freyr Ragnheiðarson','kerfisstjóri'],['P',28,'Elsa Kristjánsdóttir','bókari og viðskiptafræðingur'],['P',29,'Ormur Guðjónsson','stuðningsfulltrúi og nemi'],['P',30,'Valgerður Kristín Einarsdóttir','gjaldkeri Pírata'],['P',31,'Jóhann Hjörtur Ösp Stefánsbur','listakvár'],['P',32,'Beverley Anderson','sjálfstætt starfandi rannsakandi'],['P',33,'Jóhann Kristian Jóhannsson','bifvélavirki'],['P',34,'Renata Sara Arnórsdóttir','afgreiðslukona'],['P',35,'Bob Cluness','doktorsnemi'],['P',36,'Elín Jósepsdóttir','sálfræðingur'],['P',37,'Hrannar Jónsson','forritari'],['P',38,'Annie Marín Vestfjörð Guðmundsdóttir','lögfræðingur'],['P',39,'Sólhrafn Elí Gunnarsson','starfsmaður í umönnun'],['P',40,'Raluca-Elmira Moldovan','NPA aðstoðarmanneskja'],['P',41,'Alexander Arnarsson','tónlistarmaður og nemi'],['P',42,'Dan Zerin','uppistandari'],['P',43,'Hrefna Árnadóttir','nemi'],['P',44,'Bergþór Grétar Böðvarsson','notendafulltrúi'],['P',45,'Iðunn Doris Sigríður Magnúsdóttir','sálfræðingur'],['P',46,'Edda Björk Bogadóttir','eldri borgari'],['R',1,'Sigfús Aðalsteinsson','leikskólakennari'],['R',2,'Baldur Borgþórsson','ráðgjafi'],['R',3,'Hlynur Áskelsson','kennari'],['R',4,'Ágústa Árnadóttir','jógakennari'],['R',5,'Thelma Guðrún Jónsdóttir','flugfreyja'],['R',6,'Katarzyna Anna Dziadkowiec','leikskólaleiðbeinandi'],['R',7,'Hreinn Pétursson','bílstjóri'],['R',8,'Valbjörn Jónsson','bakari'],['R',9,'Jón Viðar Óskarsson','rafvirkjameistari'],['R',10,'Alexander Jón Baldursson','rafiðnfræðingur'],['R',11,'Sandra Andradóttir','sjúkraliði'],['R',12,'Linda Jónsdóttir','þjálfari'],['R',13,'Eiríkur Ottó Bragason','verkamaður'],['R',14,'Þorsteinn Már Sigurðarson','húsasmiður'],['R',15,'Örn Úlfar Úlfarsson','byggingastjóri'],['R',16,'Sigursteinn Snorrason','einkaþjálfari'],['R',17,'Sigurður Halldór Bjarnason','kerfisstjóri'],['R',18,'Þórhallur H Þórhallsson','rafeindavirkjameistari'],['R',19,'Björn Máni Björnsson','tónlistarmaður'],['R',20,'Sigurður Jónsson','framkvæmdastjóri'],['R',21,'Kristbjörn Kris Sigurðsson','fasteignasali'],['R',22,'Sigrún Ásta Jónsdóttir','hjúkrunarfræðingur'],['R',23,'Birgir Stefánsson','hvalveiðimaður'],['S',1,'Pétur Hafliði Marteinsson','rekstrarstjóri'],['S',2,'Heiða Björg Hilmisdóttir','borgarstjóri'],['S',3,'Steinunn Guðjónsdóttir','ráðgjafi'],['S',4,'Skúli Helgason','borgarfulltrúi'],['S',5,'Stein Olav Romslo','kennari'],['S',6,'Bjarnveig Birta Bjarnadóttir','rekstrarstjóri'],['S',7,'Regína Ásvaldsdóttir','fyrrverandi bæjarstjóri'],['S',8,'Birkir Ingibjartsson','arkitekt'],['S',9,'Isabel Alejandra Diaz','stjórnsýslufræðingur'],['S',10,'Sara Björg Sigurðardóttir','varaborgarfulltrúi'],['S',11,'Katarzyna Kubis','þroskaþjálfi'],['S',12,'Arnar Ingi Ingason','tónlistarmaður'],['S',13,'Steinunn Ósk Óskarsdóttir','forstöðukona Batahúss'],['S',14,'Hildur Oddsdóttir','formaður Hjálparkokka'],['S',15,'Harpa Sif Eyjólfsdóttir','doktor í faraldsfræði'],['S',16,'Anna Margrét Ólafsdóttir','leikskólastjóri'],['S',17,'Hlynur Páll Pálsson','mannauðsstjóri'],['S',18,'Tinna Davíðsdóttir','lyfjafræðingur'],['S',19,'Jón Heiðar Þorkelsson','tæknimaður'],['S',20,'Fanney Dóra Veigarsdóttir','leikskólakennari'],['S',21,'Stefán Árni Geirsson','knattspyrnumaður'],['S',22,'Magnea Marinósdóttir','stjórnmálafræðingur'],['S',23,'Steindór Örn Gunnarsson','húsasmiður'],['S',24,'Valný Óttarsdóttir','iðjuþjálfi'],['S',25,'Kristján Benjamín Guðmundsson','rekstarhagfræðingur'],['S',26,'Vigdís Freyja Gísladóttir','leikskólastarfsmaður'],['S',27,'Rúnar Logi Ingólfsson','verkefnastjóri'],['S',28,'Jódís Bjarnadóttir','félagsráðgjafi'],['S',29,'Brynjar Bragi Einarsson','menntaskólanemi'],['S',30,'Marzibil Sæmundardóttir','kvikmyndargerðarkona'],['S',31,'Jóhann Ágúst Jóhannsson','plötusali'],['S',32,'María Gyða Pétursdóttir','læknir'],['S',33,'Aland Shirwan Kamal','háskólanemi'],['S',34,'Elva Dögg Gunnarsdóttir','leikskólakennari'],['S',35,'Sveinn Eggert Jónsson','sölumaður'],['S',36,'Brynhildur Björnsdóttir','framhaldsskólakennari'],['S',37,'Halla Þorkelsson','verslunarmaður'],['S',38,'Þórður Árnason','tónlistarkennari'],['S',39,'Lilja Ólafsdóttir','rauðsokka'],['S',40,'Hörður Filippusson','professor emeritus'],['S',41,'Aðalheiður Frantzdóttir','eldri borgari'],['S',42,'Sigfús Ómar Höskuldsson','leiðsögumaður'],['S',43,'Hjálmar Sveinsson','borgarfulltrúi'],['S',44,'Steinunn Valdís Óskarsdóttir','skrifstofustjóri skrifstofu jafnréttismála'],['S',45,'Dagur B. Eggertsson','alþingismaður'],['S',46,'Ingibjörg Sólrún Gísladóttir','fyrrum borgarstjóri']];
-const CANDS=RAW.map((r,i)=>({id:i,party:r[0],num:r[1],name:r[2],title:r[3]}));
+let RAW=[['A',1,'Sanna Magdalena Mörtudóttir','mannfræðingur og borgarfulltrúi'],['A',2,'Líf Magneudóttir','grunnskólakennari og borgarfulltrúi'],['A',3,'Stefán Pálsson','sagnfræðingur og varaborgarfulltrúi'],['A',4,'Ásta Þ. Skjalddal Guðjónsdóttir','viðurkenndur bókari og varaborgarfulltrúi'],['A',5,'Arna Magnea Danks','leikkona, áhættuleikstjóri og kennari'],['A',6,'Finnur Ricart Andrason','sérfræðingur í umhverfis- og loftslagsmálum'],['A',7,'Laufey Líndal Ólafsdóttir','tæknistjóri á Samstöðinni'],['A',8,'Riitta Anne Maarit Kaipainen','rekstrarstjóri'],['A',9,'Tinna Rut Jóhannsdóttir','skrifstofukona og athafnastýra'],['A',10,'Steinar Harðarson','athafnastjóri og vinnuverndarráðgjafi'],['A',11,'Viðar Gunnarsson','fyrrum teymisstjóri Reykjavíkurborgar'],['A',12,'Bergrún Andradóttir','skrifstofustjóri Samtakanna 78'],['A',13,'María Hjálmtýsdóttir','kennari og aktívisti'],['A',14,'Illugi Gunnarsson','formaður Ungra vinstri grænna'],['A',15,'Halldór Auðar Svansson','tölvunarfræðingur'],['A',16,'Brynhildur Björnsdóttir','söngkona og háskólanemi'],['A',17,'Signý Sigurðardóttir','verkakona á leikskóla og litakona'],['A',18,'Sveinn Rúnar Hauksson','læknir'],['A',19,'Armando Garcia Teixeira','doktorsnemi og aðgerðasinni'],['A',20,'Nína Aradóttir','jarðfræðingur'],['A',21,'Þórdís Nadia Semichat','sviðshöfundur og danskennari'],['A',22,'Kristinn Helgi Magnússon Schram','dósent við Háskóla Íslands'],['A',23,'Sigurður Andrés Sigurðarson','ökuleiðsögumaður'],['A',24,'Ragnhildur Björt Björnsdóttir','sagnfræðinemi'],['A',25,'Davíð Sól Páls','umsjónarkennari'],['A',26,'Ari Orrason','frístundaráðgjafi'],['A',27,'Ragnheiður Guðmundsdóttir','stjórnmálafræðingur'],['A',28,'Birna Björg Guðmundsdóttir','tollmiðlari og ritari Trans vina'],['A',29,'Björn Rúnar Guðmundsson','sagnfræðingur'],['A',30,'Sæmundur Helgason','grunnskólakennari og UT verkefnastjóri'],['A',31,'Sóley Lóa Smáradóttir','nemi'],['A',32,'Auður Alfífa Ketilsdóttir','smíðaleiðbeinandi'],['A',33,'Þórir Jónsson Hraundal','lektor við Háskóla Íslands'],['A',34,'Ingileif Jónsdóttir','prófessor emerita í ónæmisfræðum'],['A',35,'Silva Á. Skjalddal Eggertsdóttir','leiðbeinandi í leikskóla'],['A',36,'Viktor Árnason','líffræðingur'],['A',37,'Alexandre Amaral Da Silva','persónulegur aðstoðarmaður og aktívisti'],['A',38,'Sigrún Jóhannsdóttir','líffræðingur'],['A',39,'Rakel Hildardóttir','starfsmaður í Konukoti'],['A',40,'Anna Lára Steindal','framkvæmdastjóri Þroskahjálpar'],['A',41,'Jón Helgi Þórarinsson','tölvuleikjahönnuður'],['A',42,'René Biasone','svæðasérfræðingur hjá Náttúruverndarstofnun'],['A',43,'Úlfhildur Melkorka Magnadóttir','hjúkrunarfræðinemi og frístundaleiðbeinandi'],['A',44,'Sjöfn Ingólfsdóttir','fyrrverandi formaður Starfsmannafélags Reykjavíkur'],['A',45,'Sigrún Jónsdóttir','sjúkraliði á eftirlaunum'],['A',46,'Guðrún Ágústsdóttir','hópstjóri hjá Sorgarmiðstöð'],['B',1,'Einar Þorsteinsson','borgarfulltrúi'],['B',2,'Magnea Gná Jóhannsdóttir','borgarfulltrúi'],['B',3,'Þorvaldur Daníelsson','varaborgarfulltrúi og framkvæmdastjóri Hjólakrafts'],['B',4,'Halldór Bachmann','kynningarstjóri'],['B',5,'Andrea Edda Guðlaugsdóttir','hagfræðinemi og stúdentaráðsliði'],['B',6,'Þórdís Jóna Jakobsdóttir','fíkniráðgjafi'],['B',7,'Ína Holoyad','úkraínskumælandi brúarsmiður hjá MMS'],['B',8,'Guðmundur Ingi Þorvaldsson','leikari'],['B',9,'Ásrún Kristjánsdóttir','myndlistarmaður og hönnuður'],['B',10,'Skúli Bragi Geirdal','sviðsstjóri'],['B',11,'Kristjana Þórarinsdóttir','sálfræðingur'],['B',12,'Dagbjört S Höskuldsdóttir','formaður Sambands eldri Framsóknarmanna'],['B',13,'Jón Finnbogason','ráðgjafi'],['B',14,'Þórdís Arna Bjarkarsdóttir','læknir í sérnámsgrunni'],['B',15,'Fanný Gunnarsdóttir','náms- og starfsráðgjafi og kennari'],['B',16,'Haraldur Þorvarðarson','kennari og handboltaþjálfari'],['B',17,'Ragnhildur Helga Ragnarsdóttir','tæknistjóri'],['B',18,'Hörður Ragnarsson','hugbúnaðarsérfræðingur'],['B',19,'Sæþór Már Hinriksson','tónlistarmaður og háskólanemi'],['B',20,'Ásta Björg Björgvinsdóttir','kennari og tónlistarkona'],['B',21,'Gísli J. Jónatansson','fyrrverandi kaupfélagsstjóri'],['B',22,'Dröfn Skorradóttir','móttökuritari'],['B',23,'Ágúst Guðjónsson','lögfræðingur'],['B',24,'Hafsteinn Bergmann Gunnarsson','byggingafræðingur og forstöðumaður'],['B',25,'Björg Ósk Gunnarsdóttir','lögfræðingur'],['B',26,'Björn Ívar Björnsson','fjármálastjóri og hagfræðingur'],['B',27,'Gyða Björg Olgeirsdóttir','aðstoðarmaður framkvæmdastjóra'],['B',28,'Arnar Már Davíðsson','framleiðandi'],['B',29,'Linda Björk Hávarðardóttir','aðstoðarforstöðukona á frístundaheimili'],['B',30,'Arnþór Árni Logason','tölvunarfræðingur'],['B',31,'Bragi Ingólfsson','efnafræðingur'],['B',32,'Steinþór Ólafur Guðrúnarson','atvinnubílstjóri'],['B',33,'Olga Hrönn Olgeirsdóttir','deildarstjóri í grunnskóla'],['B',34,'Breki Halldórsson Bachmann','námsmaður og stuðningsfulltrúi í grunnskóla'],['B',35,'Inga Þyri Kjartansdóttir','formaður eldri borgara í Fossvogi'],['B',36,'Ólafur Ólafsson','sérfræðingur'],['B',37,'Jóhann Karl Sigurðsson','eldri borgari'],['B',38,'Ívar Orri Aronsson','íþróttastjóri'],['B',39,'Milla Ósk Magnúsdóttir','kvikmynda- og sjónvarpsþáttaframleiðandi'],['B',40,'Lárus Sigurður Lárusson','söngvari og lögmaður'],['B',41,'Hulda Finnlaugsdóttir','fyrrv. sérkennari'],['B',42,'Aðalsteinn Haukur Sverrisson','framkvæmdastjóri og fráfarandi borgarfulltrúi'],['B',43,'Árelía Eydís Guðmundsdóttir','dósent við HÍ og fráfarandi borgarfulltrúi'],['B',44,'Níels Árni Lund','fyrrv. skrifstofustjóri'],['B',45,'Hjálmar Waag Árnason','fyrrv. þingmaður og skólameistari'],['B',46,'Sigrún Magnúsdóttir','fyrrv. borgarfulltrúi og ráðherra'],['C',1,'Björg Magnúsdóttir','fjölmiðlakona og handritshöfundur'],['C',2,'Róbert Ragnarsson','stjórnsýsluráðgjafi'],['C',3,'Þorvaldur Davíð Kristjánsson','leikari'],['C',4,'Margrét Rós Sigurjónsdóttir','umhverfisfræðingur og framkvæmdastjóri'],['C',5,'Eyþór Máni Steinarsson','frumkvöðull'],['C',6,'Sandra Hlín Guðmundsdóttir','náms- og starfsráðgjafi'],['C',7,'Sverrir Páll Einarsson','forseti Uppreisnar'],['C',8,'Monika Katarzyna Waleszczynska','mannauðsstjóri'],['C',9,'Samúel Torfi Pétursson','skipulagsverkfræðingur'],['C',10,'Ingunn Rós Kristjánsdóttir','sálfræðikandídat og starfsmaður íbúðakjarna'],['C',11,'Hákon Skúlason','framkvæmdastjóri'],['C',12,'Emma Ósk Ragnarsdóttir','kennari og stjórnmálafræðingur'],['C',13,'Oddgeir Páll Georgsson','hugbúnaðarverkfræðingur'],['C',14,'Helga Dögg Björgvinsdóttir','viðskiptafræðingur'],['C',15,'Bjartur Hrafn Jóhannsson','starfsmaður neyðarskýlis'],['C',16,'Ragnheiður Dóra H. Jónsdóttir','nemi og frístundaleiðbeinandi'],['C',17,'Jón Steindór Valdimarsson','lögfræðingur'],['C',18,'Ester Ósk Gestsdóttir Waage','verkefnastjóri'],['C',19,'Bjarki Fjalar Guðjónsson','lögfræðingur'],['C',20,'Diljá Ámundadóttir Zoega','varaþingmaður og guðfræðinemi'],['C',21,'Hjálmar Gíslason','framkvæmdastjóri'],['C',22,'Emilía Björt Írisard. Bachmann','starfsmaður þingflokks'],['C',23,'Sverrir Örn Kaaber','fyrrv. skrifstofustjóri'],['C',24,'Noorina Khalikyar','læknir'],['C',25,'Steinar Logi Hafsteinsson','fyrirtækjaráðgjafi'],['C',26,'Ólöf Hugrún Valdimarsdóttir','deildarfulltrúi og verkefnastjóri'],['C',27,'Gústaf Berg Guðnýjarson','stjórnmálafræðingur'],['C',28,'Íris Arnlaugsdóttir','verkefnastjóri'],['C',29,'Unnar Geir Unnarsson','deildarstjóri'],['C',30,'Jana Guðrún Jahzara T. Maillard','nemi'],['C',31,'Jakob Rafn Löve','nemi'],['C',32,'Jóhanna Fjóla Ólafsdóttir','leiklistar- og tónlistarfræðingur'],['C',33,'Rúnar Guðjónsson','hagfræðingur'],['C',34,'María Svanfríður Malmquist','nemi'],['C',35,'Ásmundur Helgason','bókaútgefandi'],['C',36,'Draumey Ósk Ómarsdóttir','leikskólaleiðbeinandi'],['C',37,'Helgi Hrafn Gunnarsson','hugbúnaðarsmiður og tækniráðgjafi'],['C',38,'Kristín A. Árnadóttir','fyrrverandi sendiherra'],['C',39,'Haukur Árnason','kennari'],['C',40,'Andrea Þormar','list- og safnafræðingur'],['C',41,'Árni Grétar Jóhannsson','leikstjóri og leiðsögumaður'],['C',42,'Anna Hildigunnur Jónasdóttir','gagnasérfræðingur'],['C',43,'Úlfur Atli Stefaníuson','launaráðgjafi'],['C',44,'Ingileif Friðriksdóttir','aðstoðarmaður utanríkisráðherra'],['C',45,'Jón Gnarr','þingmaður og fyrrverandi borgarstjóri'],['C',46,'Þórdís Lóa Þórhallsdóttir','borgarfulltrúi og fráfarandi oddviti'],['D',1,'Hildur Björnsdóttir','borgarfulltrúi'],['D',2,'Bjarni Eggerts Guðjónsson','forstöðumaður fyrirtækjasviðs'],['D',3,'Brynjar Níelsson','lögfræðingur'],['D',4,'Ragnhildur Alda Vilhjálmsdóttir','borgarfulltrúi'],['D',5,'Rúnar Freyr Gíslason','leikari og framleiðandi'],['D',6,'Guðný María Jóhannsdóttir','viðskiptafræðingur'],['D',7,'Albert Guðmundsson','lögfræðingur og formaður Varðar'],['D',8,'Bjarni Fritzson','rithöfundur og bókaútgefandi'],['D',9,'Sigrún Ásta Einarsdóttir','framkvæmdastjóri'],['D',10,'Björn Gíslason','borgarfulltrúi'],['D',11,'Friðjón R Friðjónsson','borgarfulltrúi'],['D',12,'Hafrún Kristjánsdóttir','sálfræðingur'],['D',13,'Helga Margrét Marzellíusardóttir','tónlistarmaður'],['D',14,'Safa Jemai','hugbúnaðarverkfræðingur og frumkvöðull'],['D',15,'Daníel Hjörvar Guðmundsson','verslunarmaður og lögfræðingur'],['D',16,'Elínborg Ásdís Árnadóttir','kennari'],['D',17,'Aðalsteinn Örn Aðalsteinsson','viðskiptastjóri'],['D',18,'Már Másson','ráðgjafi og eigandi hjá Athygli'],['D',19,'Katla Guðjónsdóttir','framkvæmdastjóri'],['D',20,'Kristjón Jónsson','byggingatæknifræðingur og MBA'],['D',21,'Ásthildur Bertha Bjarkadóttir','uppeldis- og menntunarfræðingur'],['D',22,'Elías Blöndal Guðjónsson','verslunarmaður'],['D',23,'Arna Arnardóttir','gullsmiður'],['D',24,'Luka Lúkas Kostic','knattspyrnuþjálfari'],['D',25,'Auður Jónsdóttir','viðskiptafræðingur'],['D',26,'Eva Dögg M Sigurgeirsdóttir','viðskipta- og markaðsfræðingur'],['D',27,'Stefán Karl Snorrason','mannauðsstjóri'],['D',28,'Hlíf Sturludóttir','framkvæmdastjóri'],['D',29,'Atli Guðjónsson','fagstjóri landupplýsinga'],['D',30,'Tómas Orri Tryggvason','nemi'],['D',31,'Kolbrún Ólafsdóttir','fyrrum sérhæfður leikskólastarfsmaður'],['D',32,'Þórarinn Hjaltason','samgönguverkfræðingur'],['D',33,'Anna Fríða Ingvarsdóttir','nemi'],['D',34,'Logi Stefánsson','verslunarmaður'],['D',35,'Georg Ingi Kulp','tónlistarmaður og rafvirkjanemi'],['D',36,'Ingibjörg H Sverrisdóttir','varaformaður SES'],['D',37,'Alda María Þórðardóttir','formaður Heimdallar'],['D',38,'Guðmundur Snorrason','endurskoðandi'],['D',39,'Erna Birgisdóttir','laganemi'],['D',40,'Eydís Helga Viðarsdóttir','sagnfræðinemi'],['D',41,'Bertha Biering','fv. skrifstofufulltrúi'],['D',42,'Bjarni Pálsson','framkvæmdastjóri'],['D',43,'Gunnar Örn Ólafsson','eftirlaunaþegi'],['D',44,'Gestur Ólafsson','arkitekt og skipulagsfræðingur'],['D',45,'Svava Þorgerður Johansen','kaupmaður'],['D',46,'Ragnar Jónasson','rithöfundur'],['F',1,'Guðmundur Ingi Þóroddsson','formaður Afstöðu'],['F',2,'Einar Sveinbjörn Guðmundsson','kerfisfræðingur og varaborgarfulltrúi'],['F',3,'Guðbjörg Ingunn Magnúsdóttir','kennari'],['F',4,'Sigurveig Jóhannsdóttir','ráðgjafi ungmenna með fjölþættan vanda'],['F',5,'Rúnar Sigurjónsson','vélvirki'],['F',6,'Lilja Sigríður Steingrímsdóttir','hjúkrunarfræðingur'],['F',7,'Sigurður Rúnarsson','kerfisfræðingur'],['F',8,'Helga Þórðardóttir','borgarfulltrúi'],['F',9,'Tristan Gribbin','frumkvöðull og stofnandi Flow'],['F',10,'Heimir Már Pétursson','framkvæmdastjóri þingflokks Flokks fólksins'],['F',11,'Atli Jónasson','knattspyrnuþjálfari'],['F',12,'Ingi Björgvin Karlsson','prentari'],['F',13,'Gefn Baldursdóttir','læknaritari'],['F',14,'Inga Þóra Þóroddsdóttir','leikskólastarfsmaður'],['F',15,'Halldóra Gestsdóttir','listkennari'],['F',16,'Hreggviður Emil Eðvarðsson','tæknifræðingur'],['F',17,'Freyja Dís Númadóttir','tölvufræðingur'],['F',18,'Birgir Jóhann Birgisson','skrifstofumaður'],['F',19,'Stefanía Sesselja Hinriksdóttir','tækjavörður'],['F',20,'Kristján Salvar Davíðsson','fyrrum leigubílstjóri'],['F',21,'Valur Sigurðsson','lífeyrisþegi'],['F',22,'Oddný Árnadóttir','framkvæmdarstjóri LEB'],['F',23,'Jóna Marvinsdóttir','fyrrum matráður'],['F',24,'Ingvar Gíslason','námsmaður'],['F',25,'Siriprapaporn Taemsungnoen','starfsmaður á Hrafnistu'],['F',26,'Kristján Karlsson','verkamaður'],['F',27,'Katrín Viktoría Leiva','lögfræðingur'],['F',28,'Gunnar Skúli Ármannsson','læknir'],['F',29,'Ómar Örn Ómarsson','skrifstofumaður'],['F',30,'Ívar Már Jónsson','framhaldsskólakennari og verkfræðingur'],['F',31,'Alexander Jakob Dubik','aðstoðarmaður ráðherra'],['F',32,'Óli Már Guðmundsson','eldri borgari'],['F',33,'Þórarinn Kristinsson','fyrrum sjómaður'],['F',34,'Hilmar Guðmundsson','eldri borgari'],['F',35,'Margrét Víkingsdóttir','ferðamálafræðingur'],['F',36,'Bjarni Guðmundsson','bifreiðastjóri'],['F',37,'Sigríður Sæland Óladóttir','hjúkrunarfræðingur'],['F',38,'Kristján Arnar Helgason','eldri borgari'],['F',39,'Baldur Örn Ólason','skrifstofustjóri'],['F',40,'Daníel Dúi Ragnarsson','nemi'],['F',41,'Eysteinn Lester Batson','húsasmiður'],['F',42,'Sigríður G. Kristjánsdóttir','heimavinnandi'],['F',43,'Kolbrún Áslaugar Baldursdóttir','alþingismaður'],['F',44,'Ragnar Þór Ingólfsson','alþingismaður'],['F',45,'Sigríður Sæland Jónsdóttir','húsmóðir'],['F',46,'Inga Sæland Ástvaldsdóttir','formaður Flokks fólksins'],['G',1,'Ingimar Þór Friðriksson','framkvæmdastjóri'],['G',2,'Hjördís Dröfn Vilhjálmsdóttir','leiðtoga- og teymisþjálfi'],['G',3,'Torfi Markússon','rekstrarfræðingur'],['G',4,'Nathalia B. Tómasdóttir','vörumerkjahönnuður'],['G',5,'Jón L. Árnason','framkvæmdastjóri'],['G',6,'Björn Jóhann Þórsson','verkfræðingur'],['G',7,'Andri Ívarsson','tónlistarmaður og uppistandari'],['G',8,'Inga María Friðriksdóttir','grunnskólakennari'],['G',9,'Jónas Gunnarsson','markaðssérfræðingur'],['G',10,'Unnur Sól Ingimarsdóttir','tölvunarfræðingur'],['G',11,'Markús Karl Torfason','stærðfræðikennari og verkfræðingur'],['G',12,'Birta Hrönn Ingimarsdóttir','læknanemi'],['G',13,'Dagur Adam Ólafsson','húsasmiður'],['G',14,'Jón Bjarni Geirsson','húsgagnasmíðameistari'],['G',15,'Þorleifur Þorleifsson','tæknifræðingur'],['G',16,'Sunnefa Pálsdóttir','tölvunarfræðingur'],['G',17,'Jóhann Jökull Bæhrenz','háskólanemi'],['G',18,'Súsanna Sif Terrazas','fararstjóri og túlkur'],['G',19,'Sigfús Þór Guðbjartsson','kerfisfræðingur'],['G',20,'Páll Kristinn Guðjónsson','rafvirkjameistari'],['G',21,'Pétur Bjarni Pétursson','tölvunarfræðingur'],['G',22,'Guðmundur Óskar Hauksson','húsasmíðameistari'],['G',23,'Rakel Árnadóttir','öryrki'],['J',1,'Silja Sóley Birgisdóttir','stuðningsfulltrúi'],['J',2,'Sigrún E Unnsteinsdóttir','athafnakona'],['J',3,'Hannes Pétursson','verslunarmaður'],['J',4,'Geirdís Hanna Kristjánsdóttir','öryrki'],['J',5,'Jón Ferdínand Estherarson','stjórnmálasagnfræðingur'],['J',6,'Birna Gunnlaugsdóttir','kennari'],['J',7,'Rósa Guðný Arnardóttir','nemi'],['J',8,'Halldór Ísak Ólafsson','kvikmyndagerðarmaður'],['J',9,'Jökull Sólberg Auðunsson','forritari'],['J',10,'Júnía Líf Sigurjónsdóttir','sálfræðinemi'],['J',11,'Guðmundur Guðmundsson','sagnfræðinemi'],['J',12,'Þórhildur Katrín Pálsdóttir','nemandi'],['J',13,'Davíð Aron Routley','starfsmaður á velferðarsviði'],['J',14,'Anita da Silva Bjarnadóttir','öryrki'],['J',15,'Guðröður Atli Jónsson','tæknimaður'],['J',16,'Eyjólfur B. Eyvindarson','tónlistar- og kvikmyndagerðarmaður'],['J',17,'Uldarico Castillo de Luna','hjúkrunarfræðingur'],['J',18,'Berglind Rut Terrazas','umönnun'],['J',19,'Anna Jonna Ármannsdóttir','rafvirkjameistari'],['J',20,'Katrín Baldursdóttir','blaðamaður og heldri borgari'],['J',21,'Helgi Páll Einarsson','hönnuður'],['J',22,'Bryndís Ýrr Baldursdóttir','listakona'],['J',23,'Esther Jónsdóttir','stuðningsfulltrúi'],['J',24,'Tinna Þorvaldsdóttir Önnudóttir','listamaður'],['J',25,'Hjörtur Birgir Jóhönnuson','verkamaður'],['J',26,'Hermann Karl Gunnarsson','stuðningsfulltrúi'],['J',27,'Auður Mist Eydal Halldórsdóttir','myndlistarmaður'],['J',28,'Þorvaldur Þorvaldsson','trésmiður'],['J',29,'Björgvin Már Karlsson','námsmaður'],['J',30,'Magnús Bergsson','rafvirki'],['J',31,'Sólrún Freyja Sen','kvikmyndagerðarmaður'],['J',32,'Hjörtur Þorgeirsson','deildarstjóri'],['J',33,'Hjálmar Friðriksson','atvinnulaus'],['J',34,'Valtýr Kári Daníelsson','eðlisfræðingur'],['J',35,'Kristbjörg Eva Andersen Ramos','deildarstjóri í íbúðakjarna'],['J',36,'Stefán Örn Ingvarsson Olsen','rafvirki'],['J',37,'Kristófer Andrésson','myndlistarmaður'],['J',38,'Björn Guðmundsson','verkefna- og gæðastjóri'],['J',39,'Þorbjörg Inga Þórisdóttir','öryrki'],['J',40,'Árni Daníel Júlíusson','sagnfræðingur'],['J',41,'Björgvin Máni Ársælsson','tæknimaður'],['J',42,'Ólafur Pétur Georgsson','kvikmyndagerðarmaður'],['J',43,'Sherry Ruth Espino Buot','athafnakona'],['J',44,'Guðmundur Erlendsson','ellilífeyrisþegi'],['J',45,'Júlíus K. Valdimarsson','húmanisti'],['J',46,'Sólveig Hauksdóttir','hjúkrunarfræðingur'],['M',1,'Ari Edwald','lögmaður og rekstrarhagfræðingur'],['M',2,'Kristín Kolbrún Kolbeinsdóttir','kennari og uppeldisráðgjafi'],['M',3,'Lárus Sigurðsson','framkvæmdastjóri'],['M',4,'Hlédís Maren Guðmundsdóttir','félagsfræðingur'],['M',5,'Helgi Áss Grétarsson','varaborgarfulltrúi og stórmeistari'],['M',6,'Páll Edwald','yfirlögfræðingur'],['M',7,'Eva Þorsteinsdóttir','athafnakona'],['M',8,'Katrín H. Magnúsdóttir','náms- og starfsráðgjafi'],['M',9,'Breki Atlason','alþjóðafulltrúi'],['M',10,'Salma Björk Önnudóttir','háskólanemi'],['M',11,'Sóldís Birta Reynisdóttir','grunnskólakennari'],['M',12,'Jón Múli Egilsson Prunner','myndlistarmaður og rappari'],['M',13,'Marta Guðjónsdóttir','borgarfulltrúi'],['M',14,'Ásgeir Theodór Jóhannesson','framkvæmdastjóri'],['M',15,'Kjartan Magnússon','borgarfulltrúi'],['M',16,'Jón Ingi Gíslason','grunnskólakennari'],['M',17,'Margrét Edda Gnarr','einkaþjálfari'],['M',18,'Símon Þorkell Símonarson Olsen','tómstunda- og félagsmálafræðingur'],['M',19,'Marcin Szafranowicz','verslunarmaður'],['M',20,'Arnór Valdimarsson','flugvirki'],['M',21,'Karolína M Jónsdóttir','fv. kennari'],['M',22,'Eliso Kalandia','ljósmyndari og túlkur'],['M',23,'Bóas Sigurjónsson','laganemi'],['M',24,'Krzysztof Giewiel','sjómaður'],['M',25,'Ómar Örn Karlsson','sjómaður'],['M',26,'Steinunn Anna Baldursdóttir','prestur'],['M',27,'Davíð Bergmann Davíðsson','unglingaráðgjafi'],['M',28,'Dorota Anna Zaorska','fornleifafræðingur'],['M',29,'Ellert Scheving Markússon','framkvæmdastjóri'],['M',30,'Kristín Linda Sævarsdóttir','húsmóðir'],['M',31,'Símon Ólafsson','tæknistjóri hjá BL'],['M',32,'Ævar Daníel Guðrúnarson','gæðastjóri'],['M',33,'Eiður Fannar Erlendsson','yfirmaður vetrarþjónustu Reykjavíkurborgar'],['M',34,'Halldór Örn Írisarson','laganemi'],['M',35,'Sonja Ólafsdóttir','einkaþjálfari'],['M',36,'Jón A Jónsson','vélvirkjameistari'],['M',37,'Fjóla Hrund Björnsdóttir','framkvæmdastjóri þingflokks'],['M',38,'Jón Sigurðsson','framkvæmdastjóri'],['M',39,'Elínbjörg Ingólfsdóttir','verslunareigandi'],['M',40,'Ingibjörg Lilja Jónsdóttir','húsmóðir'],['M',41,'Valey Ýr Mörk Valgeirsdóttir','sjúkraliði'],['M',42,'Guðlaugur Sverrisson','viðskiptastjóri'],['M',43,'Valdimar Ármann Þórhallsson','ellilífeyrisþegi'],['M',44,'Erna Valsdóttir','fv. fasteignasali'],['M',45,'Gunnlaugur A. Júlíusson','hagfræðingur og leiðsögumaður'],['M',46,'Vigdís Hauksdóttir','lögfr., fv. alþingism. og borgarfulltrúi'],['P',1,'Kristinn Jón Ólafsson','fyrsti varaborgarfulltrúi Pírata'],['P',2,'Alexandra Briem','borgarfulltrúi'],['P',3,'Oktavía Hrund Guðrúnar Jóns','formaður Pírata'],['P',4,'Unnar Þór Sæmundsson','framkvæmdastjóri í eigin fyrirtæki og laganemi'],['P',5,'Olga Margrét Kristínardóttir Cilia','sjálfstætt starfandi lögmaður'],['P',6,'Hans Alexander Margrétarson Hansen','deildarstjóri á leikskóla'],['P',7,'Oddur Björn Jónsson','stuðningsfulltrúi á íbúðakjarna'],['P',8,'Jökull Leuschner Veigarsson','framkvæmdastjóri og atvinnubílstjóri'],['P',9,'Guðni Freyr Öfjörð','urbanisti'],['P',10,'Katla María Unnþórsdóttir','ritari Pírata í Reykjavík'],['P',11,'Derek Terell Allen','kennari'],['P',12,'Ari Logn Yndu','listakvár'],['P',13,'Alexandra Ýrr Ford','tónlistarkona og nemi'],['P',14,'Kjartan Jónsson','framkvæmdastjóri Múltíkúltí'],['P',15,'Andie Sophia Fontaine','rithöfundur og tónlistarkona'],['P',16,'Reyn Alpha Magnúsdóttir','kennaranemi og forseti Trans Ísland'],['P',17,'Steinar Guðlaugsson','jarðeðlisfræðingur og ellilífeyrisþegi'],['P',18,'Hulda Biering','listnemi'],['P',19,'Stefán Atli Thoroddsen','jógakennari'],['P',20,'Shruthi Basappa','arkitekt'],['P',21,'Snorri Sturluson','leikstjóri'],['P',22,'María Eldey Kristínardóttir','öryggisvörður'],['P',23,'Arnór Dan Arnarson','tónlistarmaður'],['P',24,'Agnes Jónasdóttir','sagnfræðingur'],['P',25,'Móberg Ordal','háskólanemi'],['P',26,'Viktoría Ziliute','í eigin rekstri og viðskiptafræðinemi'],['P',27,'Veigar Freyr Ragnheiðarson','kerfisstjóri'],['P',28,'Elsa Kristjánsdóttir','bókari og viðskiptafræðingur'],['P',29,'Ormur Guðjónsson','stuðningsfulltrúi og nemi'],['P',30,'Valgerður Kristín Einarsdóttir','gjaldkeri Pírata'],['P',31,'Jóhann Hjörtur Ösp Stefánsbur','listakvár'],['P',32,'Beverley Anderson','sjálfstætt starfandi rannsakandi'],['P',33,'Jóhann Kristian Jóhannsson','bifvélavirki'],['P',34,'Renata Sara Arnórsdóttir','afgreiðslukona'],['P',35,'Bob Cluness','doktorsnemi'],['P',36,'Elín Jósepsdóttir','sálfræðingur'],['P',37,'Hrannar Jónsson','forritari'],['P',38,'Annie Marín Vestfjörð Guðmundsdóttir','lögfræðingur'],['P',39,'Sólhrafn Elí Gunnarsson','starfsmaður í umönnun'],['P',40,'Raluca-Elmira Moldovan','NPA aðstoðarmanneskja'],['P',41,'Alexander Arnarsson','tónlistarmaður og nemi'],['P',42,'Dan Zerin','uppistandari'],['P',43,'Hrefna Árnadóttir','nemi'],['P',44,'Bergþór Grétar Böðvarsson','notendafulltrúi'],['P',45,'Iðunn Doris Sigríður Magnúsdóttir','sálfræðingur'],['P',46,'Edda Björk Bogadóttir','eldri borgari'],['R',1,'Sigfús Aðalsteinsson','leikskólakennari'],['R',2,'Baldur Borgþórsson','ráðgjafi'],['R',3,'Hlynur Áskelsson','kennari'],['R',4,'Ágústa Árnadóttir','jógakennari'],['R',5,'Thelma Guðrún Jónsdóttir','flugfreyja'],['R',6,'Katarzyna Anna Dziadkowiec','leikskólaleiðbeinandi'],['R',7,'Hreinn Pétursson','bílstjóri'],['R',8,'Valbjörn Jónsson','bakari'],['R',9,'Jón Viðar Óskarsson','rafvirkjameistari'],['R',10,'Alexander Jón Baldursson','rafiðnfræðingur'],['R',11,'Sandra Andradóttir','sjúkraliði'],['R',12,'Linda Jónsdóttir','þjálfari'],['R',13,'Eiríkur Ottó Bragason','verkamaður'],['R',14,'Þorsteinn Már Sigurðarson','húsasmiður'],['R',15,'Örn Úlfar Úlfarsson','byggingastjóri'],['R',16,'Sigursteinn Snorrason','einkaþjálfari'],['R',17,'Sigurður Halldór Bjarnason','kerfisstjóri'],['R',18,'Þórhallur H Þórhallsson','rafeindavirkjameistari'],['R',19,'Björn Máni Björnsson','tónlistarmaður'],['R',20,'Sigurður Jónsson','framkvæmdastjóri'],['R',21,'Kristbjörn Kris Sigurðsson','fasteignasali'],['R',22,'Sigrún Ásta Jónsdóttir','hjúkrunarfræðingur'],['R',23,'Birgir Stefánsson','hvalveiðimaður'],['S',1,'Pétur Hafliði Marteinsson','rekstrarstjóri'],['S',2,'Heiða Björg Hilmisdóttir','borgarstjóri'],['S',3,'Steinunn Guðjónsdóttir','ráðgjafi'],['S',4,'Skúli Helgason','borgarfulltrúi'],['S',5,'Stein Olav Romslo','kennari'],['S',6,'Bjarnveig Birta Bjarnadóttir','rekstrarstjóri'],['S',7,'Regína Ásvaldsdóttir','fyrrverandi bæjarstjóri'],['S',8,'Birkir Ingibjartsson','arkitekt'],['S',9,'Isabel Alejandra Diaz','stjórnsýslufræðingur'],['S',10,'Sara Björg Sigurðardóttir','varaborgarfulltrúi'],['S',11,'Katarzyna Kubis','þroskaþjálfi'],['S',12,'Arnar Ingi Ingason','tónlistarmaður'],['S',13,'Steinunn Ósk Óskarsdóttir','forstöðukona Batahúss'],['S',14,'Hildur Oddsdóttir','formaður Hjálparkokka'],['S',15,'Harpa Sif Eyjólfsdóttir','doktor í faraldsfræði'],['S',16,'Anna Margrét Ólafsdóttir','leikskólastjóri'],['S',17,'Hlynur Páll Pálsson','mannauðsstjóri'],['S',18,'Tinna Davíðsdóttir','lyfjafræðingur'],['S',19,'Jón Heiðar Þorkelsson','tæknimaður'],['S',20,'Fanney Dóra Veigarsdóttir','leikskólakennari'],['S',21,'Stefán Árni Geirsson','knattspyrnumaður'],['S',22,'Magnea Marinósdóttir','stjórnmálafræðingur'],['S',23,'Steindór Örn Gunnarsson','húsasmiður'],['S',24,'Valný Óttarsdóttir','iðjuþjálfi'],['S',25,'Kristján Benjamín Guðmundsson','rekstarhagfræðingur'],['S',26,'Vigdís Freyja Gísladóttir','leikskólastarfsmaður'],['S',27,'Rúnar Logi Ingólfsson','verkefnastjóri'],['S',28,'Jódís Bjarnadóttir','félagsráðgjafi'],['S',29,'Brynjar Bragi Einarsson','menntaskólanemi'],['S',30,'Marzibil Sæmundardóttir','kvikmyndargerðarkona'],['S',31,'Jóhann Ágúst Jóhannsson','plötusali'],['S',32,'María Gyða Pétursdóttir','læknir'],['S',33,'Aland Shirwan Kamal','háskólanemi'],['S',34,'Elva Dögg Gunnarsdóttir','leikskólakennari'],['S',35,'Sveinn Eggert Jónsson','sölumaður'],['S',36,'Brynhildur Björnsdóttir','framhaldsskólakennari'],['S',37,'Halla Þorkelsson','verslunarmaður'],['S',38,'Þórður Árnason','tónlistarkennari'],['S',39,'Lilja Ólafsdóttir','rauðsokka'],['S',40,'Hörður Filippusson','professor emeritus'],['S',41,'Aðalheiður Frantzdóttir','eldri borgari'],['S',42,'Sigfús Ómar Höskuldsson','leiðsögumaður'],['S',43,'Hjálmar Sveinsson','borgarfulltrúi'],['S',44,'Steinunn Valdís Óskarsdóttir','skrifstofustjóri skrifstofu jafnréttismála'],['S',45,'Dagur B. Eggertsson','alþingismaður'],['S',46,'Ingibjörg Sólrún Gísladóttir','fyrrum borgarstjóri']];
+let CANDS=RAW.map((r,i)=>({id:i,party:r[0],num:r[1],name:r[2],title:r[3]}));
 
 // Myndir frambjóðenda. Lykill er 'partyLetter-nr' (t.d. 'S-1' = Pétur Marteinsson).
 // Heimildir eru CDN-slóðir frá opinberum vefsíðum framboða. Falla aftur í upphafsstafi
 // ef mynd er ekki til eða hleðsla mistekst.
 // Uppfærist handvirkt eða með python-scripti (uppdate-photos.py ef búið til síðar).
-const PHOTOS = {
+let PHOTOS = {
   // === SAMFYLKINGIN (46/46) — xs.is/frambodendur-i-reykjavik-2026 ===
   'S-1':  'https://images.prismic.io/samfylkingin/adUVO5GXnQHGZU3Z_P%C3%A9turMarteinn.png?auto=format,compress',
   'S-2':  'https://images.prismic.io/samfylkingin/adUVRpGXnQHGZU3b_Hei%C3%B0aBj%C3%B6rg.png?auto=format,compress',
@@ -831,7 +865,7 @@ function renderPartyBadge(p, size){
 // texta, byggt á Wikipedia, fjölmiðlum og vefsíðum framboða. Fall lykill eins
 // og PHOTOS: 'partyLetter-num'. Ekki allir frambjóðendur eru með æviágrip —
 // fall í titil-texta gamla ef ekki.
-const BIOS = {
+let BIOS = {
   // Top 6 í hverjum flokki. 2-3 setningar hlutlausir á íslensku.
   // Heimildir: Wikipedia, fjölmiðlar, vefsíður framboða.
   // Þar sem „Takmarkaðar upplýsingar" stendur liggur ekki fyrir nægt staðfestanlegt
@@ -1169,7 +1203,7 @@ function initPolls(){
 // Kosningakannanir 2025–2026 — öll númer staðfest á Wikipedia (is.wikipedia.org/wiki/Borgarstjórnarkosningar_í_Reykjavík_2026)
 // Kosningaspá Baldurs Héðinssonar (apríl 2026) reiknuð sem vegið meðaltal: 59% Gallup apr + 41% Maskína mar.
 // Sæti eru REIKNUÐ með D'Hondt-aðferð fyrir 23 sæti — ekki geymd fyrirfram.
-var POLLS_RAW=[
+let POLLS_RAW=[
   {source:'Baldur Héðinsson / Kosningaspá', method:'Vegið meðaltal Gallup+Maskína (59%/41%)', date:'17. apríl 2026', n:'samsett', tag:'baldur',
    data:{D:25.0, S:22.6, A:13.1, C:11.1, M:10.7, P:4.3, B:4.4, F:3.8, J:2.6, R:1.8},
    url:'https://kosningaspa.is',
@@ -1228,7 +1262,7 @@ function dhondt(data, totalSeats){
   return seats;
 }
 // Reikna sætatölu fyrir hverja könnun
-var POLLS = POLLS_RAW.map(function(p){
+let POLLS = POLLS_RAW.map(function(p){
   return Object.assign({}, p, {seats: dhondt(p.data, 23)});
 });
 window._POLLS = POLLS;
@@ -1405,29 +1439,133 @@ function showPage(id, btn){
       sub.innerHTML = '';
     }
   }
-  // Uppfæra URL-hash svo hægt sé að deila/bookmarka
-  try { history.replaceState(null,'','#/'+id); } catch(e){}
+  // Uppfæra URL-hash svo hægt sé að deila/bookmarka. Format: #/<muni>/<page>
+  try { history.replaceState(null,'','#/'+CURRENT_MUNI+'/'+id); } catch(e){}
   // Dínamísk page-title svo browser-tab/history sýni rétt
+  var muniName = getMuni().name;
   if(id==='forsida'){
-    document.title = 'Kosningavaktin — Reykjavík 16. maí 2026';
+    document.title = 'Kosningavaktin — '+muniName+' 16. maí 2026';
   } else if(page){
-    document.title = page.label + ' · Kosningavaktin';
+    document.title = page.label + ' · '+muniName+' · Kosningavaktin';
   }
   window.scrollTo(0, 0);
 }
 
-// Stuðningur við hash-ruting við hleðslu (t.d. #/flokkar)
+// Parse-ar hash af formi #/<muni>/<page>, #/<page> (gamalt), eða tómt.
+// Skilar { muni, page } — notar CURRENT_MUNI sem default, 'forsida' sem default síðu.
+function parseHash(){
+  var raw = (location.hash||'').replace(/^#\//,'');
+  var parts = raw.split('/').filter(Boolean);
+  var muni = null, page = null;
+  if(parts.length >= 1 && MUNI_META[parts[0]]){
+    muni = parts[0];
+    page = parts[1] || null;
+  } else if(parts.length >= 1){
+    // Gamalt format án muni-prefix — t.d. #/fjarmal
+    page = parts[0];
+  }
+  return { muni: muni || CURRENT_MUNI, page: page || 'forsida' };
+}
+
+function applyRoute(){
+  var r = parseHash();
+  if(r.muni !== CURRENT_MUNI){
+    // Reynum að skipta yfir í nýtt muni. Ef það er ekki tilbúið, höldum í núverandi.
+    if(!loadMuni(r.muni)){
+      // Sveitarfélag ekki fyllt út enn — sýnum skilaboð og höldum áfram í núverandi.
+      showComingSoon(r.muni);
+      return;
+    }
+    // Eftir muni-skipti: endurteiknum það sem þarf (polls, page title o.s.frv.)
+    if(typeof rerenderAllForMuni === 'function') rerenderAllForMuni();
+  }
+  // Fallback á forsida ef síðan er ekki til
+  var valid = NAV_GROUPS.some(function(g){return g.pages.some(function(p){return p.id===r.page;});});
+  showPage(valid ? r.page : 'forsida');
+  updateMuniPicker();
+}
+
+// Bráðabirgða-stubbur ef notandi smellir á sveitarfélag sem er ekki tilbúið.
+// Fasi 1 sýnir skilaboð og skilur eftir núverandi muni virkt. Þegar gögn koma
+// í fasa 2-4 hverfur þetta sjálfkrafa (availableMunis-listinn stækkar).
+function showComingSoon(muniId){
+  var m = MUNI_META[muniId];
+  if(!m) return;
+  var el = document.querySelector('.page.vis') || document.getElementById('page-forsida');
+  var msg = '<div style="max-width:560px;margin:2rem auto;padding:2rem;background:#FFF8E1;border:0.5px solid #854F0B40;border-radius:12px;text-align:center;">'
+    +'<div style="font-family:\'Playfair Display\',serif;font-size:24px;color:#854F0B;margin-bottom:8px;">'+m.name+' kemur von bráðar</div>'
+    +'<div style="font-size:14px;color:var(--ink2);line-height:1.6;">Kosningavaktin er í smíðum fyrir '+m.name+'. Framboð, frambjóðendur, stefnumál og fjármál bætast við á næstu dögum.</div>'
+    +'<div style="margin-top:16px;"><button class="pbtn" onclick="location.hash=\'#/rvk/forsida\'" style="padding:8px 14px;background:var(--ink);color:#fff;border:0;border-radius:6px;cursor:pointer;">Tilbaka í Reykjavík</button></div>'
+    +'</div>';
+  var coming = document.getElementById('page-coming-soon');
+  if(!coming){
+    coming = document.createElement('div');
+    coming.id = 'page-coming-soon';
+    coming.className = 'page';
+    // Síðurnar eru direct children af body, svo hengjum við við sama foreldri
+    // og einhverri annarri síðu til að varðveita CSS/scoping.
+    var ref = document.getElementById('page-forsida') || document.querySelector('.page');
+    (ref ? ref.parentNode : document.body).appendChild(coming);
+  }
+  coming.innerHTML = msg;
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('vis');});
+  coming.classList.add('vis');
+  document.title = m.name+' · Kosningavaktin (í smíðum)';
+}
+
+// Stuðningur við hash-ruting við hleðslu (t.d. #/rvk/flokkar eða gamalt #/flokkar)
 function initRouter(){
   renderTopnav();
-  var hash = (location.hash||'').replace(/^#\//,'');
-  var valid = NAV_GROUPS.some(function(g){return g.pages.some(function(p){return p.id===hash;});});
-  showPage(valid ? hash : 'forsida');
-  window.addEventListener('hashchange', function(){
-    var h = (location.hash||'').replace(/^#\//,'');
-    if(h && NAV_GROUPS.some(function(g){return g.pages.some(function(p){return p.id===h;});})){
-      showPage(h);
-    }
-  });
+  applyRoute();
+  window.addEventListener('hashchange', applyRoute);
+}
+
+// Placeholder — fyllist inn í fasa 2 þegar mörg sveitarfélög eru í boði og
+// breytingar á muni þurfa að endurteikna kannanir, töflur o.fl.
+function rerenderAllForMuni(){}
+
+// Opna/loka dropdown-pickerinn.
+function toggleMuniPicker(){
+  var menu = document.getElementById('muni-picker-menu');
+  if(!menu) return;
+  if(menu.style.display === 'none' || !menu.style.display){
+    renderMuniPickerMenu();
+    menu.style.display = 'block';
+    // Loka ef smellt utan við
+    setTimeout(function(){
+      function close(ev){
+        if(!document.getElementById('muni-picker').contains(ev.target)){
+          menu.style.display = 'none';
+          document.removeEventListener('click', close, true);
+        }
+      }
+      document.addEventListener('click', close, true);
+    }, 0);
+  } else {
+    menu.style.display = 'none';
+  }
+}
+
+function renderMuniPickerMenu(){
+  var menu = document.getElementById('muni-picker-menu');
+  if(!menu) return;
+  var avail = availableMunis();
+  menu.innerHTML = MUNI_ORDER.map(function(id){
+    var m = MUNI_META[id];
+    var isCurrent = id === CURRENT_MUNI;
+    var isReady = avail.indexOf(id) >= 0;
+    var hint = isReady ? '' : '<span style="font-size:9px;color:#854F0B;margin-left:6px;padding:1px 5px;background:#FFF8E1;border-radius:99px;">í smíðum</span>';
+    return '<a href="#/'+id+'/forsida" style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 14px;text-decoration:none;color:var(--ink);font-size:13px;'+(isCurrent?'background:#FAF8F3;font-weight:500;':'')+'border-bottom:0.5px solid var(--bdr);" onmouseover="this.style.background=\'#F5F3EE\'" onmouseout="this.style.background=\''+(isCurrent?'#FAF8F3':'transparent')+'\'">'
+      +'<span>'+m.name+hint+'</span>'
+      +(isCurrent?'<span style="color:var(--gold);font-size:14px;">✓</span>':'')
+      +'</a>';
+  }).join('');
+}
+
+// Uppfærir merkimiðann á pickerinum þegar muni skiptir.
+function updateMuniPicker(){
+  var lbl = document.getElementById('muni-picker-label');
+  if(lbl) lbl.textContent = getMuni().name;
 }
 
 // ========================================================================
@@ -1649,7 +1787,7 @@ document.addEventListener('keydown', function(e){
 });
 
 // ===== PARTY DATA =====
-const PARTY_INFO = {
+let PARTY_INFO = {
   'A': {
     fullname: 'Vinstrið — vinstri grænt framboð',
     founded: '2026 (kosningabandalag VG og Vors til vinstri)',
@@ -1768,7 +1906,7 @@ const ISSUES = [
   {id:'flugvollur',   label:'Reykjavíkurflugvöllur'},
   {id:'annað',        label:'Sérkenni / Annað'}
 ];
-const STEFNUMAL = {
+let STEFNUMAL = {
   'S': {
     slagord: '20 mínútna mannlífsborg',
     heimildir: ['https://xs.is/reykjavik','Útvarp Saga 2026','Mbl.is 2. jan 2026'],
@@ -1961,7 +2099,7 @@ const STEFNUMAL = {
 // ===== MEIRIHLUTASÁTTMÁLI 2022 (Samfylking + Framsókn + Viðreisn + Píratar) =====
 // Heimild: https://x.piratar.is/polity/102/issue/490/ — samþykkt júní 2022 fyrir kjörtímabilið 2022-2026.
 // Notað í framtíðinni í loforðatracker (Áfanga 2).
-const SATTMALI_2022 = {
+let SATTMALI_2022 = {
   flokkar:['S','B','C','P'],
   gildistimi:'júní 2022 – maí 2026',
   borgarstjoraskipti:'Dagur (til jan 2024) → Einar (jan 2024 – feb 2025; þá brast meirihlutinn)',
@@ -2598,7 +2736,7 @@ function pidColor(pid){
 }
 
 // Ársreikningagögn 2015–2024 (byggt á opinberum ársreikningum)
-const FINANCE = [
+let FINANCE = [
   {yr:2015,
    A:{tekjur:91.0, gjold:104.6, nidurstada:-13.6, skatttekjur:69.3},
    AB:{tekjur:143.9, nidurstada:-5.0, eignir:525.6, skuldir:301.6, eiginfe:224.0},
@@ -2691,7 +2829,7 @@ const FINANCE = [
 // Notaðar til að bera saman við raun (FINANCE). null þar sem heimildir vantar.
 // Heimildir: globenewswire.com (tilkynningar), reykjavik.is/fjarhagsaaetlun, ársreikningsskýrslur.
 // Allar tölur í milljörðum króna (ma.kr.).
-const BUDGETS = {
+let BUDGETS = {
   2024: {
     A:  {tekjur:191.9, gjold:186.1, nidurstada:0.7},
     AB: {tekjur:null,  gjold:null,  nidurstada:7.7,  skuldir:null},
@@ -2717,7 +2855,7 @@ const BUDGETS = {
 };
 
 // Viðbótarupplýsingar um 2025 (janúar–september hálfsársuppgjör, ekki lokaður ársreikningur)
-const FINANCE_2025_PARTIAL = {
+let FINANCE_2025_PARTIAL = {
   yr:2025, timabil:'Jan–sept 2025',
   A:{tekjur:null, nidurstada:2.1, EBITDA:10.3, skatttekjur:119.3},
   AB:{tekjur:null, nidurstada:10.7, EBITDA:45.1, eignir:1004.0, skuldir:548.0, eiginfe:456.0},
@@ -2727,7 +2865,7 @@ const FINANCE_2025_PARTIAL = {
 };
 
 // Kjörtímabil fyrir pólitíska samhengiskort (Borgarstjórnir-flipinn)
-const KJORTIMABIL = [
+let KJORTIMABIL = [
   {
     titill: '2014–2018',
     bst: 'Dagur B. Eggertsson (S)',
@@ -2789,6 +2927,58 @@ const KJORTIMABIL = [
     ]
   }
 ];
+
+// ============================================================================
+// === MUNI_DATA.rvk snapshot + loadMuni() ====================================
+// ============================================================================
+// Öll per-muni gögn Reykjavíkur eru declared að ofan. Hér tökum við þau inn í
+// MUNI_DATA.rvk svo hægt sé að skipta milli sveitarfélaga. Aðrir lyklar
+// (kopv, hafn, gard, mos, selt) fyllast inn í fasa 2–4.
+MUNI_DATA.rvk = {
+  parties: PARTIES,
+  rawCands: RAW,
+  photos: PHOTOS,
+  bios: BIOS,
+  partyInfo: PARTY_INFO,
+  stefnumal: STEFNUMAL,
+  sattmali2022: SATTMALI_2022,
+  finance: FINANCE,
+  budgets: BUDGETS,
+  finance2025Partial: FINANCE_2025_PARTIAL,
+  kjortimabil: KJORTIMABIL
+  // Athugasemd: POLLS_RAW er declarað inni í initPolls() og meðhöndlað sérstaklega
+  // — polls per sveitarfélag verða bætt við í seinni fasa þegar við höfum kannanir
+  // fyrir Kópavog o.s.frv.
+};
+
+// loadMuni — endurstillir allar top-level breytur úr MUNI_DATA[id].
+// Kallað úr: router (hash-breyting), pickeri, og við upphaf síðuhleðslu ef hash
+// inniheldur muni-prefix. Skilar false ef muni er ekki til (t.d. tómt stub).
+function loadMuni(id){
+  const d = MUNI_DATA[id];
+  if(!d || !d.parties){ return false; }
+  CURRENT_MUNI = id;
+  PARTIES = d.parties;
+  RAW = d.rawCands;
+  CANDS = RAW.map((r,i)=>({id:i,party:r[0],num:r[1],name:r[2],title:r[3]}));
+  PHOTOS = d.photos;
+  BIOS = d.bios;
+  PARTY_INFO = d.partyInfo;
+  STEFNUMAL = d.stefnumal;
+  SATTMALI_2022 = d.sattmali2022;
+  FINANCE = d.finance;
+  BUDGETS = d.budgets;
+  FINANCE_2025_PARTIAL = d.finance2025Partial;
+  KJORTIMABIL = d.kjortimabil;
+  // POLLS verða handleggð sérstaklega í fasa 2 (per-muni kannanir)
+  return true;
+}
+
+// Skilar lista sveitarfélaga sem eru tilbúin (parties fylltur inn). Notað af
+// pickerinu til að vita hvað er klárt og hvað er enn „coming soon".
+function availableMunis(){
+  return MUNI_ORDER.filter(id => MUNI_DATA[id] && MUNI_DATA[id].parties);
+}
 
 // Hjálparfall: format tölu með 1 aukastaf og bilum fyrir þúsund (íslenskur háttur)
 function fmtMa(n){ if(n==null) return '—'; const s=(+n).toFixed(1); return s.replace('.',',').replace(/\B(?=(\d{3})+(?!\d))/g,' '); }
