@@ -772,30 +772,28 @@ const PHOTOS = {
 function photoFor(c){ return PHOTOS[c.party+'-'+c.num] || null; }
 
 // Flokksmerki (logos) — URL-ar sóttir af opinberum vefsíðum framboða.
-// A (Vinstrið) er með base64-inline logo á vinstrid.is en það er of stórt til að afrita hér;
-// letter-fallback virkar vel fyrir sidebarinn og detail-header.
+// A, M, P, S nota local logos í /logos/ (vistuð handvirkt úr opinberum efnivið).
 const PARTY_LOGOS = {
+  'A': 'logos/vinstrid.png',
   'B': 'https://framerusercontent.com/images/G4wBTblLDHELMEnizfVG5za8.svg',
   'C': 'https://vidreisn.is/wp-content/uploads/2024/10/Vidreisn-icon_regular-landscape_rgb.png',
   'D': 'https://xd.is/wp-content/uploads/2016/09/d_logo.png',
   'F': 'https://flokkurfolksins.is/reykjavik/myndir/ff-logo-dokkt.png',
   'G': 'https://gdf.is/wp-content/uploads/2026/03/godan-daginn-logo-white.svg',
   'J': 'https://www.sosialistaflokkurinn.is/brand/emblem.svg',
-  'M': 'https://midflokkurinn.is/wp-content/uploads/2024/10/Horizontal-white-v1.0.svg',
-  'P': 'https://images.squarespace-cdn.com/content/v1/64a6cfea8da5317c954fb0ef/99d42f44-2a2f-416e-8ec3-2c65174b4644/Piratar+-+White.png?format=1500w',
+  'M': 'logos/midflokkurinn.png',
+  'P': 'logos/piratar.png',
   'R': 'https://static.wixstatic.com/media/5f7800_22870e7a9673415d8a81e7d561b9e8d3~mv2.png/v1/fill/w_256,h_256,al_c,q_85/5f7800_22870e7a9673415d8a81e7d561b9e8d3~mv2.png',
-  'S': 'https://xs.is/skin/i/logo.svg'
-  // A (Vinstrið) vantar — inline base64 á vinstrid.is
+  'S': 'logos/samfylkingin.png'
 };
 
 // Sum logos eru með hvítan texta og vantar bakgrunn. Sum eru með hvítan bakgrunn.
 // Þessi tafla segir hvort logoið þurfi dökkan bakgrunn (white ink) eða ljósan.
 const PARTY_LOGO_BG = {
+  'A': 'dark',  // leaf með dökkgrænum bakgrunni innbyggðum
   'G': 'dark',  // white svg
-  'M': 'dark',  // white svg
-  'P': 'dark',  // white png with transparency — letting dark bg show through
   'B': 'dark',  // framer svg with white elements
-  // Aðrir: ljós eða gegnsær bakgrunnur — default
+  // M, P, S: eigin ljós/myrk bakgrunnur — default hvítur container passar
 };
 
 function logoFor(pid){ return PARTY_LOGOS[pid] || null; }
