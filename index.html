@@ -3880,32 +3880,190 @@ MUNI_DATA.hafn = {
     {id:'S', name:'Samfylkingin',          color:'#C62828', pct:0, seats:4}
   ],
   rawCands: HAFN_RAW,
-  photos: {},
-  bios: {},
+  photos: {},   // oddvita-myndir bætast við í fasa 2b
+  bios: {
+    // Oddvitar allra 6 framboða 2026, 2–3 setn. hver. Heimildir: vefir framboða,
+    // xdhafnarfjordur.is, framsokn.is, xs.is, vidreisn.is, midflokkurinn.is,
+    // vg.is, mbl.is, ruv.is, utvarpsaga.is.
+    'A-1': 'Ester Bíbí Ásgeirsdóttir er verkefnastjóri með MSc í stjórnun og stefnumótun og starfar sem umsjónarmaður skilaskyldu rafræns efnis hjá Kvikmyndasafni Íslands. Hún leiðir sameiginlegan lista Vinstrihreyfingarinnar – græns framboðs og Vors til vinstri í Hafnarfirði (Vinstrið).',
+    'B-1': 'Valdimar Víðisson er bæjarstjóri Hafnarfjarðar frá 1. janúar 2025 fyrir Framsóknarflokkinn. Hann tók við af Rósu Guðbjartsdóttur samkvæmt meirihlutasáttmála D+B sem gerði ráð fyrir skipti á bæjarstjórastóli á kjörtímabilinu, og leiðir lista Framsóknar 2026.',
+    'C-1': 'Karólína Helga Símonardóttir er mannfræðingur með kennsluréttindi á öllum skólastigum og atvinnurekandi. Hún var varabæjarfulltrúi Viðreisnar á kjörtímabilinu og fyrsti varaþingmaður Viðreisnar í Suðvesturkjördæmi, og sigraði sitjandi oddvita í forvali flokksins 17. janúar 2026.',
+    'D-1': 'Skarphéðinn Orri Björnsson er bæjarfulltrúi og formaður bæjarráðs í Hafnarfirði. Hann vann prófkjör Sjálfstæðisflokksins í febrúar 2026 með 51,6% atkvæða í 1. sæti (754 atkvæði) og steig niður sem forstjóri líftæknifyrirtækisins Algalíf eftir sigurinn.',
+    'M-1': 'Einar Geir Þorsteinsson er 35 ára lögfræðingur og nýr oddviti Miðflokksins í Hafnarfirði. Hann hefur lagt áherslu á samgöngumál og vill að samgöngusáttmáli höfuðborgarsvæðisins verði endurskoðaður; er mótfallinn Borgarlínu í núverandi mynd.',
+    'S-1': 'Guðmundur Árni Stefánsson (f. 31. október 1955) er bæjarfulltrúi og varaformaður Samfylkingarinnar (sjálfkjörinn 2022). Hann var alþingismaður 1993–2005, félagsmálaráðherra og heilbrigðis- og tryggingamálaráðherra, auk þess að vera sendiherra fyrir Ísland.',
+    'D-6': 'Helga Björg Loftsdóttir er verkefnastjóri og tók 6. sæti í prófkjöri Sjálfstæðisflokksins í Hafnarfirði febrúar 2026. (Aths.: Rósa Guðbjartsdóttir, fráfarandi bæjarstjóri, er núna alþingismaður fyrir Sjálfstæðisflokkinn og hefur ekki birt sem frambjóðanda á D-lista 2026 — sæti hennar er ekki staðfest.)'
+  },
   partyInfo: {
-    A: { fullname:'Vinstrihreyfingin – grænt framboð', ideology:'Vinstri, umhverfissinnar', founded:1999 },
+    A: { fullname:'Vinstrið (VG + Vor til vinstri)', ideology:'Vinstri, umhverfissinnar',    founded:1999 },
     B: { fullname:'Framsóknarflokkurinn',  ideology:'Miðja, búnaðarstefna',               founded:1916 },
     C: { fullname:'Viðreisn',              ideology:'Frjálslyndi, miðja',                 founded:2016 },
     D: { fullname:'Sjálfstæðisflokkurinn', ideology:'Miðju-hægri, frjálslyndir markaðir', founded:1929 },
     M: { fullname:'Miðflokkurinn',         ideology:'Miðju-hægri, þjóðernisleg áhersla',  founded:2017 },
     S: { fullname:'Samfylkingin',          ideology:'Miðju-vinstri, jafnaðarstefna',      founded:2000 }
   },
-  stefnumal: {},
-  sattmali2022: null,
-  finance: [],
-  budgets: {},
-  finance2025Partial: null,
+  stefnumal: {
+    // Stefnumál hafnfirskra framboða 2026 í 7 málaflokkum. Heimildir: flokkssíður,
+    // mbl.is, ruv.is, utvarpsaga.is, hafnarfjordur.is. Þar sem flokkur hefur ekki
+    // birt ítarlega afstöðu 2026 er landsstefna tekin með fyrirvörum.
+    'A': {
+      husnaedi:'Leggur áherslu á hagkvæmt og félagslegt húsnæði sem mætir ólíkum hópum. Húsnæðismál talin eitt mikilvægasta málið fyrir ungt fólk, leigjendur og fjölskyldur.',
+      samgongur:'Vistvænar samgöngur í forgangi — almenningssamgöngur, hjólastígar og Borgarlína; styður samgöngusáttmála höfuðborgarsvæðisins.',
+      umhverfi:'Náttúruvernd og loftslagsaðgerðir eru kjarnastefna; varfærinn gagnvart stækkun iðnaðar í Straumsvík.',
+      menntun:'Efla leikskóla og grunnskóla með áherslu á jöfnuð og aðgengi.',
+      velferd:'Jöfnuður, velferð viðkvæmra hópa, barnabætur á sveitarstjórnarstigi og stuðningur við eldra fólk.',
+      fjarmal:'Ekki birt ítarleg afstaða 2026; landsstefna VG leggur áherslu á tekjujöfnuð, stighækkandi skatta og aukin framlög til velferðar.',
+      atvinnu:'Varfærinn gagnvart stækkun iðnaðar; styður græn atvinnutækifæri og minni atvinnurekendur.'
+    },
+    'B': {
+      husnaedi:'Tryggja fjölbreytt húsnæði svo fólk geti sest að í bænum; heldur áfram uppbyggingu í Hamranesi og nýju Smyrlahraun-hverfi.',
+      samgongur:'Áhersla á umferðaröryggi og bætt umferðarflæði samhliða áframhaldandi uppbyggingu; styður samgöngusáttmála og Borgarlínu.',
+      umhverfi:'Ekki birt ítarleg afstaða 2026 í Hafnarfirði; landsstefna Framsóknar leggur áherslu á sjálfbæra nýtingu náttúruauðlinda og orkuskipti.',
+      menntun:'Sterkt skólastarf eitt af fjórum kjarnasvæðum Valdimars; styður nýjan Hamranesskóla og tvo 4-deilda leikskóla í hverfinu.',
+      velferd:'Öflugt velferðarkerfi eitt af fjórum forgangsmálum Valdimars; áhersla á hjúkrunarheimili (m.a. í Hamranesi) og þjónustu við eldra fólk.',
+      fjarmal:'Styður meirihlutasáttmála: óbreytt útsvar 14,931%, lækkun álagsprósentu fasteignaskatts 2026, áframhaldandi lækkun skuldaviðmiðs.',
+      atvinnu:'Styður áframhaldandi starfsemi ISAL/Rio Tinto í Straumsvík og þróun Coda Terminal (Carbfix) sem græns atvinnutækifæris.'
+    },
+    'C': {
+      husnaedi:'Vill auka framboð í skrefum, styðja ungt fólk inn á leigu- og eignarmarkað og samþætta húsnæðisuppbyggingu við samgöngur.',
+      samgongur:'Heildstæð sýn tengt húsnæðisuppbyggingu; styður umhverfisvænar samgönguleiðir, Borgarlínu og bættar hjóla- og göngutengingar.',
+      umhverfi:'Umhverfisvænar samgöngur og aðgengi í fyrirrúmi; almennt jákvæð gagnvart Carbfix/Coda Terminal í Straumsvík sem grænu atvinnutækifæri.',
+      menntun:'Ekki birt ítarleg 2026-stefnuskrá; Karólína er kennari og leggur áherslu á fjölbreytni í skólaformum og jöfn tækifæri.',
+      velferd:'Betra aðgengi að stjórnsýslu og þjónustu bæjarins fyrir alla íbúa, þar með talið eldra fólk og fatlaða.',
+      fjarmal:'Ekki birt ítarleg afstaða 2026 í Hafnarfirði; landsstefna flokksins leggur áherslu á ábyrga fjármálastjórn, lægri útsvör og markaðsvæna atvinnustefnu.',
+      atvinnu:'Markaðsvæn og opin fyrir nýsköpun, þar með talið Coda Terminal og háskólatengd fyrirtæki.'
+    },
+    'D': {
+      husnaedi:'Heldur áfram hraðri uppbyggingu í Hamranesi og öðrum nýjum hverfum. Lækkar álagsprósentu fasteignaskatts íbúða 2026 úr 0,217% í 0,1999%.',
+      samgongur:'Áhersla á greiðar umferðarleiðir, Reykjanesbraut og tengsl við Straumsvíkurhöfn; hefur stutt samgöngusáttmálann en með fyrirvörum um kostnað.',
+      umhverfi:'Styður áfram starfsemi ISAL/Rio Tinto í Straumsvík og skipulagsbreytingar sem gera Coda Terminal mögulegt; áhersla á skógrækt (8.900 tré kolefnisjöfnun).',
+      menntun:'Nýr Hamranesskóli stærsta einstaka fjárfesting 2026 (2,1 ma.kr.); hefur innleitt 100% framlag til sjálfstætt starfandi skóla og lagt áherslu á valfrelsi.',
+      velferd:'Samkvæmt meirihlutasáttmála er „vellíðan" og þjónusta fyrir alla aldurshópa í forgangi; meirihlutinn hefur lækkað álögur á íbúa.',
+      fjarmal:'Áhersla á lækkun álaga; fasteignaskattur íbúða lækkaður 2026, atvinnuhúsnæðis úr 1,387% í 1,367%. Skuldaviðmið áætlað 92,6% í lok 2026 (vel undir 150%).',
+      atvinnu:'Sterkur stuðningur við atvinnulíf, áframhaldandi rekstur álvers Rio Tinto í Straumsvík og skipulagsbreytingar fyrir Coda Terminal.'
+    },
+    'M': {
+      husnaedi:'Ekki birt ítarleg afstaða 2026; landsstefna Miðflokksins leggur áherslu á að einfalda skipulag, draga úr reglubyrði á lóðaframboð og tryggja séreignar-stefnu.',
+      samgongur:'Vill endurskoða samgöngusáttmála höfuðborgarsvæðisins og hafnar Borgarlínu í núverandi mynd; segir Borgarlínu illa henta Hafnarfirði vegna umferðarþunga á Reykjanesbraut.',
+      umhverfi:'Ekki birt ítarleg afstaða 2026; landsstefna leggur áherslu á hófsama umhverfisstefnu og efast um kostnað samgönguaðgerða í loftslagsmálum.',
+      menntun:'Ekki birt ítarleg afstaða 2026; hefur vakið athygli á kostnaði vegna hælisleitenda og áhrifum þeirra á skólakerfi.',
+      velferd:'Vekur athygli á kostnaði vegna hælisleitenda (um 2 milljarða í félagsþjónustu 2025 skv. flokknum) og vill endurskoða málaflokkinn.',
+      fjarmal:'Vill draga úr kostnaði bæjarins við málaflokka sem eru taldir ríkisverkefni (t.d. hælisleitendur); ekki birt ítarlegt skattaplan 2026.',
+      atvinnu:'Ekki birt ítarleg afstaða 2026; almennt fylgjandi hefðbundnum atvinnugreinum og gagnrýnn á nýjan iðnað sem dregur úr samkeppnishæfni.'
+    },
+    'S': {
+      husnaedi:'Áhersla á húsnæðis- og kjaramál; hefur haldið súpufundi um húsnæði. Styður aukið framboð á hagkvæmu húsnæði, leiguíbúðum og félagslegum úrræðum.',
+      samgongur:'Hefur ítrekað sett samgöngumál á dagskrá; styður Borgarlínu, almenningssamgöngur og hjólastíga, og vill stórbæta leiðanet strætisvagna.',
+      umhverfi:'Ekki birt ítarleg 2026-stefnuskrá í Hafnarfirði; landsstefna flokksins leggur áherslu á metnaðarfulla loftslagsstefnu, vernd grænna svæða og orkuskipti.',
+      menntun:'Ekki birt ítarleg 2026-stefnuskrá; sögulega hefur flokkurinn lagt áherslu á sterkan almennan grunn- og leikskóla og styttri biðlista í leikskólum.',
+      velferd:'Breidd og styrkur jafnaðarmanna með fulltrúa ólíkra aldurshópa. Áhersla á húsnæðis- og kjaramál og velferð eldra fólks og barnafjölskyldna.',
+      fjarmal:'Ekki birt ítarleg 2026-stefnuskrá; hefur sögulega gagnrýnt ósamræmi í álögum og vill fjárfesta meira í grunnþjónustu.',
+      atvinnu:'Ekki birt ítarleg 2026-stefnuskrá; sögulega mjúkt-neikvæð gagnvart álveri, jákvæð gagnvart grænum atvinnutækifærum og hátækni.'
+    }
+  },
+  sattmali2022: {
+    titill: 'Meirihlutasáttmáli D + B — „Gróska, vellíðan, framsýni" (1. júní 2022)',
+    gildi: '2022–2026',
+    flokkar: ['D','B'],
+    kjarni: 'Sjálfstæðisflokkur (4 sæti) og Framsókn (2 sæti) mynduðu meirihluta með 6 af 11 sætum í bæjarstjórn Hafnarfjarðar. Rósa Guðbjartsdóttir (D) varð bæjarstjóri til 31. desember 2024 og Valdimar Víðisson (B) tók við 1. janúar 2025 samkvæmt fyrirfram umsömdum skipti.',
+    lykilatridi: [
+      'Húsnæði: Undirbúningur fyrir mikla fólksfjölgun með aukinni byggingu íbúðar- og atvinnuhúsnæðis (Hamranes, Smyrlahraun)',
+      'Innviðir: Uppbygging nauðsynlegra innviða (skóla, leikskóla, íþróttaaðstöðu) samhliða vexti bæjarins',
+      'Þjónusta: Skilvirk þjónusta og bætt aðgengi fyrir alla aldurshópa',
+      'Lækkaðar álögur: Viðhalda þjónustugæðum samhliða lækkun gjalda á íbúa',
+      'Velferð yfir kynslóðir: Stuðningur við velferð og lífsgæði allra aldurshópa',
+      'Fyrirfram umsömd bæjarstjóraskipti 1.1.2025 — Rósa → Valdimar'
+    ],
+    heimild: 'hafnarfjordur.is/meirihlutinn-i-hafnarfirdi-2022-2026'
+  },
+  finance: [
+    // Hafnarfjarðarbær — ársreikningar 2021–2024. Tölur í milljörðum króna (ma.kr.).
+    // Heimildir: hafnarfjordur.is/arsreikningur-... + fjardarfrettir.is. Tölur 2015–2020
+    // eru ekki aðgengilegar í vefleit (2020: A +1,6 / AB +2,3 en skuldir ekki staðfest)
+    // — þarf að sækja úr PDF á hafnarfjordur.is/stjornsysla/rekstur-og-tolfraedi/arsreikningar/.
+    {yr:2021,
+      A:{tekjur:null, gjold:null, nidurstada:null, skatttekjur:null, eignir:null, skuldir:null, eiginfe:null},
+      AB:{tekjur:33.6, nidurstada:-0.71, eignir:72.2, skuldir:50.0, eiginfe:22.2},
+      ibuar:29742, baejarstjori:'Rósa Guðbjartsdóttir', bstAf:'D',
+      meirihluti:['D','M','B'], kjor:'2018–2022',
+      athugasemd:'AB-niðurstaða 258 m.kr. betri en áætlun þrátt fyrir hallann. Neikvæð niðurstaða aðallega vegna 2,3 ma.kr. aukningar lífeyrisskuldbindinga. Skuldaviðmið lækkar úr 161% í 149%.',
+      adj:[{label:'Lífeyrisskuldbinding (umfram áætlun)', value:2.3, hluti:'AB'}]
+    },
+    {yr:2022,
+      A:{tekjur:null, gjold:null, nidurstada:0.26, skatttekjur:null, eignir:null, skuldir:null, eiginfe:null},
+      AB:{tekjur:42.6, gjold:37.3, nidurstada:0.89, eignir:84.6, skuldir:56.5, eiginfe:28.2},
+      ibuar:30508, baejarstjori:'Rósa Guðbjartsdóttir', bstAf:'D',
+      meirihluti:['D','B'], kjor:'2022–2026',
+      skipti:'Kjörtímabilaskipti. D+B meirihluti tók við 1. júní 2022 með samstarfsyfirlýsingunni „Gróska, vellíðan, framsýni". Rósa hélt áfram sem bæjarstjóri.',
+      athugasemd:'Verðbólguhögg. Söluhagnaður lands 7,4 ma.kr. drífur niðurstöðu. Skuldaviðmið lækkar úr 101% í 85,1%. Eiginfjárhlutfall 33,3%.',
+      adj:[{label:'Söluhagnaður lands (einskiptisliður)', value:-7.4, hluti:'AB'}]
+    },
+    {yr:2023,
+      A:{tekjur:null, gjold:null, nidurstada:0.25, skatttekjur:null, eignir:null, skuldir:null, eiginfe:null},
+      AB:{tekjur:47.28, gjold:44.47, nidurstada:0.81, eignir:null, skuldir:null, eiginfe:null},
+      ibuar:30616, baejarstjori:'Rósa Guðbjartsdóttir', bstAf:'D',
+      meirihluti:['D','B'], kjor:'2022–2026',
+      athugasemd:'Góður rekstrarárangur. Skuldaviðmið 82% (lítilsháttar hækkun).',
+      adj:[]
+    },
+    {yr:2024,
+      A:{tekjur:null, gjold:null, nidurstada:0.12, skatttekjur:null, eignir:null, skuldir:null, eiginfe:null},
+      AB:{tekjur:49.3, gjold:43.9, nidurstada:1.21, eignir:101.0, skuldir:65.7, eiginfe:35.3},
+      ibuar:31525, baejarstjori:'Rósa Guðbjartsdóttir', bstAf:'D',
+      meirihluti:['D','B'], kjor:'2022–2026',
+      athugasemd:'Skatttekjur (útsvar + fasteignaskattur) 60,5% af tekjum. Fjárfestingar 8,3 ma.kr. (+17%). Íbúum fjölgaði um 909 á árinu. Skuldaviðmið 90% (hækkun úr 82%). Eiginfjárhlutfall 34,9%.',
+      adj:[]
+    }
+  ],
+  budgets: {
+    2024: {
+      A:  {tekjur:null, gjold:null, nidurstada:0.86},
+      AB: {tekjur:null, gjold:null, nidurstada:1.73, skuldir:null},
+      notes:'Áætlun stefndi á +0,86 ma. A og +1,73 ma. AB. Raunin varð +0,12 A og +1,21 AB — A-hluti undir áætlun, AB nær áætlun. Útsvar 14,7%.'
+    },
+    2025: {
+      A:  {tekjur:null, gjold:null, nidurstada:0.045},
+      AB: {tekjur:null, gjold:null, nidurstada:1.01, skuldir:null},
+      notes:'Útsvar hækkað í 14,93% (úr 14,7%). Stórt uppbyggingarár: 6-deilda leikskóli Hamranes, íþróttahús á Ásvöllum, reiðhöll Sörla, bókasafn í miðbæ. Fjárfestingar 9,7 ma.kr. Raunin varð slappari — sjá 2025 bráðabirgða.'
+    },
+    2026: {
+      A:  {tekjur:null, gjold:null, nidurstada:0.94},
+      AB: {tekjur:null, gjold:50.5, nidurstada:2.09, skuldir:null},
+      notes:'Samþykkt við síðari umræðu 3. desember 2025. Útsvar 14,931% óbreytt. Fasteignaskattur íbúða lækkar í 0,1999% (úr 0,217%), atvinnuhúsnæðis í 1,367%. Stærsta einstaka fjárfestingin: nýr Hamranesskóli. Skuldaviðmið áætlað 92,6%. Veltufé frá rekstri 3,98 ma.kr.'
+    }
+  },
+  finance2025Partial: {
+    yr:2025, timabil:'Bráðabirgða ársreikningur 2025 (mögulega óendurskoðað)',
+    A:{tekjur:null, nidurstada:-1.17, skatttekjur:null},
+    AB:{tekjur:54.4, nidurstada:0.05, eignir:108.7, skuldir:70.7, eiginfe:37.95},
+    baejarstjori:'Valdimar Víðisson (frá 1.1.2025)', bstAf:'B',
+    meirihluti:['D','B'], kjor:'2022–2026',
+    athugasemd:'Valdimar tók við bæjarstjórastólnum 1.1.2025. Stórt uppbyggingarár — þrjú ný íþróttamannvirki. A-hluti neikvæður um 1,17 ma. — umtalsverður halli á kjarnarekstri. AB nálægt jafnvægi (+0,05 ma.). Skuldir upp úr 65,7 í 70,7 ma. Íbúar 32.398 (+873 á árinu).'
+  },
   kjortimabil: [
     {
-      titill: '2022–2026',
+      titill: '2018–2022',
+      bst: 'Rósa Guðbjartsdóttir (D)',
+      meirihluti: ['D','M','B'],
+      ar: [2021],
+      lykilmal: [
+        'D+Miðflokkur+Framsókn samstarf (Rósa tók við sem bæjarstjóri í júní 2018)',
+        '2020 (COVID): jákvæð niðurstaða A +1,6 ma. / AB +2,3 ma. (knúin af sölu 15% HS Veitna og lóðasölu) — nákvæmar ársreikningstölur ekki í gagnasafni',
+        '2021: AB-halli -0,71 ma. vegna aukningar lífeyrisskuldbindinga (2,3 ma.)',
+        'Skuldaviðmið lækkar úr 161% (2020) í 149% (2021) — á leið niður í 150%-markið'
+      ]
+    },
+    {
+      titill: '2022–2026 (núverandi)',
       bst: 'Rósa Guðbjartsdóttir (D) → Valdimar Víðisson (B) frá 1. janúar 2025',
       meirihluti: ['D','B'],
       ar: [2022,2023,2024,2025],
       lykilmal: [
-        'D+B meirihluti með 6 af 11 sætum — „Vöxtur, velferð og framsýni"',
-        'Bæjarstjóraskipti 1. janúar 2025 samkv. fyrirfram umsömdum sáttmála: Rósa færist í forseta bæjarstjórnar/bæjarráðsformann; Valdimar Víðisson (B) tekur við bæjarstjórastólnum',
+        'D+B meirihluti með 6 af 11 sætum undir samstarfsyfirlýsingunni „Gróska, vellíðan, framsýni"',
+        'Bæjarstjóraskipti 1. janúar 2025 samkv. fyrirfram umsömdum sáttmála — Rósa (D) → Valdimar Víðisson (B)',
         'Hamranes-hverfi: 25 ha uppbygging, ~1.900 íbúðir í farvatninu; nýr Hamranesskóli stærsta fjárfestingin í fjárhagsáætlun 2026',
-        'Straumsvík/Kapelluhraun: tillaga um breytingu á aðalskipulagi 2013–2025 samþykkt sept. 2023 til að bæta hafnaraðstöðu og tengingu við iðnaðarsvæði',
+        'Straumsvík/Kapelluhraun: aðalskipulagsbreyting 2013–2025 samþykkt sept. 2023 fyrir Coda Terminal (Carbfix) og bætta hafnaraðstöðu',
+        '2024: „besta afkoma í mörg ár" — +1,21 ma. AB, skuldaviðmið 90%, eiginfjárhlutfall 34,9%',
+        '2025 bráðabirgða: A-hluti neikvæður -1,17 ma. vegna stórfelldra fjárfestinga; AB nálægt jafnvægi (+0,05 ma.)',
         'Kolbrún Magnúsdóttir (kjörin S 2022) færði sig yfir í Framsókn og situr í 2. sæti B-lista 2026 — umdeild tilfærsla'
       ]
     }
@@ -4581,31 +4739,49 @@ function renderStuttu(){
       +'<br><span style="color:'+(skuldirLower?'#2E7D32':'#C62828')+';font-weight:500">'+(skuldirLower?'Lækkaði':'Hækkaði')+'</span> frá fyrra ári ('+plusMinus(abSkuldir-prev.AB.skuldir)+' ma.).'
     +'</div></div>';
 
-  // Kort 3: Íbúar / tekjur per íbúa
-  var tekjurPerI = perIbua(last.A.tekjur, last.yr);
-  html += '<div class="card">'
-    +'<div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.07em;color:var(--ink3);margin-bottom:4px;">Hvað fær '+cityN('nef')+' frá hverjum íbúa?</div>'
-    +'<div style="font-family:\'Playfair Display\',serif;font-size:32px;color:var(--ink);line-height:1;margin-bottom:6px;">'+fmtISK(tekjurPerI)+' <span style="font-size:15px;color:var(--ink2);font-family:\'DM Sans\',sans-serif;">kr.</span></div>'
-    +'<div style="font-size:12px;color:var(--ink2);line-height:1.5;">'
-      +'Það eru heildartekjur A-hluta '+cityN('ef')+' ('+last.A.tekjur.toFixed(1)+' ma.) deilt með íbúafjölda ('+fmtISK(last.ibuar)+' íbúar).'
-      +'<br>Aðallega útsvar, jöfnunarsjóður og fasteignagjöld.'
-    +'</div></div>';
+  // Kort 3: Íbúar / tekjur per íbúa — A-tekjur eru ekki alltaf til staðar; fallback á AB.
+  var tekjurForCard = (last.A && last.A.tekjur != null) ? last.A.tekjur : (last.AB && last.AB.tekjur != null ? last.AB.tekjur : null);
+  var tekjurHluti = (last.A && last.A.tekjur != null) ? 'A-hluta' : 'samstæðu (AB)';
+  if(tekjurForCard != null){
+    var tekjurPerI = perIbua(tekjurForCard, last.yr);
+    html += '<div class="card">'
+      +'<div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.07em;color:var(--ink3);margin-bottom:4px;">Hvað fær '+cityN('nef')+' frá hverjum íbúa?</div>'
+      +'<div style="font-family:\'Playfair Display\',serif;font-size:32px;color:var(--ink);line-height:1;margin-bottom:6px;">'+fmtISK(tekjurPerI)+' <span style="font-size:15px;color:var(--ink2);font-family:\'DM Sans\',sans-serif;">kr.</span></div>'
+      +'<div style="font-size:12px;color:var(--ink2);line-height:1.5;">'
+        +'Það eru heildartekjur '+tekjurHluti+' '+cityN('ef')+' ('+tekjurForCard.toFixed(1)+' ma.) deilt með íbúafjölda ('+fmtISK(last.ibuar)+' íbúar).'
+        +'<br>Aðallega útsvar, jöfnunarsjóður og fasteignagjöld.'
+      +'</div></div>';
+  } else {
+    html += '<div class="card">'
+      +'<div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.07em;color:var(--ink3);margin-bottom:4px;">Hvað fær '+cityN('nef')+' frá hverjum íbúa?</div>'
+      +'<div style="font-family:\'Playfair Display\',serif;font-size:22px;color:var(--ink3);line-height:1;margin-bottom:6px;">— (tekjutölur ófullbúnar)</div>'
+      +'<div style="font-size:12px;color:var(--ink2);line-height:1.5;">Tekjusundurliðun fyrir '+last.yr+' er ekki skráð í gagnasafninu — bætist við með fullu ársreikningsgögnum.</div></div>';
+  }
 
   html += '</div>';
 
-  // Skuldir yfir tíma — mikilvægt samhengi sem eitt ár felur
-  var first = FINANCE[0];
-  var skuldGrowth = ((last.AB.skuldir / first.AB.skuldir - 1) * 100).toFixed(0);
-  var consecutiveRising = 0;
-  for(var i = FINANCE.length-1; i > 0; i--){
-    if(FINANCE[i].AB.skuldir > FINANCE[i-1].AB.skuldir) consecutiveRising++;
-    else break;
+  // Skuldir yfir tíma — sía út ár sem vantar tölur svo tímalínan sé raunhæf
+  var skuldFin = FINANCE.filter(function(d){ return d.AB && d.AB.skuldir != null; });
+  var skuldSummary = '';
+  if(skuldFin.length >= 2){
+    var firstSkuld = skuldFin[0];
+    var lastSkuld  = skuldFin[skuldFin.length-1];
+    var skuldGrowth = ((lastSkuld.AB.skuldir / firstSkuld.AB.skuldir - 1) * 100).toFixed(0);
+    var consecutiveRising = 0;
+    for(var i = skuldFin.length-1; i > 0; i--){
+      if(skuldFin[i].AB.skuldir > skuldFin[i-1].AB.skuldir) consecutiveRising++;
+      else break;
+    }
+    var dirColor = skuldGrowth >= 0 ? '#C62828' : '#2E7D32';
+    skuldSummary = 'Samstæðuskuldir hafa '+(skuldGrowth>=0?'hækkað':'lækkað')+' úr '+firstSkuld.AB.skuldir.toFixed(0)+' ma. ('+firstSkuld.yr+') í '+lastSkuld.AB.skuldir.toFixed(0)+' ma. ('+lastSkuld.yr+') — '
+      +'<strong style="color:'+dirColor+'">'+(skuldGrowth>=0?'+':'')+skuldGrowth+'%</strong> á '+(lastSkuld.yr-firstSkuld.yr)+' árum. '
+      +'Hafa '+(consecutiveRising>0?'hækkað '+consecutiveRising+' ár í röð.':'ekki hækkað samfellt.');
+  } else {
+    skuldSummary = 'Skuldatölur eru ekki fullnægjandi fyrir samfelda tímalínu. Línurit neðar birtist þegar fleiri ár eru tiltæk.';
   }
   html += '<div class="card" style="margin-bottom:1rem;">'
     +'<div style="font-family:\'Playfair Display\',serif;font-size:17px;margin-bottom:3px;">Skuldir yfir tíma</div>'
-    +'<div style="font-size:12px;color:var(--ink2);margin-bottom:1rem;">Samstæðuskuldir hafa hækkað úr '+first.AB.skuldir.toFixed(0)+' ma. ('+first.yr+') í '+last.AB.skuldir.toFixed(0)+' ma. ('+last.yr+') — '
-    +'<strong style="color:#C62828">+'+skuldGrowth+'%</strong> á '+(last.yr-first.yr)+' árum. '
-    +'Hafa hækkað '+consecutiveRising+' ár í röð.</div>'
+    +'<div style="font-size:12px;color:var(--ink2);margin-bottom:1rem;">'+skuldSummary+'</div>'
     +buildStuttuSkuldirChart()
     +'</div>';
 
@@ -4641,11 +4817,16 @@ function renderStuttu(){
 }
 
 function buildStuttuBarChart(){
-  // Einfölduð súlumynd — bara AB-niðurstaða, litakóðuð + ártöl
+  // Einfölduð súlumynd — bara AB-niðurstaða, litakóðuð + ártöl.
+  // Síar út ár sem vantar niðurstöðu svo grafið rokki ekki.
+  var fin = FINANCE.filter(function(d){ return d.AB && d.AB.nidurstada != null; });
+  if(fin.length === 0){
+    return '<div style="font-size:12px;color:var(--ink2);padding:.5rem 0">Niðurstöður ekki skráðar.</div>';
+  }
   var W = 720, H = 200, PAD = {l:35, r:12, t:20, b:32};
   var plotW = W - PAD.l - PAD.r, plotH = H - PAD.t - PAD.b;
-  var xStep = plotW / FINANCE.length;
-  var vals = FINANCE.map(function(d){return d.AB.nidurstada;});
+  var xStep = plotW / fin.length;
+  var vals = fin.map(function(d){return d.AB.nidurstada;});
   var minV = Math.floor(Math.min.apply(null, vals.concat([-5]))/5)*5;
   var maxV = Math.ceil(Math.max.apply(null, vals.concat([25]))/5)*5;
   function yS(v){ return PAD.t + plotH - (v-minV)/(maxV-minV)*plotH; }
@@ -4662,7 +4843,7 @@ function buildStuttuBarChart(){
 
   var bars = '', labels = '';
   var barW = xStep * 0.7;
-  FINANCE.forEach(function(d, i){
+  fin.forEach(function(d, i){
     var cx = PAD.l + i*xStep + xStep/2;
     var v = d.AB.nidurstada;
     var top = v>=0 ? yS(v) : zeroY;
@@ -4682,10 +4863,13 @@ function buildStuttuBarChart(){
 // Skuldir-chart: línurit sem sýnir samfellda hækkun samstæðuskulda 2015–2024
 // (+ 2025 bráðabirgða ef til). Tekjur sem samanburðarlína til að setja í samhengi.
 function buildStuttuSkuldirChart(){
-  var data = FINANCE.map(function(d){return {yr:d.yr, skuldir:d.AB.skuldir, tekjur:d.AB.tekjur};});
-  if(typeof FINANCE_2025_PARTIAL !== 'undefined' && FINANCE_2025_PARTIAL.AB && FINANCE_2025_PARTIAL.AB.skuldir){
+  var data = FINANCE
+    .filter(function(d){ return d.AB && d.AB.skuldir != null; })
+    .map(function(d){return {yr:d.yr, skuldir:d.AB.skuldir, tekjur:d.AB.tekjur};});
+  if(typeof FINANCE_2025_PARTIAL !== 'undefined' && FINANCE_2025_PARTIAL && FINANCE_2025_PARTIAL.AB && FINANCE_2025_PARTIAL.AB.skuldir){
     data.push({yr:FINANCE_2025_PARTIAL.yr, skuldir:FINANCE_2025_PARTIAL.AB.skuldir, tekjur:FINANCE_2025_PARTIAL.AB.tekjur, partial:true});
   }
+  if(data.length < 2) return '<div style="font-size:12px;color:var(--ink2);padding:.5rem 0">Skuldatölur ekki fullar fyrir þetta sveitarfélag — línurit birtist þegar fleiri ár eru tiltæk.</div>';
   var W = 720, H = 210, PAD = {l:40, r:14, t:20, b:32};
   var plotW = W - PAD.l - PAD.r, plotH = H - PAD.t - PAD.b;
   var xStep = plotW / (data.length - 1);
