@@ -3304,7 +3304,7 @@ var KOPV_RAW = [
   ['S',22,'Rannveig Guðmundsdóttir','fyrrum ráðherra og bæjarfulltrúi'],
   // V — Vinstri grænir og óháðir (Anna Sigríður Hafliðadóttir, 0 sæti 2022 — nýtt í Kópavogi).
   // Aðeins 4 efstu staðfest opinberlega; fullur listi fylgir síðar.
-  ['V',1,'Anna Sigríður Hafliðadóttir','formaður Vinstri grænna'],
+  ['V',1,'Anna Sigríður Hafliðadóttir','sérfræðingur í miðlun og form. kjördæmisráðs VG í SV-kjördæmi'],
   ['V',2,'Bjarki Valberg','skipulagsfulltrúi'],
   ['V',3,'Kjartan Sveinn Guðmundsson','laganemi'],
   ['V',4,'Védís Einarsdóttir','iðnnemi']
@@ -3324,8 +3324,35 @@ MUNI_DATA.kopv = {
     {id:'V', name:'Vinstri grænir og óháðir',     color:'#2E7D32', pct:0, seats:0}
   ],
   rawCands: KOPV_RAW,
-  photos: {},   // bætt við í fasa 2b með myndum af oddvitum
-  bios: {},     // æviágrip fylgja í fasa 2c
+  photos: {
+    // Oddvitar hvers flokks (sannreynt með HTTP 200 — sjá fasa 2c commit).
+    // Heimildir: kopavogur.is (B-1, D-1), vidreisn.is (C-*), midflokkurinn.is
+    // (M-*), xs.is/prismic.io (S-*), kopavogsbladid.is (V-1), sudurhlidarskoli.is
+    // (J-1 — starfssíðumynd, nafn „Krúsa" = gælunafn Markúsar).
+    'B-1':  'https://www.kopavogur.is/static/extras/files/orri23819.jpg',
+    'C-1':  'https://vidreisn.is/wp-content/uploads/2026/04/Mynd-1-683x1024.jpg',
+    'C-2':  'https://vidreisn.is/wp-content/uploads/2026/04/vidreisnkop02-683x1024.jpg',
+    'C-3':  'https://vidreisn.is/wp-content/uploads/2026/04/vidreisnkop04-683x1024.jpg',
+    'D-1':  'https://www.kopavogur.is/static/extras/files/asdis-kristjansdottir_2023837.jpg',
+    'J-1':  'https://sudurhlidarskoli.is/wp-content/uploads/2025/09/Kr%C3%BAsi-225x300.png',
+    'M-1':  'https://midflokkurinn.is/wp-content/uploads/2026/03/einar-johannes-e1776078507703.jpg',
+    'M-2':  'https://midflokkurinn.is/wp-content/uploads/2026/04/nina.jpg',
+    'M-3':  'https://midflokkurinn.is/wp-content/uploads/2026/04/beitir-scaled.jpg',
+    'S-1':  'https://images.prismic.io/samfylkingin/ad-p-51ZCF7ETOFg_J%C3%B3nas.png?auto=format,compress',
+    'S-2':  'https://images.prismic.io/samfylkingin/ad-qEZ1ZCF7ETOFi_Eyd%C3%ADs.png?auto=format,compress',
+    'S-3':  'https://images.prismic.io/samfylkingin/ad-qLZ1ZCF7ETOFk_H%C3%A1kon.png?auto=format,compress',
+    'V-1':  'https://www.kopavogsbladid.is/wp-content/uploads/AnnaHaflida_VG.jpg'
+  },
+  bios: {
+    // Æviágrip oddvita 2–3 setningar hver (hlutlaus texti). Heimildir í commit-skila.
+    'B-1': 'Orri Vignir Hlöðversson er framkvæmdastjóri Frumherja og bæjarfulltrúi í Kópavogi, og hefur verið oddviti Framsóknar í bænum frá 2022. Hann var áður bæjarstjóri Hveragerðis 2002–2006 og myndar nú meirihluta með Sjálfstæðisflokki í Kópavogi, þar sem áhersla hefur verið á húsnæðisuppbyggingu, samgöngur og sjálfbæra þróun.',
+    'C-1': 'María Ellen Steingrímsdóttir er lögfræðingur og var kjörin oddviti Viðreisnar í Kópavogi í febrúar 2026. Á yfirstandandi kjörtímabili hefur hún setið í menntaráði og jafnréttis- og mannréttindaráði fyrir Viðreisn, og helstu áherslumál hennar snúa að börnum og fjölskyldum, lækkun leikskólagjalda í Kópavogsmódelinu, aukinni húsnæðisuppbyggingu fyrir ungt fólk og auknu íbúasamráði.',
+    'D-1': 'Ásdís Kristjánsdóttir er bæjarstjóri Kópavogs frá júní 2022 og oddviti Sjálfstæðisflokksins í bænum, fyrst kvenna til að gegna embætti bæjarstjóra fyrir flokkinn í Kópavogi. Hún er iðnaðarverkfræðingur og hagfræðingur að mennt og var áður aðstoðarframkvæmdastjóri Samtaka atvinnulífsins; á kjörtímabilinu hefur hún lagt áherslu á lækkun fasteignagjalda, hagræðingu í rekstri bæjarins og breytingar á leikskólastarfi í gegnum svokallað Kópavogsmódel.',
+    'J-1': 'Markús Candi er 26 ára stuðningsfulltrúi og leikjahönnuður og var kjörinn oddviti Sósíalistaflokksins í Kópavogi fyrir sveitarstjórnarkosningarnar 2026. Hann hefur ekki fyrri reynslu sem kjörinn bæjarfulltrúi, og helstu áherslumál hans eru félagslegt húsnæði, uppbygging leiguhúsnæðis í samstarfi við aðila á borð við Bjarg, og húsnæðisöryggi tekjulægri íbúa.',
+    'M-1': 'Einar Jóhannes Guðnason er 32 ára rekstrar- og sölustjóri með um átta ára reynslu úr atvinnulífinu, meðal annars hjá eloomi, Maze og 50skills, og var kjörinn oddviti Miðflokksins í Kópavogi í febrúar 2026. Hann er varaþingmaður Miðflokksins og situr í stjórn kjördæmisráðs Suðvesturkjördæmis og stjórn Miðflokksins í Kópavogi; helstu áherslumál hans eru hófsamari þétting byggðar og langtímalausnir í leik- og grunnskólamálum.',
+    'S-1': 'Jónas Már Torfason er lögfræðingur hjá lögmannsstofunni Rétti – Aðalsteinsson & Partners og var kjörinn oddviti Samfylkingarinnar í Kópavogi í febrúar 2026. Hann hefur áður starfað hjá LOGOS og á lögmannsstofunni Plesner í Kaupmannahöfn auk starfa sem blaðamaður og framkvæmdastjóri Stúdentaráðs; helsta áherslumál hans er lækkun leikskólagjalda, sem hann kallar „barnaskatt", og aukin jafnaðarstefna í þjónustu við fjölskyldur.',
+    'V-1': 'Anna Sigríður Hafliðadóttir er sérfræðingur í miðlun (sáttamiðlun) og formaður kjördæmisráðs Vinstri grænna í Suðvesturkjördæmi. Hún var kjörin oddviti Vinstri grænna og óháðra í Kópavogi í apríl 2026 eftir að Ómar Stefánsson dró framboð sitt til baka, og takmarkaðar upplýsingar liggja fyrir um ítarleg áherslumál hennar í Kópavogi umfram almenna stefnu VG um umhverfismál, jafnrétti og félagslegt réttlæti.'
+  },
   partyInfo: {
     B: { fullname:'Framsóknarflokkurinn', ideology:'Miðja, búnaðarstefna', founded:1916 },
     C: { fullname:'Viðreisn',             ideology:'Frjálslyndi, miðja',    founded:2016 },
@@ -3335,22 +3362,225 @@ MUNI_DATA.kopv = {
     S: { fullname:'Samfylkingin',         ideology:'Miðju-vinstri, jafnaðarstefna', founded:2000 },
     V: { fullname:'Vinstri grænir og óháðir', ideology:'Vinstri, umhverfissinnar', founded:1999 }
   },
-  stefnumal: {},          // fyllist inn í fasa 2c
+  stefnumal: {
+    // Stefnumál hvers flokks í Kópavogi 2026 (áherslur á hverfi, Kópavogsmódelið,
+    // þétting, skattalækkun og fjármál bæjarins). Heimildir: flokkssíður, xbkop.is,
+    // xd.is, xs.is, vidreisn.is, midflokkurinn.is, sosialistaflokkurinn.is, vg.is,
+    // og greinar á mbl.is/visir.is/ruv.is/dv.is 2025–2026.
+    'B': {
+      husnaedi:'Framsókn vill auka lóðaframboð og fjölbreytni á húsnæðismarkaði, með áherslu á samtal við íbúa um skipulag nýrra hverfa og að nauðsynlegir innviðir séu til staðar áður en byggt er. Leggur áherslu á græn og opin svæði í skipulagi.',
+      samgongur:'Styður uppbyggingu samgönguinnviða samhliða þéttingu og vill samráð við íbúa um skipulag. Ekki birt afdráttarlaus afstaða gegn Borgarlínu — flokkurinn hefur setið í núverandi meirihluta sem styður samgöngusáttmálann.',
+      umhverfi:'Leggur áherslu á verndun grænna svæða og opinna svæða í skipulagi nýrra hverfa og að lífsgæði íbúa séu höfð í fyrirrúmi í umhverfismálum.',
+      menntun:'Höfundar og verjendur Kópavogsmódelsins (6 klst. gjaldfrjáls leikskóli). Áhersla á „heimili í forgangi" og stöðugleika starfsfólks í leikskólum; segja módelið hafa gert kleift að taka inn 12 mánaða gömul börn.',
+      velferd:'Áhersla á lýðheilsu, forvarnir og aðgengi að viðeigandi þjónustu. Vill að öll börn hafi jafnan aðgang að íþrótta- og æskulýðsstarfi óháð fjárhag foreldra — m.a. gjaldfrjálst starf fyrir börn yngri en 9 ára.',
+      fjarmal:'Stendur með meirihlutanum að ábyrgum rekstri og skattalækkunum; í fjárhagsáætlun 2026 eru fasteignaskattar lækkaðir áfram og rekstur sagður skila afgangi (þótt minnihluti dragi sjálfbærni í efa).',
+      atvinnu:'Styður fjölbreytta atvinnustarfsemi og uppbyggingu innviða fyrir atvinnulíf samhliða byggðarþróun.'
+    },
+    'C': {
+      husnaedi:'Viðreisn vill aukna félagslega og óhagnaðardrifna leigu (t.d. í samstarfi við Bjarg) og stúdentaíbúðir á Kársnesi og í Smára. Áhersla á ábyrga húsnæðisstefnu og fjölkynslóðaskipulag þar sem fjölbreytt húsnæði og þjónusta eru grunnþáttur.',
+      samgongur:'Ekki birt ítarleg afstaða til samgangna 2026; áhersla fremur á skipulag, græn svæði og aðgengi að útivist í nærumhverfi.',
+      umhverfi:'Vill tryggja að íbúar hafi aðgang að grænum svæðum í sínu hverfi og vernda útivistarsvæði fyrir leik, íþróttir og samveru.',
+      menntun:'Gagnrýnir útfærslu Kópavogsmódelsins (hækkanir á gjöldum og skilyrði sem leggjast þungt á fjölskyldur) en vill halda bættum vinnuaðstæðum. Forgangsraða fjármunum í grunnskóla, lækka leikskólagjöld og tryggja aðgengi að sérskólum/sérúrræðum fyrir börn með flóknar þarfir. Vill fríar skólamáltíðir og brú milli fæðingarorlofs og leikskóla.',
+      velferd:'Áhersla á heimili, fjölskyldur og börn, með aðgerðum í geðheilbrigðismálum og stuðningi við þjónustu sem nær til aldraðra og barna með sérþarfir.',
+      fjarmal:'Ekki birt ítarleg afstaða til skattstiga 2026; í minnihluta gagnrýnir flokkurinn að rekstur bæjarins sé ekki sjálfbær án lóðasölu og kallar eftir ábyrgari fjármálastjórn.',
+      atvinnu:'Ekki birt ítarleg afstaða til atvinnumála 2026; áhersla fremur á menntun, húsnæði og þjónustu.'
+    },
+    'D': {
+      husnaedi:'Sjálfstæðisflokkur vill klára uppbyggingu þegar skipulagðra hverfa og styður þéttingu byggðar svo hverfi verði sjálfbærari og íbúar þurfi ekki að sækja langt í þjónustu. Áhersla á fjölbreytni í húsnæði og atvinnutækifærum.',
+      samgongur:'Styður samgöngusáttmála höfuðborgarsvæðisins og opnun Arnarnesvegar á árinu 2026 til að auka umferðaröryggi og létta á Vatnsendavegi.',
+      umhverfi:'Ekki birt ítarleg sérstök stefna í umhverfismálum 2026; áhersla fremur á ábyrgan rekstur, uppbyggingu hverfa og samgöngur.',
+      menntun:'Stendur með Framsókn að Kópavogsmódelinu og 16 umbótaaðgerðum í grunnskólum. Í fjárhagsáætlun 2026 er „mikil áhersla á leikskóla- og grunnskólamál".',
+      velferd:'Áhersla á að viðhalda góðri velferðarþjónustu samhliða ábyrgum rekstri; segir meirihlutinn að þjónusta sé bætt án skattahækkana.',
+      fjarmal:'Lykilstefna: lágir skattar. Meirihlutinn hefur lækkað fasteignaskatta tvisvar (2022–2024, u.þ.b. 1 ma.kr. aðgerð 2024) og stendur að þriðju lækkuninni 2026. Lóðaleiga stendur í stað og vatns- og holræsagjöld lækkuð. Segir rekstur sjálfbæran með 290 m.kr. afgang 2026.',
+      atvinnu:'Ásdís hefur lagt áherslu á að laða fjölbreytta atvinnustarfsemi í bæinn og halda gjöldum á fyrirtæki lágum.'
+    },
+    'J': {
+      husnaedi:'Sósíalistar telja húsnæðisöryggi grundvallarrétt og vilja raunverulegt samstarf við óhagnaðardrifin verkefni (t.d. Bjarg) til að byggja fleiri félagslegar íbúðir. Andmæla því að verktakar og fjárfestar stýri uppbyggingu.',
+      samgongur:'Vilja bætta strætóþjónustu, endurvakinn næturstrætó og auknar virkar samgöngur (gangandi/hjólandi) til að einfalda daglegt líf íbúa.',
+      umhverfi:'Vilja almennilegt aðgengi fyrir fatlað fólk um allan bæinn og opinn, ársbundinn samkomugarð (gróðurhús) fyrir menningar- og samfélagsstarf.',
+      menntun:'Vilja lækka leikskólagjöld sem pólitíska ákvörðun til að létta byrðum af fjölskyldum, og styrkja skóla með betri starfsskilyrðum og faglegri viðurkenningu kennara.',
+      velferd:'Áhersla á velferð, aðgengi og að almannafé renni til íbúa, ekki einkaverktaka. Kalla eftir aukinni hverfisvölduðu lýðræði.',
+      fjarmal:'Vilja draga úr útvistun þjónustu og tryggja að bæjarfé skili sér til íbúa fremur en einkaaðila. Ekki birt ítarleg afstaða til skattstiga.',
+      atvinnu:'Ekki birt ítarleg afstaða til atvinnumála 2026; áhersla fremur á húsnæði, velferð og lýðræði.'
+    },
+    'M': {
+      husnaedi:'Miðflokkurinn er á móti núverandi þéttingarstefnu — telur að dýrar lóðir í þéttingareitum leiði til hárra fasteigna- og leiguverða og háþéttra bygginga. Vill minni þéttleika og aðgerðir sem auðveldi ungu fólki að komast inn á markaðinn.',
+      samgongur:'Lýsa skýrum fyrirvörum við óbreytta útfærslu Borgarlínu og vilja meira samráð við íbúa um samgönguskipulag.',
+      umhverfi:'Leggja mikla áherslu á að vernda græn svæði — þau megi ekki víkja fyrir þéttingu og séu mikilvæg fyrir lýðheilsu og útivist.',
+      menntun:'Kalla eftir langtímalausnum í leikskóla- og grunnskólamálum í samræmi við skýr skilaboð foreldra. Oddvitinn hefur gagnrýnt útfærslu Kópavogsmódelsins.',
+      velferd:'Ekki birt ítarleg afstaða til velferðarmála 2026; stefnuskrá kynnt eftir páska og áhersla á grunnþjónustu og samráð.',
+      fjarmal:'Ekki birt ítarleg afstaða til fjármála 2026; landsstefna Miðflokks leggur áherslu á ráðdeild og lægri álögur.',
+      atvinnu:'Ekki birt ítarleg afstaða til atvinnumála 2026; áhersla fremur á skipulag og íbúasamráð.'
+    },
+    'S': {
+      husnaedi:'Samfylkingin leggur áherslu á öryggi og grunnþjónustu í nýjum og vaxandi hverfum — m.a. að innviðir eins og slökkvistöð fylgi uppbyggingu í efri byggðum.',
+      samgongur:'Vill styrkja öryggi í efri byggðum Kópavogs, m.a. með því að reisa slökkvistöð þar sem viðbragðstími er nú 15–19 mínútur. Styður almennt samgöngusáttmálann.',
+      umhverfi:'Ekki birt ítarleg sérstök stefna í umhverfismálum 2026; áhersla fremur á öryggi, þjónustu og samráð.',
+      menntun:'Gagnrýnir Kópavogsmódelið harðlega — segir breytingarnar gerðar án nægilegs samráðs við foreldra og að aðeins 30 klst. gjaldfrjáls leikskóli sé í boði (á móti 36 klst. áformum í Reykjavík). Vill lækka kostnað fjölskyldna og auka gjaldfrjálsa tíma. Kallar leikskólagjöld „barnaskatt".',
+      velferd:'Áhersla á bætta þjónustu við aldraða og grunnþjónustu við íbúa; vill draga úr kostnaði foreldra og skrifræði gagnvart fyrirtækjum.',
+      fjarmal:'Í minnihluta telur flokkurinn að rekstur Kópavogsbæjar sé ekki sjálfbær án lóðasölu — daglegur rekstur skili 406 m.kr. halla og krefst skýrrar stefnu og ábyrgari fjármálastjórn.',
+      atvinnu:'Vill draga úr skrifræði og byrðum á fyrirtækjum í Kópavogi.'
+    },
+    'V': {
+      husnaedi:'Vinstri grænir og óháðir vilja auðvelda ungu fólki að komast í húsnæði og tryggja húsnæðisöryggi. Slagorðið „Kópavogur er samfélag, ekki hlutafélag" gefur tóninn — uppbygging á að þjóna íbúum.',
+      samgongur:'Ekki birt ítarleg sérstök afstaða til samgangna 2026; almennt styður VG uppbyggingu almenningssamgangna og virkra ferðamáta á landsvísu.',
+      umhverfi:'Kjarnamál flokksins: umhverfis- og náttúruvernd, verndun útivistarsvæða og lífsgæða bæjarbúa. Áhersla á sjálfbæra þróun.',
+      menntun:'Vill endurskoða Kópavogsmódelið í þágu foreldra og barna og styrkja skóla- og frístundastarf.',
+      velferd:'Sterk velferð er grunnstef — vill öflug samfélagsþjónustu, raunverulegt íbúalýðræði og stuðning við viðkvæma hópa.',
+      fjarmal:'Ekki birt ítarleg afstaða til skattstiga 2026; almennt gagnrýnir VG skattalækkanir sem þrengja að grunnþjónustu.',
+      atvinnu:'Ekki birt ítarleg afstaða til atvinnumála 2026; áhersla fremur á velferð, umhverfi og íbúalýðræði.'
+    }
+  },
   sattmali2022: null,      // meirihlutasáttmáli D+B 2022 bætist við síðar
-  finance: [],             // fjárhagsgögn Kópavogs bætast við í fasa 2d
-  budgets: {},
-  finance2025Partial: null,
+  finance: [
+    // Kópavogsbær — ársreikningar 2015–2024. Tölur í milljörðum króna (ma.kr.).
+    // Heimildir: PDF-ársreikningar á kopavogur.is/static/files/Arsreikningar/
+    // + globenewswire-tilkynningar + samanburðardálkar úr nýrri ársreikningum.
+    {yr:2015,
+      A:{tekjur:23.0, gjold:21.8, nidurstada:-0.22, skatttekjur:18.6, eignir:50.3, skuldir:35.1, eiginfe:15.2},
+      AB:{tekjur:24.6, nidurstada:0.16, eignir:58.3, skuldir:42.3, eiginfe:15.9},
+      ibuar:34105, baejarstjori:'Ármann Kr. Ólafsson', bstAf:'D',
+      meirihluti:['D','Æ'], kjor:'2014–2018',
+      athugasemd:'Meirihluti Sjálfstæðisflokks og Bjartrar framtíðar (Æ-listans) myndaðist 7. júní 2014 eftir kosningar. A-hluti 369 m.kr. undir áætlun; lífeyrisskuldbinding hækkaði um 469 m.kr.',
+      adj:[]
+    },
+    {yr:2016,
+      A:{tekjur:26.4, gjold:24.4, nidurstada:0.62, skatttekjur:21.1, eignir:53.5, skuldir:37.6, eiginfe:16.0},
+      AB:{tekjur:28.1, nidurstada:1.19, eignir:61.3, skuldir:44.0, eiginfe:17.2},
+      ibuar:35234, baejarstjori:'Ármann Kr. Ólafsson', bstAf:'D',
+      meirihluti:['D','Æ'], kjor:'2014–2018',
+      athugasemd:'Viðsnúningur eftir tap 2015. Lífeyrisskuldbindingar hækkuðu óvænt um 1,2 ma.kr. (einskiptisfærsla). Útsvarstekjur vaxa með kjarasamningum 2015.',
+      adj:[{label:'Lífeyrisskuldbinding (umfram áætlun)', value:0.8, hluti:'A'}]
+    },
+    {yr:2017,
+      A:{tekjur:28.6, gjold:26.1, nidurstada:1.68, skatttekjur:23.3, eignir:54.3, skuldir:36.9, eiginfe:17.5},
+      AB:{tekjur:30.3, nidurstada:2.18, eignir:62.5, skuldir:43.2, eiginfe:19.2},
+      ibuar:35902, baejarstjori:'Ármann Kr. Ólafsson', bstAf:'D',
+      meirihluti:['D','Æ'], kjor:'2014–2018',
+      athugasemd:'Besta ár kjörtímabilsins 2014–2018. Útsvar +11% milli ára vegna sterkra vinnumarkaðsskilyrða. Langtímaskuldir lækka um 1,8 ma.kr.',
+      adj:[]
+    },
+    {yr:2018,
+      A:{tekjur:30.5, gjold:28.3, nidurstada:1.18, skatttekjur:24.9, eignir:57.0, skuldir:38.6, eiginfe:18.5},
+      AB:{tekjur:32.1, nidurstada:1.29, eignir:72.2, skuldir:44.8, eiginfe:27.3},
+      ibuar:36930, baejarstjori:'Ármann Kr. Ólafsson', bstAf:'D',
+      meirihluti:['D','B'], kjor:'2018–2022',
+      skipti:'Kjörtímabilaskipti maí 2018. Björt framtíð hvarf af landslaginu; Sjálfstæðisflokkur (D) myndaði nýjan meirihluta með Framsókn (B). Ármann hélt áfram sem bæjarstjóri.',
+      athugasemd:'Eigið fé samstæðu stekkur úr 19,2 í 27,3 ma.kr. — m.a. vegna endurmats fastafjármuna við umbreytingu fjölbýlishúsa í eignasjóð. Söluhagnaður 428 m.kr.',
+      adj:[{label:'Endurmat fasteigna í eignasjóði (einskiptisliður)', value:-7.0, hluti:'AB'}]
+    },
+    {yr:2019,
+      A:{tekjur:32.9, gjold:30.2, nidurstada:1.50, skatttekjur:27.0, eignir:59.8, skuldir:39.7, eiginfe:20.1},
+      AB:{tekjur:34.4, nidurstada:1.74, eignir:75.8, skuldir:45.5, eiginfe:30.2},
+      ibuar:37936, baejarstjori:'Ármann Kr. Ólafsson', bstAf:'D',
+      meirihluti:['D','B'], kjor:'2018–2022',
+      athugasemd:'Bæði A-hluti og samstæða yfir áætlun. Lífeyrisskuldbindingar lækka (breyting 90 m.kr. vs. áætlun 927 m.kr.). Söluhagnaður lóða 102 m.kr.',
+      adj:[]
+    },
+    {yr:2020,
+      A:{tekjur:34.1, gjold:32.5, nidurstada:0.14, skatttekjur:28.6, eignir:62.2, skuldir:42.0, eiginfe:20.2},
+      AB:{tekjur:35.8, nidurstada:0.33, eignir:79.0, skuldir:47.9, eiginfe:31.1},
+      ibuar:38209, baejarstjori:'Ármann Kr. Ólafsson', bstAf:'D',
+      meirihluti:['D','B'], kjor:'2018–2022',
+      athugasemd:'COVID-19. Útsvar hélt sér óvænt í horfinu (+6,1% milli ára), en launagjöld upp um 7%. Lífeyrisskuldbindingar hækkuðu um 546 m.kr. Kópavogur slapp mun betur en Reykjavík út úr COVID rekstrarlega.',
+      adj:[]
+    },
+    {yr:2021,
+      A:{tekjur:38.1, gjold:36.5, nidurstada:0.024, skatttekjur:30.9, eignir:63.2, skuldir:42.9, eiginfe:20.3},
+      AB:{tekjur:40.1, nidurstada:0.59, eignir:82.3, skuldir:48.8, eiginfe:33.5},
+      ibuar:39148, baejarstjori:'Ármann Kr. Ólafsson', bstAf:'D',
+      meirihluti:['D','B'], kjor:'2018–2022',
+      athugasemd:'Viðspyrna úr COVID. Rekstur 800 m.kr. betri en áætlun. Útsvar +8,4% milli ára vegna launahækkana og lítillar atvinnuleysis.',
+      adj:[]
+    },
+    {yr:2022,
+      A:{tekjur:43.3, gjold:42.3, nidurstada:-2.05, skatttekjur:33.3, eignir:66.8, skuldir:48.1, eiginfe:18.6},
+      AB:{tekjur:45.5, nidurstada:-2.08, eignir:90.3, skuldir:54.4, eiginfe:35.8},
+      ibuar:40570, baejarstjori:'Ármann Kr. Ólafsson → Ásdís Kristjánsdóttir', bstAf:'D',
+      meirihluti:['D','B'], kjor:'2022–2026',
+      skipti:'Kjörtímabilaskipti maí 2022. Ármann tilkynnti afsögn og Ásdís Kristjánsdóttir (D) tók við 15. júní 2022 — fyrsta konan í sögu Sjálfstæðisflokks sem bæjarstjóri Kópavogs. Sami meirihluti D+B endurnýjaður. Orri Hlöðversson (B) formaður bæjarráðs.',
+      athugasemd:'Verðbólguhögg. Fjármagnsgjöld langt yfir áætlun vegna verðbólgu og vaxtahækkana. Fyrsta taprekstrarár síðan 2015. Skuldahlutfall AB hækkar í 95%.',
+      adj:[{label:'Fjármagnsgjöld (verðbólga umfram áætlun)', value:1.5, hluti:'AB'}]
+    },
+    {yr:2023,
+      A:{tekjur:49.5, gjold:47.5, nidurstada:-0.75, skatttekjur:37.3, eignir:70.4, skuldir:52.0, eiginfe:18.4},
+      AB:{tekjur:51.6, nidurstada:-0.80, eignir:96.7, skuldir:58.3, eiginfe:38.3},
+      ibuar:40570, baejarstjori:'Ásdís Kristjánsdóttir', bstAf:'D',
+      meirihluti:['D','B'], kjor:'2022–2026',
+      athugasemd:'Þrálát verðbólga og háir vextir áfram. Rekstur fyrir fjármunaliði bættist (2,7 ma. vs. 1,3 ma. 2022) en fjármagnsliðir 3,5 ma. halda niðurstöðu neikvæðri. Launakostnaður +8,8% (50% tekna). Lífeyrisskuldbinding +1,95 ma.kr.',
+      adj:[{label:'Lífeyrisskuldbinding (umfram áætlun 0,75 ma.)', value:0.75, hluti:'A'}]
+    },
+    {yr:2024,
+      A:{tekjur:53.1, gjold:46.6, nidurstada:4.19, skatttekjur:39.7, eignir:72.3, skuldir:50.6, eiginfe:21.7},
+      AB:{tekjur:59.2, nidurstada:4.46, eignir:101.8, skuldir:58.1, eiginfe:43.6},
+      ibuar:41351, baejarstjori:'Ásdís Kristjánsdóttir', bstAf:'D',
+      meirihluti:['D','B'], kjor:'2022–2026',
+      athugasemd:'„Besta afkoma í 17 ár". Knúið m.a. af fyrstu lóðaúthlutun í Vatnsendahvarfi síðan 2015 (verulegar byggingarréttartekjur). Skuldaviðmið AB fellur úr 92% í 77% (A-hluti úr 88% í 73%). Niðurstaða 4,5 ma. betri en áætlun.',
+      adj:[{label:'Byggingarréttartekjur Vatnsendahvarfs (einskiptisliður)', value:-3.0, hluti:'A'}]
+    }
+  ],
+  budgets: {
+    2026: {
+      A:  {tekjur:null, gjold:null, nidurstada:null},
+      AB: {tekjur:null, gjold:null, nidurstada:0.29, skuldir:null},
+      notes:'Samþykkt nóv 2025. Jákvæð AB-niðurstaða áætluð 290 m.kr. Veltufé frá rekstri ~5 ma. Skuldaviðmið 79%. 11. fasteignaskattalækkun síðan 2013 — skattalækkanir samtals ~3,7 ma. yfir kjörtímabilið. Engar byggingarréttartekjur áætlaðar.'
+    },
+    2024: {
+      A:  {tekjur:48.7, gjold:null, nidurstada:-0.15},
+      AB: {tekjur:54.3, gjold:null, nidurstada:-0.05, skuldir:null},
+      notes:'Áætlun gerði ráð fyrir -146 m.kr. hjá A-hluta og -51 m.kr. samstæðu. Raun varð +4,19 ma. A / +4,46 ma. AB — 4,5 ma. yfir áætlun, aðallega vegna lóðaúthlutunar í Vatnsendahvarfi.'
+    },
+    2023: {
+      A:  {tekjur:46.5, gjold:null, nidurstada:0.047},
+      AB: {tekjur:48.5, gjold:null, nidurstada:0.039, skuldir:null},
+      notes:'Áætlun gerði ráð fyrir nærri jafnvægi. Raun -0,75 ma. A / -0,80 ma. AB vegna hárrar verðbólgu, lífeyrisskuldbindinga og launakostnaðar umfram áætlun.'
+    }
+  },
+  finance2025Partial: {
+    yr:2025, timabil:'Ársreikningur 2025 (birtur 16. apríl 2026)',
+    A:{tekjur:null, nidurstada:4.2, skatttekjur:null},
+    AB:{tekjur:null, nidurstada:4.6, eignir:null, skuldir:58.0, eiginfe:50.0},
+    baejarstjori:'Ásdís Kristjánsdóttir',
+    meirihluti:['D','B'], kjor:'2022–2026',
+    athugasemd:'Annað árið í röð með jákvæða rekstrarniðurstöðu. Skuldaviðmið AB lækkar úr 77% í 72%. Framkvæmdir 7,7 ma.kr. Minnihluti (S+C+P+Y) bendir á að án lóðasölu (4,6 ma.) sé raunhallinn ~0,4 ma. og uppsafnaður hallinn á kjörtímabilinu ~3 ma. án lóðasölu.'
+  },
   kjortimabil: [
     {
-      titill: '2022–2026',
-      bst: 'Ásdís Kristjánsdóttir (D)',
+      titill: '2014–2018',
+      bst: 'Ármann Kr. Ólafsson (D)',
+      meirihluti: ['D','Æ'],
+      ar: [2015,2016,2017],
+      lykilmal: [
+        'D sleit samstarfi við B eftir kosningar og myndaði meirihluta með Bjartri framtíð (Æ-listanum) 7. júní 2014',
+        'Lítilsháttar halli 2015 (-0,22 ma. A-hluti), sterk viðsnúningur 2016-2017',
+        'Besta ár kjörtímabilsins 2017 — A-hluti +1,68 ma., samstæða +2,18 ma.'
+      ]
+    },
+    {
+      titill: '2018–2022',
+      bst: 'Ármann Kr. Ólafsson (D)',
+      meirihluti: ['D','B'],
+      ar: [2018,2019,2020,2021],
+      lykilmal: [
+        'Björt framtíð hvarf af landslaginu; D+B myndaði nýjan meirihluta',
+        'Stöðugur rekstur 2018-2021 — aldrei tap, alltaf jákvætt',
+        'COVID-19 slapp Kópavogur betur en Reykjavík; útsvar hélt sér',
+        'Endurmat fastafjármuna við umbreytingu fjölbýlishúsa í eignasjóð 2018 (+7 ma. AB)'
+      ]
+    },
+    {
+      titill: '2022–2026 (núverandi)',
+      bst: 'Ásdís Kristjánsdóttir (D) frá 15. júní 2022',
       meirihluti: ['D','B'],
       ar: [2022,2023,2024,2025],
       lykilmal: [
-        'D+B samstarf með 6 af 11 sætum (D=4, B=2)',
-        'Ásdís Kristjánsdóttir (D) varð fyrsta konan til að gegna bæjarstjóraembætti fyrir Sjálfstæðisflokkinn í Kópavogi — tók við 31. maí 2022',
-        'Formaður bæjarráðs úr Framsókn samkvæmt samstarfssamkomulagi',
-        'Skattalækkun boðuð í fjárhagsáætlun 2026 (3,7 ma. kr.) en rekstur með halla'
+        'Ármann Kr. Ólafsson hætti eftir 10 ár; Ásdís Kristjánsdóttir (D) varð fyrsta konan til að gegna bæjarstjóraembætti fyrir Sjálfstæðisflokkinn í Kópavogi — tók við 15. júní 2022',
+        'Formaður bæjarráðs úr Framsókn samkvæmt samstarfssamkomulagi (Orri Hlöðversson)',
+        'Verðbólguhögg 2022-2023 — tvö tapár í röð, skuldaviðmið AB í 95%',
+        '2024 „besta afkoma í 17 ár" — +4,19 ma. A-hluti, knúinn af fyrstu lóðaúthlutun í Vatnsendahvarfi síðan 2015',
+        '2025 annar jákvæður rekstrarreikningur í röð — skuldaviðmið AB úr 77% í 72%',
+        '3,7 ma. skattalækkun boðuð 2022-2026 (11. fasteignaskattalækkun síðan 2013)',
+        'Umdeilt: minnihluti (S+C+P+Y) segir daglegur rekstur 2025 í halla (-0,4 ma.) án 4,6 ma. lóðasölu'
       ]
     }
   ]
