@@ -2723,7 +2723,7 @@ const FINANCE_2025_PARTIAL = {
   AB:{tekjur:null, nidurstada:10.7, EBITDA:45.1, eignir:1004.0, skuldir:548.0, eiginfe:456.0},
   borgarstjori:'Einar Þorsteinsson → Heiða Björg Hilmisdóttir',
   meirihluti:['S','P','VG','J','F'], kjor:'feb 2025–',
-  athugasemd:'Ný 5-flokka meirihlutamynd eftir 21. feb 2025 eftir að Einar sagði upp fyrri samstarfi vegna Reykjavíkurflugvallarmála. Heiða Björg Hilmisdóttir tók við sem borgarstjóri. Fullur ársreikningur 2025 birtist í lok apríl/byrjun maí 2026 — fyrir kjördag.'
+  athugasemd:'Einar Þorsteinsson sleit 4-flokka meirihlutanum 7. feb 2025. Í yfirlýsingum nefndi hann húsnæðis- og þéttingarstefnu (vildi brjóta nýtt land í stað þéttingar), leikskólamál, framtíð Reykjavíkurflugvallar, bílastæðamál og skort á hagræðingu. Dóra Björt Guðjónsdóttir (P) sagði hins vegar að raunveruleg ástæða væri lélegt fylgi Framsóknar í könnunum. Nýr 5-flokka meirihluti (S+P+VG+J+F) tók við 21. feb 2025 undir forystu Heiðu Bjargar Hilmisdóttur. Fullur ársreikningur 2025 birtist í lok apríl/byrjun maí 2026 — fyrir kjördag.'
 };
 
 // Kjörtímabil fyrir pólitíska samhengiskort (Borgarstjórnir-flipinn)
@@ -2773,7 +2773,7 @@ const KJORTIMABIL = [
       'Einar tók við af Degi 16. jan 2024 (eftir 8 ára ferli Dags)',
       'Áframhaldandi 0,23% hækkun útsvars frá árslokum 2023',
       'Fyrsta jákvæða rekstrarniðurstaða A-hluta í 5 ár (+4,7 ma.) — 2024',
-      'Meirihlutinn brestur 21. feb 2025 vegna ágreinings um Reykjavíkurflugvöll'
+      'Einar slítur meirihluta 7. feb 2025 — nefnir húsnæðis- og þéttingarstefnu, leikskólamál, flugvöll, bílastæði og skort á hagræðingu. Gagnrýnendur benda á lélegt fylgi Framsóknar í könnunum.'
     ]
   },
   {
@@ -2782,7 +2782,7 @@ const KJORTIMABIL = [
     meirihluti: ['S','P','VG','J','F'],
     ar: [2025],
     lykilmal: [
-      'Nýr 5-flokka meirihluti eftir flugvallardeilur',
+      'Nýr 5-flokka meirihluti 21. feb 2025 eftir slit Framsóknar',
       'Stefnumörkun um 10.000 nýjar íbúðir í Úlfarsárdal',
       'Gjaldfrjálsar skólamáltíðir áfram',
       'Tíundi borgarstjórinn á öldinni'
@@ -3384,7 +3384,7 @@ function buildStuttuTimeline(){
     {yr:2023, clr:'#C62828', icon:'💸', title:'Vextir og lífeyrir',       text:'AB-niðurstaða 13 ma. verri en áætlun vegna fjármagnsliða (vextir, verðbólguuppfærsla) Orkuveitu. A-hluti tekur 2,3 ma. lífeyrisskuldbindingu.'},
     {yr:2024, clr:'#B8935A', icon:'🔄', title:'Borgarstjóraskipti',       text:'Einar Þorsteinsson (B) tekur við borgarstjórastólnum í janúar 2024 samkvæmt meirihlutasamningi.'},
     {yr:2024, clr:'#2E7D32', icon:'✓',  title:'Bati í rekstri',            text:'A-tekjur 2,6 ma. yfir áætlun, gjöld aðeins undir. Skuldaviðmið lækkar úr 82% í 77%. EBITDA-hlutfall hækkar úr 4,5% í 9,3%.'},
-    {yr:2025, clr:'#1565C0', icon:'⚖',  title:'Nýr meirihluti feb 2025', text:'Einar Þorsteinsson (B) segir upp samstarfi vegna flugvallar­málsins. Heiða Björg Hilmisdóttir (S) tekur við sem borgarstjóri í nýrri 5-flokka samstarfsmynd.'}
+    {yr:2025, clr:'#1565C0', icon:'⚖',  title:'Nýr meirihluti feb 2025', text:'Einar Þorsteinsson (B) slítur meirihluta 7. feb — nefnir húsnæðis- og þéttingarstefnu, leikskólamál, flugvöll, bílastæði og skort á hagræðingu. Gagnrýnendur benda á fall Framsóknar í könnunum. Heiða Björg Hilmisdóttir (S) tekur við 21. feb í nýrri 5-flokka samstarfsmynd.'}
   ];
   return events.map(function(e){
     return '<div style="display:flex;gap:12px;padding:10px 0;border-bottom:0.5px solid var(--bdr);">'
