@@ -1630,8 +1630,14 @@ function rerenderAllForMuni(){
   // Fjármála-síðan — titill og undirtexti
   var finT = document.getElementById('fjarmal-title');
   if(finT){
-    if(CURRENT_MUNI === 'rvk') finT.textContent = 'Fjármál Reykjavíkurborgar 2015–2025';
-    else finT.textContent = 'Fjármál '+m.name+' 2015–2025';
+    // Dýnamískt ártalabil: nýjasta FINANCE-ár + FINANCE_2025_PARTIAL ef til; annars bara FINANCE.
+    var _finYr1 = (typeof FINANCE !== 'undefined' && FINANCE && FINANCE.length) ? FINANCE[0].yr : null;
+    var _finYrN = (typeof FINANCE_2025_PARTIAL !== 'undefined' && FINANCE_2025_PARTIAL && FINANCE_2025_PARTIAL.yr) ? FINANCE_2025_PARTIAL.yr
+                  : ((typeof FINANCE !== 'undefined' && FINANCE && FINANCE.length) ? FINANCE[FINANCE.length-1].yr : null);
+    var _range = (_finYr1 && _finYrN) ? (_finYr1+'–'+_finYrN) : '';
+    var _GENt = {rvk:'Reykjavíkurborgar', kopv:'Kópavogs', hafn:'Hafnarfjarðar', gard:'Garðabæjar', mos:'Mosfellsbæjar', selt:'Seltjarnarness'};
+    var _nameGen = _GENt[CURRENT_MUNI] || m.name;
+    finT.textContent = 'Fjármál '+_nameGen+(_range?' '+_range:'');
   }
   var finS = document.getElementById('fjarmal-subtitle');
   if(finS){
@@ -2757,7 +2763,7 @@ const SP_QUESTIONS = [
    ctx:'Okkar borg hefur gert þetta að megináhersu. Núverandi samningar kveða á um húsnæði og velferðarþjónustu.',
    stance:{S:-1, D:0,  A:-1, C:0,  M:-1, B:0,  P:-1, J:-1, F:0,  G:0,  R:1}},
   {id:'q7',  stmt:'Útsvar og aðrar álögur borgarinnar á að lækka.',
-   ctx:'Útsvar í Reykjavík er 14,93% (2024). Flokkar deila um hvort lægri álögur eða sterkari þjónusta sé forgangsmál.',
+   ctx:'Útsvar í Reykjavík er 14,97% (2026) — hámark hjá Sambandi íslenskra sveitarfélaga. Flokkar deila um hvort lægri álögur eða sterkari þjónusta sé forgangsmál.',
    stance:{S:-1, D:1,  A:-1, C:1,  M:0,  B:0,  P:0,  J:-1, F:0,  G:0,  R:0}},
   {id:'q8',  stmt:'Sundabraut á að verða að veruleika eins fljótt og unnt er.',
    ctx:'Samgöngusáttmálinn kveður á um Sundabraut 2031. Deilur um hvort eigi að vera veggöng eða brú.',
@@ -4152,7 +4158,7 @@ MUNI_DATA.hafn = {
       umhverfi:'Ekki birt ítarleg afstaða 2026 í Hafnarfirði; landsstefna Framsóknar leggur áherslu á sjálfbæra nýtingu náttúruauðlinda og orkuskipti.',
       menntun:'Sterkt skólastarf eitt af fjórum kjarnasvæðum Valdimars; styður nýjan Hamranesskóla og tvo 4-deilda leikskóla í hverfinu.',
       velferd:'Öflugt velferðarkerfi eitt af fjórum forgangsmálum Valdimars; áhersla á hjúkrunarheimili (m.a. í Hamranesi) og þjónustu við eldra fólk.',
-      fjarmal:'Styður meirihlutasáttmála: óbreytt útsvar 14,931%, lækkun álagsprósentu fasteignaskatts 2026, áframhaldandi lækkun skuldaviðmiðs.',
+      fjarmal:'Styður meirihlutasáttmála: óbreytt útsvar 14,93%, lækkun álagsprósentu fasteignaskatts 2026, áframhaldandi lækkun skuldaviðmiðs.',
       atvinnu:'Styður áframhaldandi starfsemi ISAL/Rio Tinto í Straumsvík og þróun Coda Terminal (Carbfix) sem græns atvinnutækifæris.'
     },
     'C': {
@@ -4250,17 +4256,17 @@ MUNI_DATA.hafn = {
     2024: {
       A:  {tekjur:null, gjold:null, nidurstada:0.86},
       AB: {tekjur:null, gjold:null, nidurstada:1.73, skuldir:null},
-      notes:'Áætlun stefndi á +0,86 ma. A og +1,73 ma. AB. Raunin varð +0,12 A og +1,21 AB — A-hluti undir áætlun, AB nær áætlun. Útsvar 14,7%.'
+      notes:'Áætlun stefndi á +0,86 ma. A og +1,73 ma. AB. Raunin varð +0,12 A og +1,21 AB — A-hluti undir áætlun, AB nær áætlun. Útsvar 14,93% (hækkað úr 14,70% 2023 skv. Sambandi íslenskra sveitarfélaga).'
     },
     2025: {
       A:  {tekjur:null, gjold:null, nidurstada:0.045},
       AB: {tekjur:null, gjold:null, nidurstada:1.01, skuldir:null},
-      notes:'Útsvar hækkað í 14,93% (úr 14,7%). Stórt uppbyggingarár: 6-deilda leikskóli Hamranes, íþróttahús á Ásvöllum, reiðhöll Sörla, bókasafn í miðbæ. Fjárfestingar 9,7 ma.kr. Raunin varð slappari — sjá 2025 bráðabirgða.'
+      notes:'Útsvar 14,93% óbreytt (hækkunin úr 14,70% varð 2024 skv. Sambandi). Stórt uppbyggingarár: 6-deilda leikskóli Hamranes, íþróttahús á Ásvöllum, reiðhöll Sörla, bókasafn í miðbæ. Fjárfestingar 9,7 ma.kr. Raunin varð slappari — sjá 2025 bráðabirgða.'
     },
     2026: {
       A:  {tekjur:null, gjold:null, nidurstada:0.94},
       AB: {tekjur:null, gjold:50.5, nidurstada:2.09, skuldir:null},
-      notes:'Samþykkt við síðari umræðu 3. desember 2025. Útsvar 14,931% óbreytt. Fasteignaskattur íbúða lækkar í 0,1999% (úr 0,217%), atvinnuhúsnæðis í 1,367%. Stærsta einstaka fjárfestingin: nýr Hamranesskóli. Skuldaviðmið áætlað 92,6%. Veltufé frá rekstri 3,98 ma.kr.'
+      notes:'Samþykkt við síðari umræðu 3. desember 2025. Útsvar 14,93% óbreytt. Fasteignaskattur íbúða lækkar í 0,1999% (úr 0,217%), atvinnuhúsnæðis í 1,367%. Stærsta einstaka fjárfestingin: nýr Hamranesskóli. Skuldaviðmið áætlað 92,6%. Veltufé frá rekstri 3,98 ma.kr.'
     }
   },
   finance2025Partial: {
@@ -5568,14 +5574,30 @@ function buildStuttuGlossary(){
   var m = getMuni();
   var councilLc = m.councilName.toLowerCase();                    // borgarstjórn/bæjarstjórn
   var isRvk = CURRENT_MUNI==='rvk';
+  // Útsvarsprósentur 2026 skv. Sambandi íslenskra sveitarfélaga (Útsvarsprósentur_net.xls, apríl 2026).
+  // Hámark 2026 er 14,97%; lágmark 12,44%.
+  var utsvar2026 = {rvk:'14,97%', kopv:'14,93%', hafn:'14,93%', gard:'14,71%', mos:'14,97%', selt:'14,54%'};
+  var utsvarRate = utsvar2026[CURRENT_MUNI] || null;
+  // Skuldaviðmið samstæðu (AB) eftir nýjustu ársreikningi hvers sveitarfélags — handskráð
+  // ef ekki útreiknanlegt beint úr FINANCE. Notað í glossary til að sýna stöðu á móti 150%-markinu.
+  var skuldavidmid = {
+    rvk:  {pct:'77%',   yr:2024},
+    kopv: {pct:'77%',   yr:2024},  // AB-skuldaviðmið 2024 lækkaði í 77% (úr 92%)
+    hafn: {pct:'90%',   yr:2024},  // skuldaviðmið 90% 2024 (úr 82% 2023)
+    gard: {pct:'86%',   yr:2025},  // 2025 bráðabirgða: 86% (úr 97% 2024)
+    mos:  {pct:'98,2%', yr:2025},  // 2025 bráðabirgða: 98,2%
+    selt: {pct:'108%',  yr:2025}   // áætlun 2025: 108% (leiðrétt árslok 88%)
+  };
+  var sv = skuldavidmid[CURRENT_MUNI];
+  var cityShortLc = (isRvk?'borgin':'bærinn');
   var terms = [
     {term:'A-hluti',            dsc:'Aðalsjóður + eignasjóður '+cityN('ef')+' — þ.e. „ríkið" í '+cityN('þgf-gr')+' (skólar, leikskólar, velferð, gatna­gerð o.fl.). Þetta eru grunnþjónusturnar sem flestir sjá daglega.'},
     {term:'Samstæða A+B',       dsc:'A-hluti + öll fyrirtæki '+cityN('ef-gr')+' saman'+(isRvk?' (Orkuveita Reykjavíkur, Félagsbústaðir, Faxaflóahafnir o.fl.)':'')+'. Sýnir heildarstöðu '+(isRvk?'borgarfyrirtækis­kerfisins':'bæjarfyrirtækja­kerfisins')+'.'},
     {term:'Rekstrarniðurstaða', dsc:'Einfalt: tekjur mínus gjöld. Jákvæð tala = hagnaður, neikvæð = tap. Svipað og „ávöxtun" hjá fyrirtæki.'},
     {term:'EBITDA',             dsc:'Rekstrarhagnaður áður en afskriftir, vextir og skattar eru dregnir frá. Sýnir hversu vel kjarnareksturinn skilar án áhrifa af fjármögnun eða eldri fjárfestingum.'},
     {term:'Fjármagnsliðir',     dsc:'Vaxtagjöld, gengismunur og verðbólguuppfærsla skulda. Þegar verðbólga er há stækka lán '+cityN('ef-gr')+' á móti'+(isRvk?' — og það bitnar mest á Orkuveitu sem á mest af langtíma­lánum':'')+'.'},
-    {term:'Skuldaviðmið',       dsc:'Lögbundið viðmið sveitarstjórnarlaga: skuldir og skuldbindingar í hlutfalli við tekjur. Má ekki fara yfir 150%.'+(isRvk?' Borgin er núna í 77% (2024).':'')},
-    {term:'Útsvar',             dsc:'Tekjuskattur sem rennur til sveitarfélags.'+(isRvk?' 14,93% af launum Reykvíkinga fer til borgarinnar.':'')+' Stærsti einstaki tekjustofn A-hluta.'},
+    {term:'Skuldaviðmið',       dsc:'Lögbundið viðmið sveitarstjórnarlaga: skuldir og skuldbindingar í hlutfalli við tekjur. Má ekki fara yfir 150%.'+(sv?' '+cityN('nef-u')+' er núna í '+sv.pct+' ('+sv.yr+').':'')},
+    {term:'Útsvar',             dsc:'Tekjuskattur sem rennur til sveitarfélags.'+(utsvarRate?' '+utsvarRate+' af launum íbúa '+cityGen()+' rennur til '+cityN('ef-gr')+' (2026).':'')+' Stærsti einstaki tekjustofn A-hluta. Heimild: Samband íslenskra sveitarfélaga.'},
     {term:'Raunvirði',          dsc:'Tölur leiðréttar fyrir verðbólgu. Ef tekjur 2020 voru 100 og 2024 eru 130, er aukningin bara raunveruleg ef 30% eru MEIRI en verðbólga sama tímabils.'},
     {term:'Áætlun (fjárhags­áætlun)', dsc:'Plan '+councilLc+' um tekjur og gjöld næsta árs, samþykkt í desember. Segir hvernig hún ÆTLAR að eyða — raunveruleikinn er oft annar vegna verðbólgu, laga­breytinga o.fl.'},
     {term:'Ársreikningur',      dsc:'Lokareikningur sem sýnir hvað raunverulega gerðist á árinu. Samþykktur í april-maí ári eftir. Borið er saman við áætlun til að meta „frávik".'}
