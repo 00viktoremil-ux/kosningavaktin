@@ -3827,7 +3827,18 @@ MUNI_DATA.mos = {
     {id:'S', name:'Samfylkingin',          color:'#C62828', pct:0, seats:1}
   ],
   rawCands: MOS_RAW,
-  photos: {},   // oddvita-myndir bætast við í fasa 2b
+  photos: {
+    // Oddvita-myndir (5 af 6 staðfestir; S-1 Ólafur Ingi ekki fundinn í vefleit
+    // — xs.is hefur ekki birt mynd). Heimildir: framsoknmos.is (B),
+    // mosfellingur.is (C, D, L — ritstjóri er sjálfur oddviti D!),
+    // visir.is (M — athuga að URL tengdist upphaflega Hafnarfj. M-grein;
+    // staðfesta þegar mögulegt).
+    'B-1': 'https://framsoknmos.is/wp-content/uploads/2022/04/Saevar.jpg',
+    'C-1': 'https://mosfellingur.is/wp-content/uploads/2026/03/gylfi_vidreisn.jpg',
+    'D-1': 'https://mosfellingur.is/wp-content/uploads/2026/02/xdprokjor.jpg',
+    'L-1': 'https://mosfellingur.is/wp-content/uploads/2026/04/arni_oddviti.jpg',
+    'M-1': 'https://www.visir.is/i/4503465E0204393557DCA3436E064D440D04403EECC4B55823A282617EEA65CA_1600x900.jpg'
+  },
   bios: {
     // Oddvitar allra 6 framboða + fráfarandi bæjarstjóri Regína. Heimildir:
     // mosfellingur.is (Hilmar er ritstjóri!), framsokn.is, vidreisn.is,
@@ -4091,7 +4102,17 @@ MUNI_DATA.hafn = {
     {id:'S', name:'Samfylkingin',          color:'#C62828', pct:0, seats:4}
   ],
   rawCands: HAFN_RAW,
-  photos: {},   // oddvita-myndir bætast við í fasa 2b
+  photos: {
+    // Oddvita-myndir (allir 6 staðfestir með HTTP 200). Heimildir: hafnarfjordur.is
+    // (opinber bæjarstjóra-mynd), fjardarfrettir.is (A, D, M — sumt hópmyndir),
+    // ruv.is (C), althingi.is (S — þingmannamynd).
+    'A-1': 'https://www.fjardarfrettir.is/wp-content/uploads/Vinstrid.avif',
+    'B-1': 'https://hafnarfjordur.is/wp-content/uploads/2025/01/ValdimarV-1-of-7-e1758730114160-1800x951.jpg',
+    'C-1': 'https://myndir.ruv.is/eyJidWNrZXQiOiAicnV2LXByb2QtcnV2aXMtcHVibGljIiwgImtleSI6ICJtZWRpYS9wdWJsaWMvb3JpZ2luYWxfaW1hZ2VzL1ZpZHJlaXNuSEZKLTEuSlBHIiwgImVkaXRzIjogeyJ0b0Zvcm1hdCI6ICJqcGVnIiwgImpwZWciOiB7InF1YWxpdHkiOiA2MH0sICJyZXNpemUiOiB7IndpZHRoIjogIjEyMDAiLCAiZml0IjogImNvdmVyIiwgImhlaWdodCI6ICI2MzAifX19',
+    'D-1': 'https://www.fjardarfrettir.is/wp-content/uploads/Orri-Bjornsson-2024-vef-jpg.avif',
+    'M-1': 'https://www.fjardarfrettir.is/wp-content/uploads/Midflokkurinn-4-efstu.avif',
+    'S-1': 'https://www.althingi.is/myndir/thingmenn-cache/7/7-220.jpg'
+  },
   bios: {
     // Oddvitar allra 6 framboða 2026, 2–3 setn. hver. Heimildir: vefir framboða,
     // xdhafnarfjordur.is, framsokn.is, xs.is, vidreisn.is, midflokkurinn.is,
@@ -4396,7 +4417,16 @@ MUNI_DATA.gard = {
     {id:'S', name:'Samfylkingin',          color:'#C62828', pct:0, seats:0}
   ],
   rawCands: GARD_RAW,
-  photos: {},   // oddvita-myndir bætast við í fasa 2b
+  photos: {
+    // Oddvita-myndir (4 af 5 staðfestir; S-1 Kjartan Atli ekki fundinn í
+    // vefleit — gardabaer.is krefst JS og Facebook er ekki aðgengilegur).
+    // Heimildir: framer (B, Framsókn), vidreisn.is (C, 2022), gardar.is (D,
+    // 2019), postar.is/garðapósturinn (G, 2022).
+    'B-1': 'https://framerusercontent.com/images/Ra9qDLMwSPxDkHwTofqZoRaio.jpg',
+    'C-1': 'https://vidreisn.is/wp-content/uploads/2022/03/GudlaugurKristmundarsson-2-saeti-Naer-scaled-e1734457264312-1024x1024.jpg',
+    'D-1': 'https://gardar.is/wp-content/uploads/2019/03/XDGBR_BK214950.jpg',
+    'G-1': 'https://postar.is/wp-content/uploads/2022/12/THorbjorg-THorvaldsdottir-23-scaled.jpg'
+  },
   bios: {
     // Oddvitar allra 5 staðfestra framboða (M óstaðfest). Heimildir: gardabaer.is,
     // gardabaejarlistinn.is, framsokn.is, xs.is, vidreisn.is, ruv.is, mbl.is.
@@ -4636,7 +4666,15 @@ MUNI_DATA.selt = {
     {id:'S', name:'Samfylking, Viðreisn og óháðir',     color:'#C62828', pct:0, seats:3}
   ],
   rawCands: SELT_RAW,
-  photos: {},   // oddvita-myndir bætast við í fasa 2b
+  photos: {
+    // Oddvita-myndir (allir 3 staðfestir). Heimildir: seltjarnarnes.is
+    // (D — opinber bæjarstjóra-mynd), seltjarnarneskirkja.is (M — frá
+    // þjóðmálafundi apr. 2026), visir.is (S — hópmynd frá kynningu lista,
+    // getur þurft klippingar í hrein-portrait).
+    'D-1': 'https://www.seltjarnarnes.is/static/files/Myndir/thor_skorin_2400-px.jpg',
+    'M-1': 'https://seltjarnarneskirkja.is/wp-content/uploads/2026/04/Skafti-Hardarson.jpg',
+    'S-1': 'https://www.visir.is/i/AE7C0E4DDA9DE08667BB68612D59711CA16E9CDC3F423540DAA432A8F9CA516A_1600x900.jpg'
+  },
   bios: {
     // Oddvitar allra 3 framboða. Heimildir: seltjarnarnes.is, xd.is, DV, mbl.is,
     // ruv.is, skattgreidendur.is, visir.is.
