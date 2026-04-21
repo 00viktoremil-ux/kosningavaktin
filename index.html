@@ -3742,6 +3742,313 @@ MUNI_DATA.mos = {
   ]
 };
 
+// ============================================================================
+// === HAFNARFJÖRÐUR — FASI 2 =================================================
+// ============================================================================
+// 6 framboðslistar 2026: A Vinstrið, B Framsókn, C Viðreisn, D Sjálfstæði,
+// M Miðflokkur, S Samfylking. Píratar og Bæjarlistinn (L) sem buðu fram 2022
+// virðast ekki bjóða fram 2026. Meirihluti 2022–2026: D+B (6 af 11) undir
+// samstarfsyfirlýsingunni „Vöxtur, velferð og framsýni". Bæjarstjóraskipti
+// samkv. sáttmála 1. janúar 2025: Rósa Guðbjartsdóttir (D) → Valdimar Víðisson
+// (B). Kolbrún Magnúsdóttir, kjörin bæjarfulltrúi S 2022, færði sig yfir í
+// Framsókn og situr nú í 2. sæti á B-lista 2026 — umdeild tilfærsla.
+// Heimildir: hafnarfjordur.is, fjardarfrettir.is, ruv.is, mbl.is, visir.is,
+// kosningasaga.wordpress.com, vefir flokkanna (xd.is, framsokn.is, xs.is,
+// vidreisn.is, midflokkurinn.is, vg.is).
+var HAFN_RAW = [
+  // A — Vinstri grænir og óháðir í Hafnarfirði (Ester Bíbí Ásgeirsdóttir).
+  // 0 sæti 2022; ekki staðfest pct í heimildum. Fullur 10-manna listi staðf.
+  ['A',1,'Ester Bíbí Ásgeirsdóttir','verkefnastjóri'],
+  ['A',2,'Svenný Kristins','aðstoðarmaður lögreglustjórnar og lögfræðiritari'],
+  ['A',3,'Davíð Arnar Stefánsson','landfræðingur og fjallaleiðsögumaður'],
+  ['A',4,'Guðrún Lína Thoroddsen','kvikmyndagerðarkona'],
+  ['A',5,'Margrét Pétursdóttir','leiðsögumaður'],
+  ['A',6,'Anna Sigríður Sigurðardóttir','framhaldsskólakennari'],
+  ['A',7,'Fjölnir Sæmundsson','formaður Landssambands lögreglumanna'],
+  ['A',8,'Elísabet Dröfn Kristjánsdóttir','mannfræðingur og skáld'],
+  ['A',9,'Elsa Sigríður Þorvaldsdóttir','iðjuþjálfi'],
+  ['A',10,'Inga Björk Margrétar Bjarnadóttir','doktorsnemi og réttindabaráttukona fatlaðs fólks'],
+  // B — Framsóknarflokkurinn (Valdimar Víðisson, bæjarstjóri frá 1.1.2025).
+  // 13,7% og 2 sæti 2022.
+  ['B',1,'Valdimar Víðisson','bæjarstjóri'],
+  ['B',2,'Kolbrún Magnúsdóttir','mannauðsráðgjafi (færði sig úr S yfir í B 2025–2026)'],
+  ['B',3,'Árni Rúnar Árnason','tæknistjóri'],
+  ['B',4,'Jóhanna Erla Guðjónsdóttir','félagsráðgjafi'],
+  ['B',5,'Guðmundur Fylkisson','lögreglumaður'],
+  ['B',6,'Stefán Már Víðisson','verkfræðingur'],
+  ['B',7,'Linda Hrönn Þórisdóttir','grunnskólakennari'],
+  ['B',8,'Petrea A. Ómarsdóttir','formaður Mæðrastyrksnefndar'],
+  ['B',9,'Ragnar Þór Reynisson','sölustjóri'],
+  ['B',10,'Alexander M. Árnason','laugarvörður'],
+  // C — Viðreisn (Karólína Helga Símonardóttir, ný oddviti 2026 — tók við
+  // af Jóni Inga Hákonarsyni). 9,1% og 1 sæti 2022.
+  ['C',1,'Karólína Helga Símonardóttir','framkvæmdastjóri og varabæjarfulltrúi'],
+  ['C',2,'Árni Stefán Guðjónsson','deildarstjóri í Flensborgarskóla'],
+  ['C',3,'Hjördís Hlíðberg','verkefnastjóri'],
+  ['C',4,'Óli Örn Eiríksson','verkefnastjóri'],
+  ['C',5,'Sigrún Jónsdóttir','flugfreyja'],
+  ['C',6,'Júlíus Andri Þórðarson','framkvæmdastjóri LÍS'],
+  ['C',7,'Amanda K. Ólafsdóttir','skrifstofustjóri'],
+  ['C',8,'Sigurjón Ingvason','lögfræðingur'],
+  ['C',9,'Ágústa Sigurjónsdóttir','framkvæmdastjóri og sjúkraþjálfari'],
+  ['C',10,'Bragi Hinrik Magnússon','ráðgjafi'],
+  // D — Sjálfstæðisflokkurinn (Orri Björnsson, ný oddviti 2026 — Rósa
+  // Guðbjartsdóttir leiðir ekki lista). 30,7% og 4 sæti 2022.
+  ['D',1,'Orri Björnsson','bæjarfulltrúi og formaður bæjarráðs'],
+  ['D',2,'Kristín Thoroddsen','bæjarfulltrúi og formaður fræðsluráðs'],
+  ['D',3,'Viktor Pétur Finnsson','nemi og varaþingmaður'],
+  ['D',4,'Guðbjörg Oddný Jónasdóttir','bæjarfulltrúi og samskiptastjóri'],
+  ['D',5,'Kristinn Andersen','verkfræðingur og forseti bæjarstjórnar'],
+  ['D',6,'Helga Björg Loftsdóttir','verkefnastjóri'],
+  ['D',7,'Einar Páll Þorgilsson Mathiesen','hagfræðingur'],
+  ['D',8,'Kristjana Ósk Jónsdóttir','innleiðingarstjóri'],
+  ['D',9,'Júlíus Freyr Bjarnason','vélaverkfræðingur'],
+  ['D',10,'Margrét Vala Marteinsdóttir','deildarstjóri og bæjarfulltrúi'],
+  // M — Miðflokkurinn (Einar Geir Þorsteinsson). 0 sæti 2022; ekki staðfest pct.
+  ['M',1,'Einar Geir Þorsteinsson','lögfræðingur'],
+  ['M',2,'Signý Jóna Tryggvadóttir','mannauðssérfræðingur'],
+  ['M',3,'Böðvar Ingi Guðbjartsson','kennari og pípulagningameistari'],
+  ['M',4,'Eva Rún Helgadóttir','viðskiptafræðingur'],
+  ['M',5,'Arnhildur Ásdís Kolbeins','fjármálastjóri'],
+  ['M',6,'Stefán Sveinn Gunnarsson','markaðsstjóri'],
+  ['M',7,'Margrét Elín Arnarsdóttir','flugstjóri'],
+  ['M',8,'Lena Karen Andreasdóttir','rekstrarstjóri'],
+  ['M',9,'Þórður Hugo Björnsson','nemi'],
+  ['M',10,'Helga Margét Sveinsdóttir','eftirlaunaþegi'],
+  // S — Samfylkingin (Guðmundur Árni Stefánsson, varaformaður Samfylkingar).
+  // 29,0% og 4 sæti 2022.
+  ['S',1,'Guðmundur Árni Stefánsson','bæjarfulltrúi og varaformaður Samfylkingarinnar'],
+  ['S',2,'Hildur Rós Guðbjargardóttir','bæjarfulltrúi'],
+  ['S',3,'Árni Rúnar Þorvaldsson','bæjarfulltrúi og varaþingmaður'],
+  ['S',4,'Elín Anna Baldursdóttir','sálfræðingur'],
+  ['S',5,'Stefán Már Gunnlaugsson','prestur og bæjarfulltrúi'],
+  ['S',6,'Hekla Sóley Arnarsdóttir','þroskaþjálfi'],
+  ['S',7,'Óskar Steinn Ómarsson','félagsmálafulltrúi'],
+  ['S',8,'Margrét Lilja Pálsdóttir','aðstoðarskólastjóri'],
+  ['S',9,'Jón Grétar Þórsson','félagsliði'],
+  ['S',10,'Auður Brynjólfsdóttir','stjórnmálafræðingur']
+];
+
+MUNI_DATA.hafn = {
+  parties: [
+    // Núverandi sæti byggt á 2022 úrslitum (D 4, S 4, B 2, C 1). A og M fengu
+    // engin sæti 2022. Pct 0 = engar 2026 kannanir birtar enn — UI sýnir
+    // „engar kannanir" í staðinn.
+    {id:'A', name:'Vinstrið',              color:'#2E7D32', pct:0, seats:0},
+    {id:'B', name:'Framsóknarflokkurinn',  color:'#1E8A3E', pct:0, seats:2},
+    {id:'C', name:'Viðreisn',              color:'#D84315', pct:0, seats:1},
+    {id:'D', name:'Sjálfstæðisflokkurinn', color:'#1565C0', pct:0, seats:4},
+    {id:'M', name:'Miðflokkurinn',         color:'#6A1B9A', pct:0, seats:0},
+    {id:'S', name:'Samfylkingin',          color:'#C62828', pct:0, seats:4}
+  ],
+  rawCands: HAFN_RAW,
+  photos: {},
+  bios: {},
+  partyInfo: {
+    A: { fullname:'Vinstrihreyfingin – grænt framboð', ideology:'Vinstri, umhverfissinnar', founded:1999 },
+    B: { fullname:'Framsóknarflokkurinn',  ideology:'Miðja, búnaðarstefna',               founded:1916 },
+    C: { fullname:'Viðreisn',              ideology:'Frjálslyndi, miðja',                 founded:2016 },
+    D: { fullname:'Sjálfstæðisflokkurinn', ideology:'Miðju-hægri, frjálslyndir markaðir', founded:1929 },
+    M: { fullname:'Miðflokkurinn',         ideology:'Miðju-hægri, þjóðernisleg áhersla',  founded:2017 },
+    S: { fullname:'Samfylkingin',          ideology:'Miðju-vinstri, jafnaðarstefna',      founded:2000 }
+  },
+  stefnumal: {},
+  sattmali2022: null,
+  finance: [],
+  budgets: {},
+  finance2025Partial: null,
+  kjortimabil: [
+    {
+      titill: '2022–2026',
+      bst: 'Rósa Guðbjartsdóttir (D) → Valdimar Víðisson (B) frá 1. janúar 2025',
+      meirihluti: ['D','B'],
+      ar: [2022,2023,2024,2025],
+      lykilmal: [
+        'D+B meirihluti með 6 af 11 sætum — „Vöxtur, velferð og framsýni"',
+        'Bæjarstjóraskipti 1. janúar 2025 samkv. fyrirfram umsömdum sáttmála: Rósa færist í forseta bæjarstjórnar/bæjarráðsformann; Valdimar Víðisson (B) tekur við bæjarstjórastólnum',
+        'Hamranes-hverfi: 25 ha uppbygging, ~1.900 íbúðir í farvatninu; nýr Hamranesskóli stærsta fjárfestingin í fjárhagsáætlun 2026',
+        'Straumsvík/Kapelluhraun: tillaga um breytingu á aðalskipulagi 2013–2025 samþykkt sept. 2023 til að bæta hafnaraðstöðu og tengingu við iðnaðarsvæði',
+        'Kolbrún Magnúsdóttir (kjörin S 2022) færði sig yfir í Framsókn og situr í 2. sæti B-lista 2026 — umdeild tilfærsla'
+      ]
+    }
+  ]
+};
+
+// ============================================================================
+// === GARÐABÆR — FASI 2 ======================================================
+// ============================================================================
+// 6 framboðslistar 2026: B Framsókn, C Viðreisn, D Sjálfstæði, G Garðabæjar-
+// listinn, M Miðflokkur, S Samfylking. Samfylkingin býður fram sjálfstætt í
+// fyrsta sinn (var áður hluti af G-listanum). Sjálfstæðisflokkur hefur hreinan
+// meirihluta 2022–2026 með 7 af 11 sætum — einstakt á höfuðborgarsvæðinu.
+// Almar Guðmundsson (D) er bæjarstjóri allt tímabilið. Áberandi: fyrrum odd-
+// viti Framsóknar yfirgaf flokkinn eftir að uppstillingarnefnd valdi Hlyn
+// Bæringsson — lýsti því sem „einhvers konar klíku".
+// Heimildir: gardabaer.is, gardabaejarlistinn.is, xd.is, vidreisn.is,
+// framsokn.is, xs.is, ruv.is, mbl.is, visir.is, kosningasaga.wordpress.com.
+var GARD_RAW = [
+  // B — Framsóknarflokkurinn (Hlynur Bæringsson, nýr oddviti). 13,06% og 1 sæti 2022.
+  ['B',1,'Hlynur Bæringsson','rekstrarstjóri og fyrrum körfuknattleiksmaður'],
+  ['B',2,'Anna Margrét Steingrímsdóttir','markaðs- og þjónustustjóri'],
+  ['B',3,'Einar Þór Einarsson','framkvæmdastjóri'],
+  ['B',4,'Einar Bárðarson','framkvæmdastjóri'],
+  ['B',5,'Inga Amal Hasan','lögfræðingur'],
+  ['B',6,'Sigurður J. Ólafsson','framkvæmdastjóri'],
+  ['B',7,'Hjördís Guðný Guðmundsdóttir','kennari og deildarstjóri'],
+  ['B',8,'Vilhjálmur Halldórsson','rekstrarstjóri og yfirþjálfari'],
+  // C — Viðreisn (Guðlaugur Kristmundsson, fyrrum framkvæmdastjóri Viðreisnar).
+  // 13,27% og 1 sæti 2022. Einungis oddviti staðfestur í opinberum heimildum.
+  ['C',1,'Guðlaugur Kristmundsson','bæjarfulltrúi og fyrrum framkvæmdastjóri Viðreisnar'],
+  // D — Sjálfstæðisflokkurinn (Almar Guðmundsson, bæjarstjóri). 49,10% og 7 sæti 2022.
+  ['D',1,'Almar Guðmundsson','bæjarstjóri'],
+  ['D',2,'Björg Fenger','forseti bæjarstjórnar'],
+  ['D',3,'Margrét Bjarnadóttir','forseti bæjarráðs'],
+  ['D',4,'Hrannar Bragi Eyjólfsson','bæjarfulltrúi og lögmaður'],
+  ['D',5,'Stella Stefánsdóttir','varabæjarfulltrúi og framkvæmdastjóri'],
+  ['D',6,'Birkir Guðlaugsson','lögmaður'],
+  ['D',7,'Jón Þór Eggertsson','verkefnastjóri'],
+  ['D',8,'Anna R. Möller','formaður Félags eldri borgara í Garðabæ'],
+  ['D',9,'Ýmir Örn Finnbogason','ráðgjafi'],
+  ['D',10,'Harpa Rós Gísladóttir','mannauðsráðgjafi'],
+  ['D',11,'Sigrún Antonsdóttir','skólastjóri'],
+  // G — Garðabæjarlistinn (Þorbjörg Þorvaldsdóttir). 20,91% og 2 sæti 2022
+  // (bandalag með Samfylkingu 2022; nú sjálfstæður óháður listi).
+  ['G',1,'Þorbjörg Þorvaldsdóttir','bæjarfulltrúi'],
+  ['G',2,'Guðjón Pétur Lýðsson','atvinnurekandi'],
+  ['G',3,'Joanna Marcinkowska','verkefnastjóri inngildingar'],
+  ['G',4,'Finnur Jónsson','umsjónarkennari'],
+  ['G',5,'Baldur Ó. Svavarsson','arkitekt'],
+  ['G',6,'Harpa Grétarsdóttir','verkefnastjóri'],
+  ['G',7,'Maru Aleman','ferðamálaráðgjafi og formaður W.O.M.E.N. in Iceland'],
+  ['G',8,'Hannes Ingi Geirsson','íþróttakennari'],
+  ['G',9,'Sveinbjörg Vilhjálmsdóttir','fv. tónlistarskólastjóri'],
+  ['G',10,'Askur Hrafn Hannesson','frístundaleiðbeinandi og háskólanemi'],
+  ['G',11,'Guðrún Elín Herbertsdóttir','viðskiptafræðingur'],
+  ['G',12,'Tómas Þór Jacobsen','tómstunda- og félagsmálafræðingur'],
+  // S — Samfylkingin (Kjartan Atli Kjartansson). Sjálfstætt framboð í fyrsta
+  // sinn — var áður hluti af G-listanum. 0 sæti 2022 sjálfstætt.
+  ['S',1,'Kjartan Atli Kjartansson','stjórnmálafræðingur, fjölmiðlamaður og rithöfundur'],
+  ['S',2,'Vilborg Anna Strange','frambjóðandi']
+  // M — Miðflokkurinn: 3,67% 2022, 0 sæti. Oddviti og listi fyrir 2026 ekki
+  // staðfestir í opinberum heimildum á birtingartíma — bætist við þegar birt.
+];
+
+MUNI_DATA.gard = {
+  parties: [
+    // Núverandi sæti byggt á 2022 úrslitum. D hefur hreinan meirihluta (7/11).
+    // S býður fram sjálfstætt í fyrsta sinn 2026 — var hluti af G-listanum 2022.
+    // M bauð fram 2022 (3,67%) en fékk ekki sæti; framboðsgögn 2026 óstaðfest.
+    {id:'B', name:'Framsóknarflokkurinn',  color:'#1E8A3E', pct:0, seats:1},
+    {id:'C', name:'Viðreisn',              color:'#D84315', pct:0, seats:1},
+    {id:'D', name:'Sjálfstæðisflokkurinn', color:'#1565C0', pct:0, seats:7},
+    {id:'G', name:'Garðabæjarlistinn',     color:'#00838F', pct:0, seats:2},
+    {id:'M', name:'Miðflokkurinn',         color:'#6A1B9A', pct:0, seats:0},
+    {id:'S', name:'Samfylkingin',          color:'#C62828', pct:0, seats:0}
+  ],
+  rawCands: GARD_RAW,
+  photos: {},
+  bios: {},
+  partyInfo: {
+    B: { fullname:'Framsóknarflokkurinn',  ideology:'Miðja, búnaðarstefna',               founded:1916 },
+    C: { fullname:'Viðreisn',              ideology:'Frjálslyndi, miðja',                 founded:2016 },
+    D: { fullname:'Sjálfstæðisflokkurinn', ideology:'Miðju-hægri, frjálslyndir markaðir', founded:1929 },
+    G: { fullname:'Garðabæjarlistinn',     ideology:'Óháður staðbundinn listi',           founded:2018 },
+    M: { fullname:'Miðflokkurinn',         ideology:'Miðju-hægri, þjóðernisleg áhersla',  founded:2017 },
+    S: { fullname:'Samfylkingin',          ideology:'Miðju-vinstri, jafnaðarstefna',      founded:2000 }
+  },
+  stefnumal: {},
+  sattmali2022: null,
+  finance: [],
+  budgets: {},
+  finance2025Partial: null,
+  kjortimabil: [
+    {
+      titill: '2022–2026',
+      bst: 'Almar Guðmundsson (D)',
+      meirihluti: ['D'],
+      ar: [2022,2023,2024,2025],
+      lykilmal: [
+        'Hreinn meirihluti Sjálfstæðisflokks (7 af 11 sætum) — einstakt á höfuðborgarsvæðinu',
+        'Lægsta útsvar á höfuðborgarsvæðinu: 14,71% (2026) — aðrir stórir í 14,97%',
+        'Rekstrarafgangur 2025 2.753 m.kr. (1.183 m.kr. 2024); skuldahlutfall lækkar úr 120% í 110%',
+        'Urriðaholt áframhaldandi — fyrsta íslenska hverfið með BREEAM Communities vottun',
+        'Samfylking klýfur sig út úr Garðabæjarlistanum 2026 og býður fram sjálfstætt í fyrsta sinn',
+        'Deilur við ríkið um þvingaðar útsvarshækkanir — Almar hefur gagnrýnt stefnu ríkisstjórnarinnar'
+      ]
+    }
+  ]
+};
+
+// ============================================================================
+// === SELTJARNARNES — FASI 2 =================================================
+// ============================================================================
+// 3 framboðslistar 2026: D Sjálfstæði, M Miðflokkur (nýtt), S Samfylking +
+// Viðreisn + óháðir (sameiginlegt framboð). Sjálfstæðisflokkur hélt hreinum
+// meirihluta 2022 (50,12%, 4 af 7 sætum) — sem er lengsta samfellda meirihlut-
+// ann í íslensku sveitarfélagi. Bæjarstjóri allt tímabilið: Þór Sigurgeirsson
+// (tók við af Ásgerði Halldórsdóttur 9. júní 2022). Stærsta mál kjörtímabils-
+// ins er alvarleg fjárhagsstaða — uppsafnaður halli ~3 ma.kr., skuldir fjór-
+// faldast úr 1,7 ma. í ~8 ma., brotið á jafnvægisreglu sveitarstjórnarlaga.
+// Heimildir: seltjarnarnes.is, xd.is, xs.is, vidreisn.is, midflokkurinn.is,
+// mbl.is, ruv.is, dv.is, kjarninn.is, heimildin.is.
+var SELT_RAW = [
+  // D — Sjálfstæðisflokkurinn (Þór Sigurgeirsson, bæjarstjóri). 50,12% og
+  // 4 sæti 2022. Prófkjör 2026 valdi 5 efstu.
+  ['D',1,'Þór Sigurgeirsson','bæjarstjóri'],
+  ['D',2,'Elísabet Ingunn Einarsdóttir','framkvæmdastjóri'],
+  ['D',3,'Svana Helen Björnsdóttir','verkfræðingur'],
+  ['D',4,'Magnús Benediktsson','hagfræðingur'],
+  ['D',5,'Björn Jóhannesson','hagfræðingur'],
+  // M — Miðflokkurinn (Skafti Harðarson, fyrsta framboð M á Seltjarnarnesi).
+  // Einungis oddviti staðfestur í opinberum heimildum.
+  ['M',1,'Skafti Harðarson','framkvæmdastjóri og formaður Samtaka skattgreiðenda'],
+  // S — Samfylking, Viðreisn og óháðir (sameiginlegt framboð, Kristinn
+  // Ólafsson). 2022 var S einn með 40,81% og 3 sæti; nú sameiginlegt með C.
+  // Fullur listi ekki staðfestur í opinberum heimildum á birtingartíma.
+  ['S',1,'Kristinn Ólafsson','stjórnandi, ráðgjafi og bæjarstjóraefni']
+];
+
+MUNI_DATA.selt = {
+  parties: [
+    // Núverandi sæti byggt á 2022 úrslitum (D 4, S 3 — þegar S var einn).
+    // M er nýtt framboð 2026, ekki á framboði 2022. Viðreisn hafði ekki boðið
+    // fram sjálfstætt á Seltjarnarnesi. S-listinn 2026 er sameiginlegt framboð
+    // Samfylkingar, Viðreisnar og óháðra.
+    {id:'D', name:'Sjálfstæðisflokkurinn',              color:'#1565C0', pct:0, seats:4},
+    {id:'M', name:'Miðflokkurinn',                      color:'#6A1B9A', pct:0, seats:0},
+    {id:'S', name:'Samfylking, Viðreisn og óháðir',     color:'#C62828', pct:0, seats:3}
+  ],
+  rawCands: SELT_RAW,
+  photos: {},
+  bios: {},
+  partyInfo: {
+    D: { fullname:'Sjálfstæðisflokkurinn', ideology:'Miðju-hægri, frjálslyndir markaðir', founded:1929 },
+    M: { fullname:'Miðflokkurinn',         ideology:'Miðju-hægri, þjóðernisleg áhersla',  founded:2017 },
+    S: { fullname:'Samfylking, Viðreisn og óháðir', ideology:'Miðju-vinstri, sameiginlegt framboð', founded:2026 }
+  },
+  stefnumal: {},
+  sattmali2022: null,
+  finance: [],
+  budgets: {},
+  finance2025Partial: null,
+  kjortimabil: [
+    {
+      titill: '2022–2026',
+      bst: 'Þór Sigurgeirsson (D) frá 9. júní 2022',
+      meirihluti: ['D'],
+      ar: [2022,2023,2024,2025],
+      lykilmal: [
+        'Hreinn meirihluti Sjálfstæðisflokks (4 af 7 sætum, 50,12% 2022) — áratugalöng hefð óslitin',
+        'Þór Sigurgeirsson tók við sem bæjarstjóri af Ásgerði Halldórsdóttur 9. júní 2022 eftir 13 ára þjónustu hennar',
+        'Fjárhagsstaða alvarleg: uppsafnaður halli ~3 ma.kr. á áratug, skuldir fjórfaldast úr 1,7 ma. (2015) í ~8 ma. (2026)',
+        'Brotið á jafnvægisreglu sveitarstjórnarlaga — 9 af síðustu 10 árum í rekstrarhalla',
+        'Samfylking og Viðreisn sameinast 2026 í eitt framboð á móti D-lista; nýr meirihluti hugsanlegur í fyrsta sinn í áratugi',
+        'Deilur um lágskatta-stefnu og viðhald innviða (mygla í Mýrarhúsaskóla, uppsafnað viðhald)'
+      ]
+    }
+  ]
+};
+
 // loadMuni — endurstillir allar top-level breytur úr MUNI_DATA[id].
 // Kallað úr: router (hash-breyting), pickeri, og við upphaf síðuhleðslu ef hash
 // inniheldur muni-prefix. Skilar false ef muni er ekki til (t.d. tómt stub).
