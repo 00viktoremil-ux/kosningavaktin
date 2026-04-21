@@ -771,6 +771,51 @@ const PHOTOS = {
 
 function photoFor(c){ return PHOTOS[c.party+'-'+c.num] || null; }
 
+// Flokksmerki (logos) — URL-ar sóttir af opinberum vefsíðum framboða.
+// A (Vinstrið) er með base64-inline logo á vinstrid.is en það er of stórt til að afrita hér;
+// letter-fallback virkar vel fyrir sidebarinn og detail-header.
+const PARTY_LOGOS = {
+  'B': 'https://framerusercontent.com/images/G4wBTblLDHELMEnizfVG5za8.svg',
+  'C': 'https://vidreisn.is/wp-content/uploads/2024/10/Vidreisn-icon_regular-landscape_rgb.png',
+  'D': 'https://xd.is/wp-content/uploads/2016/09/d_logo.png',
+  'F': 'https://flokkurfolksins.is/reykjavik/myndir/ff-logo-dokkt.png',
+  'G': 'https://gdf.is/wp-content/uploads/2026/03/godan-daginn-logo-white.svg',
+  'J': 'https://www.sosialistaflokkurinn.is/brand/emblem.svg',
+  'M': 'https://midflokkurinn.is/wp-content/uploads/2024/10/Horizontal-white-v1.0.svg',
+  'P': 'https://images.squarespace-cdn.com/content/v1/64a6cfea8da5317c954fb0ef/99d42f44-2a2f-416e-8ec3-2c65174b4644/Piratar+-+White.png?format=1500w',
+  'R': 'https://static.wixstatic.com/media/5f7800_22870e7a9673415d8a81e7d561b9e8d3~mv2.png/v1/fill/w_256,h_256,al_c,q_85/5f7800_22870e7a9673415d8a81e7d561b9e8d3~mv2.png',
+  'S': 'https://xs.is/skin/i/logo.svg'
+  // A (Vinstrið) vantar — inline base64 á vinstrid.is
+};
+
+// Sum logos eru með hvítan texta og vantar bakgrunn. Sum eru með hvítan bakgrunn.
+// Þessi tafla segir hvort logoið þurfi dökkan bakgrunn (white ink) eða ljósan.
+const PARTY_LOGO_BG = {
+  'G': 'dark',  // white svg
+  'M': 'dark',  // white svg
+  'P': 'dark',  // white png with transparency — letting dark bg show through
+  'B': 'dark',  // framer svg with white elements
+  // Aðrir: ljós eða gegnsær bakgrunnur — default
+};
+
+function logoFor(pid){ return PARTY_LOGOS[pid] || null; }
+
+// Skilar HTML-striki fyrir flokksmerki. Ef logo er til, sýnir það. Ef ekki,
+// notar letter-avatar (stafirnir í lit flokks). size = hliðarstærð í px.
+function renderPartyBadge(p, size){
+  size = size || 40;
+  var logo = logoFor(p.id);
+  if(logo){
+    var bg = PARTY_LOGO_BG[p.id] === 'dark' ? p.color : '#fff';
+    var border = PARTY_LOGO_BG[p.id] === 'dark' ? p.color : 'rgba(26,24,20,.08)';
+    return '<div style="width:'+size+'px;height:'+size+'px;border-radius:10px;background:'+bg+';border:0.5px solid '+border+';display:flex;align-items:center;justify-content:center;flex-shrink:0;padding:'+Math.max(3, size*0.08)+'px;box-sizing:border-box;">'
+      +'<img src="'+logo+'" alt="'+p.name+' merki" style="max-width:100%;max-height:100%;object-fit:contain;display:block" onerror="this.parentElement.outerHTML=\'<div style=&quot;width:'+size+'px;height:'+size+'px;border-radius:50%;background:'+p.color+'18;color:'+p.color+';display:flex;align-items:center;justify-content:center;font-family:Playfair Display,serif;font-size:'+Math.round(size*0.4)+'px;font-weight:700;flex-shrink:0&quot;>'+p.id+'</div>\'">'
+      +'</div>';
+  }
+  // Fallback: letter-avatar
+  return '<div style="width:'+size+'px;height:'+size+'px;border-radius:50%;background:'+p.color+'18;color:'+p.color+';display:flex;align-items:center;justify-content:center;font-family:\'Playfair Display\',serif;font-size:'+Math.round(size*0.4)+'px;font-weight:700;flex-shrink:0">'+p.id+'</div>';
+}
+
 // Æviágrip fyrir top 6 í hverjum flokki. 2-3 setningar á hlutlausum íslenskum
 // texta, byggt á Wikipedia, fjölmiðlum og vefsíðum framboða. Fall lykill eins
 // og PHOTOS: 'partyLetter-num'. Ekki allir frambjóðendur eru með æviágrip —
@@ -1984,8 +2029,8 @@ function initPartyCards() {
       onmouseenter="this.style.borderColor='${p.color}'" onmouseleave="this.style.borderColor=''"
       onclick="showPartyDetail('${p.id}')">
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:.75rem;">
-        <div style="width:36px;height:36px;border-radius:50%;background:${p.color}18;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:14px;font-weight:700;color:${p.color};flex-shrink:0">${p.id}</div>
-        <div>
+        ${renderPartyBadge(p, 44)}
+        <div style="flex:1;min-width:0">
           <div style="font-size:13px;font-weight:500;color:var(--ink);line-height:1.3">${p.name}</div>
           <div style="font-size:11px;color:var(--ink2)">${info.founded||''}</div>
         </div>
@@ -2008,7 +2053,7 @@ function showPartyDetail(id) {
   panel.innerHTML = `
     <div style="background:var(--white);border:0.5px solid var(--bdr);border-radius:12px;padding:1.5rem;margin-bottom:1rem;">
       <div style="display:flex;gap:14px;align-items:flex-start;margin-bottom:1.25rem;padding-bottom:1.25rem;border-bottom:0.5px solid var(--bdr);">
-        <div style="width:56px;height:56px;border-radius:50%;background:${p.color}18;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:${p.color};flex-shrink:0">${id}</div>
+        ${renderPartyBadge(p, 64)}
         <div style="flex:1">
           <div style="font-family:'Playfair Display',serif;font-size:20px;margin-bottom:3px">${info.fullname||p.name}</div>
           <div style="font-size:12px;color:${p.color};margin-bottom:4px">Stofnað: ${info.founded||''}  ·  ${info.ideology||''}</div>
