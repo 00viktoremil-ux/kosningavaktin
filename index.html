@@ -3694,43 +3694,123 @@ MUNI_DATA.kopv = {
 // Heimildir: mos.is, mosfellingur.is, ruv.is, mbl.is, visir.is, island.is
 // (kjörskráar- og listaupplýsingar), og vefir flokkanna.
 var MOS_RAW = [
-  // B — Framsóknarflokkurinn (Sævar Birgisson — nýr oddviti 2026; Halla Karen
-  // fráfarandi). 4 sæti 2022 — stórsigur úr 0 í 4. Aðeins efsti staðfestur
-  // opinberlega í upphafi fasa 2a; 22 manna listi alls.
-  ['B',1,'Sævar Birgisson','viðskiptafræðingur, bæjarfulltrúi og varaformaður skipulagsnefndar'],
-  // C — Viðreisn (Gylfi Þór Þorsteinsson, nýr oddviti feb. 2026). 1 sæti 2022.
-  ['C',1,'Gylfi Þór Þorsteinsson','deildarstjóri hjá Rauða krossinum'],
-  ['C',2,'Valdimar Birgisson','rekstrarráðgjafi og alþingismaður'],
+  // B — Framsóknarflokkurinn (Sævar Birgisson, nýr oddviti 2026). Halla Karen
+  // færð úr oddvitasæti í 2. Stórsigur 2022 (úr 0 í 4 sæti). Full 22 manna listi
+  // staðfestur á framsokn.is 26. feb. 2026.
+  ['B',1,'Sævar Birgisson','viðskiptafræðingur og bæjarfulltrúi'],
+  ['B',2,'Halla Karen Kristjánsdóttir','íþróttakennari og formaður bæjarráðs'],
+  ['B',3,'Leifur Ingi Eysteinsson','tómstunda- og félagsmálafræðingur'],
+  ['B',4,'Elín Guðný Hlöðversdóttir','rekstrarstjóri'],
+  ['B',5,'Ýmir Örn Hafsteinsson','starfsmaður í álveri'],
+  ['B',6,'Sandra Dís Bjarnadóttir','ráðgjafi og verkefnastjóri'],
+  ['B',7,'Kjartan Helgi Ólafsson','stjórnmálafræðingur'],
+  ['B',8,'Matthildur Þórðardóttir','kennari og stjórnmálafræðingur'],
+  ['B',9,'Frímann Ægir Frímannsson','merkjamaður'],
+  ['B',10,'Bjarni Ingimarsson','slökkviliðs- og sjúkraflutningamaður'],
+  ['B',11,'Vala Garðarsdóttir','fornleifafræðingur'],
+  ['B',12,'Hansína Þorbjörg Sólbjartsdóttir','kennari og varabæjarfulltrúi'],
+  ['B',13,'Helga Einarsdóttir','hjúkrunarfræðingur og eldri borgari'],
+  ['B',14,'Ragnar Sverrisson','matreiðslumeistari og framkvæmdastjóri'],
+  ['B',15,'Sigurbjörg Kristmundsdóttir','viðskiptafræðingur og sjúkraflutningamaður'],
+  ['B',16,'Karlotta Lind Pedersen','framkvæmdastjóri og hárgreiðslukona'],
+  ['B',17,'Sigríður Dóra Sigtryggsdóttir','hjúkrunarfræðingur og varabæjarfulltrúi'],
+  ['B',18,'Þór Gíslason','ráðgjafi'],
+  ['B',19,'Erlingur Agnarsson','viðskiptafræðingur'],
+  ['B',20,'Páll Marís Pálsson','lögmaður'],
+  ['B',21,'Ævar Sigdórsson','vélstjóri'],
+  ['B',22,'Örvar Jóhannsson','rafvirki og forseti bæjarstjórnar'],
+  // C — Viðreisn full 22 manna listi (Gylfi Þór Þorsteinsson, nýr oddviti;
+  // Lovísa Jónsdóttir fráfarandi í 22. heiðurssæti). Staðfest vidreisn.is 28. feb.
+  ['C',1,'Gylfi Þór Þorsteinsson','sviðsstjóri hjá Rauða krossi Íslands'],
+  ['C',2,'Valdimar Birgisson','stjórnunarráðgjafi og varaþingmaður'],
   ['C',3,'Elín Anna Gísladóttir','verkfræðingur'],
   ['C',4,'Berglind Robertson Grétarsdóttir','leikskólastjóri'],
-  // D — Sjálfstæðisflokkurinn (Hilmar Gunnarsson, nýr oddviti jan. 2026 með
-  // 91,9% í prófkjöri; Ásgeir Sveinsson fráfarandi oddviti tók 6. sæti).
-  // 4 sæti 2022. 8 efstu staðfest í prófkjöri.
+  ['C',5,'Haukur Skúlason','annar stofnenda Indó, fv. framkvæmdastjóri'],
+  ['C',6,'Guðrún Þórarinsdóttir','löggiltur endurskoðandi'],
+  ['C',7,'Birgir Örn Birgisson','lögmaður'],
+  ['C',8,'Erla Björk Gísladóttir','MS í mannauðsstjórnun, BA í ferðamálafræði'],
+  ['C',9,'Óðinn Freyr Baldursson','kvikmyndaframleiðandi'],
+  ['C',10,'Valgerður Lilja Jónsdóttir','gæðastjóri'],
+  ['C',11,'Sigurður Unnar Ragnarsson','stuðningsfulltrúi og kennaraaðstoð'],
+  ['C',12,'Hera Björk Þórhallsdóttir','löggiltur fasteignasali og söngkona'],
+  ['C',13,'Kjartan Jóhannes Hauksson','viðskiptafræðinemi'],
+  ['C',14,'Hildur Björg Bæringsdóttir','viðskiptafræðingur og kennari'],
+  ['C',15,'Magnús Sverrir Kristófersson','smiður og fasteignasali'],
+  ['C',16,'Eyja Eydal Björnsdóttir','teymisstjóri í sérhæfðum búsetuúrræðum'],
+  ['C',17,'Reynir Matthíasson','framkvæmdastjóri'],
+  ['C',18,'Ingibjörg Bergrós Jóhannesdóttir','viðskiptafræðingur'],
+  ['C',19,'Helgi Pálsson','framkvæmdastjóri'],
+  ['C',20,'Ólöf Guðmundsdóttir','kennari í Varmárskóla'],
+  ['C',21,'Bolli Valgarðsson','ráðgjafi í almannatengslum'],
+  ['C',22,'Lovísa Jónsdóttir','lögmaður og fráfarandi oddviti (heiðurssæti)'],
+  // D — Sjálfstæðisflokkurinn full 22 manna listi (Hilmar Gunnarsson, kjörinn
+  // með 91,9% í prófkjöri 31. jan. 2026). Staðfest xd.is 27. feb.
   ['D',1,'Hilmar Gunnarsson','ritstjóri Mosfellings'],
-  ['D',2,'Jana Katrín Knútsdóttir','frambjóðandi'],
-  ['D',3,'Elísabet S. Ólafsdóttir','frambjóðandi'],
-  ['D',4,'Hjörtur Örn Arnarson','frambjóðandi'],
-  ['D',5,'Þórarinn Örn Andrésson','frambjóðandi'],
-  ['D',6,'Ásgeir Sveinsson','fyrrverandi oddviti og bæjarfulltrúi'],
-  ['D',7,'Magnús Ingi Ingvarsson','frambjóðandi'],
-  ['D',8,'Brynja Hlíf Hjaltadóttir','frambjóðandi'],
+  ['D',2,'Jana Katrín Knútsdóttir','bæjarfulltrúi og hjúkrunarfræðingur'],
+  ['D',3,'Elísabet S. Ólafsdóttir','sáttamiðlari'],
+  ['D',4,'Hjörtur Örn Arnarson','landfræðingur'],
+  ['D',5,'Þórarinn Örn Andrésson','framkvæmdastjóri'],
+  ['D',6,'Ásgeir Sveinsson','bæjarfulltrúi og framkvæmdastjóri (fráfarandi oddviti)'],
+  ['D',7,'Magnús Ingi Ingvarsson','framkvæmdastjóri'],
+  ['D',8,'Brynja Hlíf Hjaltadóttir','lögmaður'],
+  ['D',9,'Nanna Björt Ívarsdóttir','laganemi'],
+  ['D',10,'Elín María Jónsdóttir','húsmóðir'],
+  ['D',11,'Árni Bragi Eyjólfsson','rekstrarstjóri'],
+  ['D',12,'Katrín Dögg Hilmarsdóttir','golfkennari'],
+  ['D',13,'Jón Magnús Jónsson','bóndi'],
+  ['D',14,'Gunnhildur Einarsdóttir','íþróttafræðingur og flugfreyja'],
+  ['D',15,'Þorsteinn Birgisson','formaður FaMos'],
+  ['D',16,'Halldóra Sif Guðlaugsdóttir','fatahönnuður og saumakona'],
+  ['D',17,'Jódís Lilja Jakobsdóttir','kennari'],
+  ['D',18,'Alexander V. Kárason','athafnamaður'],
+  ['D',19,'Hafrún Hafliðadóttir','kennari'],
+  ['D',20,'Nína Huld Leifsdóttir','hárgreiðslukona'],
+  ['D',21,'Aron Valur Gunnlaugsson','athafnamaður'],
+  ['D',22,'Salome Þorkelsdóttir','heiðursborgari (heiðurssæti)'],
   // L — Vinir Mosfellsbæjar (Árni Jónsson, nýr oddviti 2026). 1 sæti 2022
   // (13,0%). Staðbundinn listi — mikil endurnýjun fyrir 2026. 6 efstu staðf.
-  ['L',1,'Árni Jónsson','oddviti Vina Mosfellsbæjar'],
-  ['L',2,'Guðfinna Birta Valgeirsdóttir','frambjóðandi'],
-  ['L',3,'Michele Rebora','frambjóðandi'],
-  ['L',4,'Guðrún Elísa Sævarsdóttir','frambjóðandi'],
-  ['L',5,'Þóranna Rósa Ólafsdóttir','frambjóðandi'],
+  ['L',1,'Árni Jónsson','framkvæmdastjóri'],
+  ['L',2,'Guðfinna Birta Valgeirsdóttir','markaðsstjóri'],
+  ['L',3,'Michele Rebora','umbóta- og gæðastjóri'],
+  ['L',4,'Guðrún Elísa Sævarsdóttir','kennari'],
+  ['L',5,'Þóranna Rósa Ólafsdóttir','skólastjóri'],
   ['L',6,'Katarzyna Królikowska','frambjóðandi'],
-  // M — Miðflokkurinn (Sveinn Óskar Sigurðsson, nýr oddviti apríl 2026).
-  // 0 sæti 2022 (4,9%). 22 manna listi; 3 efstu staðfestir.
-  ['M',1,'Sveinn Óskar Sigurðsson','hagfræðingur og fjármálasérfræðingur'],
-  ['M',2,'Ingibjörg Einarsdóttir','tannsmiður og stundakennari við HÍ'],
-  ['M',3,'Sara Hafbergsdóttir','rekstrarstjóri'],
+  // M — Miðflokkurinn full 22 manna listi (Sveinn Óskar Sigurðsson, nýr oddviti
+  // apríl 2026). Staðfest mosfellingur.is + ruv.is 4. apríl 2026.
+  ['M',1,'Sveinn Óskar Sigurðsson','viðskiptahagfræðingur og bæjarfulltrúi'],
+  ['M',2,'Ingibjörg Einarsdóttir','tannsmiður og aðjunkt við HÍ'],
+  ['M',3,'Hjalti Árnason','frambjóðandi'],
+  ['M',4,'Sóley Sævarsdóttir Meyer','frambjóðandi'],
+  ['M',5,'Kristján Davíð Sigurjónsson','frambjóðandi'],
+  ['M',6,'Karl Gissur Þórisson','frambjóðandi'],
+  ['M',7,'Nói Þrastarsson','frambjóðandi'],
+  ['M',8,'Sara Hafbergsdóttir','rekstrarstjóri'],
+  ['M',9,'Ólafur Vignir Þórarinsson','frambjóðandi'],
+  ['M',10,'Eyþór Bjarki Benediksson','frambjóðandi'],
+  ['M',11,'Aldís Dröfn Ingvarsdóttir','frambjóðandi'],
+  ['M',12,'Bjarki Þór Þórisson','frambjóðandi'],
+  ['M',13,'Pétur Þór Ásgeirsson','frambjóðandi'],
+  ['M',14,'Helga Diljá Jónsdóttir','frambjóðandi'],
+  ['M',15,'Sigurjón Kristjánsson','frambjóðandi'],
+  ['M',16,'Jóhannes Birgir Jóhannesson','frambjóðandi'],
+  ['M',17,'Mikael Árni Bergmann Þorsteinnsson','frambjóðandi'],
+  ['M',18,'Linda Björk Stefánsdóttir','frambjóðandi'],
+  ['M',19,'Hlynur Hilmarsson','frambjóðandi'],
+  ['M',20,'Friðbert Bragason','frambjóðandi'],
+  ['M',21,'Sigurrós K. Indriðardóttir','frambjóðandi'],
+  ['M',22,'Þorlákur Ásgeir Petursson','frambjóðandi'],
   // S — Samfylkingin (Ólafur Ingi Óskarsson, nýr oddviti mars 2026). 1 sæti
-  // 2022. Regína Ásvaldsdóttir fráfarandi bæjarstjóri situr í 7. heiðurssæti.
+  // 2022. Regína Ásvaldsdóttir (fráfarandi bæjarstjóri) í 7. heiðurssæti.
+  // 9 sæti staðfest í RÚV 9. mars 2026; restin (10–22) óstaðfest.
   ['S',1,'Ólafur Ingi Óskarsson','netverkfræðingur og formaður velferðarnefndar'],
-  ['S',7,'Regína Ásvaldsdóttir','fráfarandi bæjarstjóri (heiðurssæti)']
+  ['S',2,'Guðný Maja Riba','kennari og fráfarandi bæjarfulltrúi'],
+  ['S',3,'Ómar Ingþórsson','landslagsarkitekt og náttúrufræðingur'],
+  ['S',4,'Auður Einarsdóttir','laganemi'],
+  ['S',5,'Guðlaugur Bjarki Lúðvíksson','verkfræðingur'],
+  ['S',6,'Elín Eiríksdóttir','sérkennari'],
+  ['S',7,'Regína Ásvaldsdóttir','fráfarandi bæjarstjóri (heiðurssæti)'],
+  ['S',8,'Sigurður Óli Karlsson','stjórnmálafræðinemi'],
+  ['S',9,'Viktoría Magnúsdóttir','háskólanemi']
 ];
 
 MUNI_DATA.mos = {
@@ -3748,7 +3828,18 @@ MUNI_DATA.mos = {
   ],
   rawCands: MOS_RAW,
   photos: {},   // oddvita-myndir bætast við í fasa 2b
-  bios: {},     // æviágrip fylgja í fasa 2c
+  bios: {
+    // Oddvitar allra 6 framboða + fráfarandi bæjarstjóri Regína. Heimildir:
+    // mosfellingur.is (Hilmar er ritstjóri!), framsokn.is, vidreisn.is,
+    // xd.is, xs.is, midflokkurinn.is, ruv.is, mbl.is, mos.is.
+    'B-1': 'Sævar Birgisson er viðskiptafræðingur og bæjarfulltrúi Framsóknar í Mosfellsbæ. Sat í 3. sæti á lista B 2022 og tekur nú við oddvitasæti af Höllu Karen Kristjánsdóttur sem leiðir listann í 2. sæti. Framsókn vann stórsigur 2022 úr 0 í 4 sæti.',
+    'C-1': 'Gylfi Þór Þorsteinsson er sviðsstjóri hjá Rauða krossi Íslands og nýr oddviti Viðreisnar í Mosfellsbæ 2026. Áherslur hans eru áframhaldandi „Börnin okkar"-verkefnið, jafnvægi í uppbyggingu Blikastaðalands og þjónusta við alla aldurshópa. Tekur við af Lovísu Jónsdóttur.',
+    'D-1': 'Hilmar Gunnarsson hefur verið ritstjóri Mosfellings í yfir 20 ár og er helsta rödd fjölmiðla í bænum. Sigraði prófkjör Sjálfstæðisflokksins 31. janúar 2026 með 91,9% atkvæða (799) í 1. sæti — 13 frambjóðendur tóku þátt.',
+    'L-1': 'Árni Jónsson er framkvæmdastjóri og nýr oddviti Vina Mosfellsbæjar 2026, óflokksbundins staðbundins framboðs. Áherslur framboðsins snúa að endurnýjun og samvinnu þvert á flokka.',
+    'M-1': 'Sveinn Óskar Sigurðsson (f. 27. júlí 1968) er viðskipta- og hagfræðiráðgjafi með BA í hagfræði og heimspeki frá HÍ, MBA og MSc í fyrirtækjafjármálum. Bæjarfulltrúi Miðflokksins 2018–2022 (áður í Sjálfstæðisflokki); endurkjörinn oddviti 21. nóvember 2025.',
+    'S-1': 'Ólafur Ingi Óskarsson er netverkfræðingur og formaður velferðarnefndar Mosfellsbæjar, auk fulltrúa bæjarins í Svæðisskipulagsnefnd höfuðborgarsvæðisins. Nýr oddviti Samfylkingar 2026 — tók við 9. mars af Önnu Sigríði Guðnadóttur.',
+    'S-7': 'Regína Ásvaldsdóttir var bæjarstjóri Mosfellsbæjar 2022 til 1. apríl 2026. Menntuð MA í hagfræði (Aberdeen), diplóma í opinberri stjórnsýslu og félagsráðgjöf (Osló). Áður bæjarstjóri Akraness, sviðsstjóri velferðarsviðs Reykjavíkur og framkvæmdastjóri Festu. Tilkynnti 20. feb. 2026 að hún léti af störfum og tók 7. heiðurssæti á S-lista.'
+  },
   partyInfo: {
     B: { fullname:'Framsóknarflokkurinn',  ideology:'Miðja, búnaðarstefna',                     founded:1916 },
     C: { fullname:'Viðreisn',              ideology:'Frjálslyndi, miðja',                        founded:2016 },
@@ -3757,24 +3848,144 @@ MUNI_DATA.mos = {
     M: { fullname:'Miðflokkurinn',         ideology:'Miðju-hægri, þjóðernisleg áhersla',         founded:2017 },
     S: { fullname:'Samfylkingin',          ideology:'Miðju-vinstri, jafnaðarstefna',             founded:2000 }
   },
-  stefnumal: {},          // fyllist inn í fasa 2c
-  sattmali2022: null,      // meirihlutasáttmáli B+S+C 2022 bætist við síðar
-  finance: [],             // fjárhagsgögn Mosfellsbæjar bætast við í fasa 2d
-  budgets: {},
-  finance2025Partial: null,
+  stefnumal: {
+    // Stefnumál Mosfellsbæjar-framboða 2026 í 7 málaflokkum. Heimildir: flokkssíður,
+    // mos.is, mosfellingur.is, ruv.is, mbl.is, vidreisn.is. Blikastaðaland er
+    // stærsta umræðuefnið.
+    'B': {
+      husnaedi:'Áframhald uppbyggingar á Blikastaðalandi (samþykkt samningur 2022–2023); stuðningur við íbúafjölgun.',
+      samgongur:'Styður samgöngusáttmála höfuðborgarsvæðisins og undirbúning Borgarlínu.',
+      umhverfi:'Ekki birt ítarleg afstaða 2026 sérstaklega; almenn stefna um sjálfbæra þróun.',
+      menntun:'„Börnin okkar" (100 m.kr., 27 forvarnarúrræði) — sameiginlegt verkefni meirihlutans. Áhersla á skólaplássfjölgun.',
+      velferd:'Stuðningur við öflugri velferðarþjónustu í takt við íbúafjölgun.',
+      fjarmal:'Styður meirihlutastefnu — útsvar 14,97% óbreytt; lækkun fasteignaskatts og fráveitugjalds 2026.',
+      atvinnu:'Ekki birt ítarleg afstaða 2026; styður fjölbreytt atvinnulíf.'
+    },
+    'C': {
+      husnaedi:'Styður Blikastaðaland með áherslu á jafnvægi í þéttleika. Opinber stefna er stuðningur — gagnstætt einstaka fullyrðingum í fjölmiðlum.',
+      samgongur:'Styður Borgarlínu og samgöngusáttmála.',
+      umhverfi:'Áhersla á græn svæði og útivist; jákvætt gagnvart vistvænum samgöngum.',
+      menntun:'Áhersla á „Börnin okkar"-verkefnið og þjónustu við alla aldurshópa.',
+      velferd:'Áhersla Gylfa (Rauði krossinn) á þjónustu við viðkvæmustu hópa.',
+      fjarmal:'Ekki birt ítarleg afstaða 2026 til útsvars.',
+      atvinnu:'Ekki birt ítarleg afstaða 2026.'
+    },
+    'D': {
+      husnaedi:'Hefur stutt almenna uppbyggingarstefnu á Blikastaðalandi en vill sjá samráð og jafnvægi við innviðauppbyggingu. Hilmar (ritstjóri Mosfellings) hefur skrifað gagnrýnar greinar um framkvæmdahraða.',
+      samgongur:'Áhersla á Vesturlandsveg og tengingu við höfuðborgarsvæðið; samgöngusáttmáli í forgangi.',
+      umhverfi:'Ekki birt ítarleg afstaða 2026; almennt aðhald í stefnuskrá.',
+      menntun:'Áhersla á skólaþjónustu og nýjar skólabyggingar.',
+      velferd:'Ekki birt ítarleg afstaða 2026.',
+      fjarmal:'Landsstefna D leggur áherslu á lágt útsvar og aðhald; sérstaklega ekki birt fyrir Mosfellsbæ 2026.',
+      atvinnu:'Styður almennt atvinnulíf og frumkvöðlastarfsemi.'
+    },
+    'L': {
+      husnaedi:'Vinir Mosfellsbæjar hafa áhyggjur af hraða Blikastaðalands-verkefnisins og vilja meira samráð við íbúa. Staðbundinn listi með áherslu á „bæjarandann".',
+      samgongur:'Áhersla á betri almenningssamgöngur innan bæjarins og tengingu við höfuðborgarsvæðið.',
+      umhverfi:'Stuðningur við græn svæði og verndun Mosfellsdals.',
+      menntun:'Áhersla á samstöðu milli skóla og félagslífs bæjarins.',
+      velferd:'Staðbundin þjónusta og stuðningur við íbúa á öllum aldri.',
+      fjarmal:'Ekki birt ítarleg afstaða 2026.',
+      atvinnu:'Stuðningur við staðbundin fyrirtæki og frumkvöðla.'
+    },
+    'M': {
+      husnaedi:'Hefur gagnrýnt hraða og umfang Blikastaðalands; vill hófsamari uppbyggingu.',
+      samgongur:'Landsstefna M er gagnrýni á Borgarlínu — líkleg andstaða í Mosfellsbæ.',
+      umhverfi:'Ekki birt ítarleg afstaða 2026.',
+      menntun:'Ekki birt ítarleg afstaða 2026.',
+      velferd:'Ekki birt ítarleg afstaða 2026.',
+      fjarmal:'Sveinn Óskar (hagfræðingur) leggur áherslu á aðhald í útgjöldum og lækkun skatta.',
+      atvinnu:'Ekki birt ítarleg afstaða 2026.'
+    },
+    'S': {
+      husnaedi:'Stór hluti meirihluta sem samþykkti Blikastaðaland-samninginn. Styður áframhald en með áherslu á félagslegar íbúðir og blandaða byggð.',
+      samgongur:'Eindreginn stuðningur við Borgarlínu og almenningssamgöngur.',
+      umhverfi:'Áhersla á loftslagsmál og vistvottun hverfa.',
+      menntun:'„Börnin okkar"-verkefnið er flaggskip meirihlutans — 100 m.kr., 27 forvarnarúrræði.',
+      velferd:'Ólafur Ingi er formaður velferðarnefndar; jöfnuður og þjónusta við viðkvæmustu hópa.',
+      fjarmal:'Styður núverandi útsvarsstig með áherslu á að fjármagna velferðarverkefni.',
+      atvinnu:'Fjölbreytt atvinnulíf og stuðningur við frumkvöðla.'
+    }
+  },
+  sattmali2022: {
+    titill: 'Meirihlutasáttmáli B + S + C (2022–2026)',
+    gildi: '2022–2026',
+    flokkar: ['B','S','C'],
+    kjarni: 'Framsókn (4 sæti), Samfylking (1) og Viðreisn (1) mynduðu meirihluta með 6 af 9 sætum eftir stórsigur Framsóknar (úr 0 í 4 sæti). Regína Ásvaldsdóttir var ráðin bæjarstjóri 11. júlí 2022 (ekki kjörin fulltrúi) og gegndi embættinu til 1. apríl 2026 þegar Þóra Margrét Hjaltested (bæjarlögmaður) tók við.',
+    lykilatridi: [
+      'Embættaskipan: Halla Karen Kristjánsdóttir (B) formaður bæjarráðs; Anna Sigríður Guðnadóttir (S) forseti bæjarstjórnar fyrra árið, Lovísa Jónsdóttir (C) síðara árið',
+      '„Börnin okkar" — 100 m.kr., 27 forvarnarúrræði fyrir börn og fjölskyldur',
+      'Blikastaðaland — 34,8 ha, 1.260 íbúðir í 1. áfanga; deiliskipulag samþykkt 27. mars 2026',
+      'Metfjárfestingar 2024–2025 í leikskólum (Sumarhús 150 börn), grunnskólum og íþróttaaðstöðu (Varmá, Helgafellsskóli)',
+      'Lækkun fasteignaskatts og fráveitugjalds í fjárhagsáætlun 2026',
+      'Samgöngusáttmáli og undirbúningur undir Borgarlínu',
+      'Bæjarstjóraskipti 1. apríl 2026 — Regína tók 7. heiðurssæti á S-lista'
+    ],
+    heimild: 'sammos.is (PDF) — ítarleg efnisatriði ekki aðgengileg í vefleit'
+  },
+  finance: [
+    // Mosfellsbær — ársreikningar 2023–2024. Tölur í milljörðum króna (ma.kr.).
+    // Heimildir: globenewswire-tilkynningar (9. apríl 2026 fyrir 2025 niðurstöður;
+    // 3. des. 2025 fyrir áætlun 2026), mosfellingur.is, mos.is.
+    // 2015–2022 tölur vantar í vefleit (mos.is/stjornsysla/fjarmal/arsreikningar
+    // skilaði 403).
+    {yr:2023,
+      A:{tekjur:null, gjold:null, nidurstada:0.23, skatttekjur:null, eignir:null, skuldir:null, eiginfe:null},
+      AB:{tekjur:null, nidurstada:0.34, eignir:null, skuldir:null, eiginfe:null},
+      ibuar:13235, baejarstjori:'Regína Ásvaldsdóttir', bstAf:'S',
+      meirihluti:['B','S','C'], kjor:'2022–2026',
+      athugasemd:'Launakostnaður hækkaði um 1,3 ma. (21%) frá 2022. Skuldahækkun ~2 ma. Fjárfestingar 1,8 ma. (áætlun 2,1 ma.). Rekstur félagslegra íbúða í halla -41 m.kr.',
+      adj:[]
+    },
+    {yr:2024,
+      A:{tekjur:null, gjold:null, nidurstada:null, skatttekjur:null, eignir:null, skuldir:null, eiginfe:8.8},
+      AB:{tekjur:22.2, gjold:19.2, nidurstada:0.88, eignir:null, skuldir:null, eiginfe:null},
+      ibuar:13715, baejarstjori:'Regína Ásvaldsdóttir', bstAf:'S',
+      meirihluti:['B','S','C'], kjor:'2022–2026',
+      athugasemd:'Launakostnaður 10,9 ma. (57% útgjalda). Veltufé frá rekstri 1,82 ma. (8,2% tekna). Skuldahlutfall 94,5%. Fjárfestingar 3,7 ma. Eiginfjárhlutfall 25,1%. Fræðslumál 53,4% skatttekna (9,22 ma.); félagsþjónusta 21,9% (3,79 ma.).',
+      adj:[]
+    }
+  ],
+  budgets: {
+    2024: {
+      A:  {tekjur:null, gjold:null, nidurstada:null},
+      AB: {tekjur:null, gjold:null, nidurstada:0.945, skuldir:null},
+      notes:'Áætlun 2024 gerði ráð fyrir +0,945 ma. AB. Raun varð +0,88 ma. — 68 m.kr. undir áætlun.'
+    },
+    2025: {
+      A:  {tekjur:null, gjold:null, nidurstada:null},
+      AB: {tekjur:null, gjold:null, nidurstada:0.702, skuldir:null},
+      notes:'Áætlun 2025 gerði ráð fyrir +0,702 ma. AB. Raun varð +0,514 ma. — 188 m.kr. undir áætlun, en metfjárfestingar námu 4,3 ma. á árinu.'
+    },
+    2026: {
+      A:  {tekjur:null, gjold:null, nidurstada:null},
+      AB: {tekjur:24.69, gjold:21.92, nidurstada:0.557, skuldir:null},
+      notes:'Áætlaður afgangur +0,557 ma. AB. Veltufé frá rekstri 2,19 ma. (8,9% tekna). Skuldahlutfall áætlað 102%. Útsvar 14,97% óbreytt. Fasteignaskattur lækkaður í 0,19% og fráveitugjald í 0,084%. Fjárfestingar yfir 4 ma.kr. Samþykkt 3. desember 2025.'
+    }
+  },
+  finance2025Partial: {
+    yr:2025, timabil:'Ársreikningur 2025 (birtur 9. apríl 2026)',
+    A:{tekjur:null, nidurstada:null, skatttekjur:null},
+    AB:{tekjur:24.0, nidurstada:0.514, eignir:null, skuldir:null, eiginfe:9.8},
+    baejarstjori:'Regína Ásvaldsdóttir (til 1. apríl 2026)', bstAf:'S',
+    meirihluti:['B','S','C'], kjor:'2022–2026',
+    athugasemd:'Metár í fjárfestingum: 4,3 ma.kr. (úr 3,7 ma. 2024). Launakostnaður 12,3 ma. (58% útgjalda). Veltufé frá rekstri 1,54 ma. (6,4% tekna). Skuldahlutfall 98,2% (undir 150%-marki). Eiginfjárhlutfall 25,4%. Fræðslumál 54,5% skatttekna (10,1 ma.); félagsþjónusta 22,8% (4,2 ma.). Helstu framkvæmdir: leikskólinn Sumarhús (150 börn), íþróttaaðstaða á Varmá, íþróttabygging við Helgafellsskóla. Frávik frá áætlun -188 m.kr. (702 → 514).'
+  },
   kjortimabil: [
     {
-      titill: '2022–2026',
-      bst: 'Regína Ásvaldsdóttir (S) → Þóra Margrét Hjaltested (1. apríl 2026)',
+      titill: '2022–2026 (núverandi)',
+      bst: 'Regína Ásvaldsdóttir (S) 2022–1.4.2026 → Þóra Margrét Hjaltested (bæjarlögmaður) frá 1.4.2026',
       meirihluti: ['B','S','C'],
-      ar: [2022,2023,2024,2025],
+      ar: [2023,2024,2025],
       lykilmal: [
         'B+S+C meirihluti með 6 af 9 sætum — Framsókn vann stórsigur úr 0 í 4 sæti 2022',
-        'Regína Ásvaldsdóttir tók við sem bæjarstjóri 2022 (fv. sviðsstjóri velferðarsviðs Reykjavíkurborgar og bæjarstjóri á Akranesi)',
-        'Blikastaðaland: 34,8 ha þróunarsvæði með allt að 1.260 íbúðum í 1. áfanga (heildarplan ~3.500 íbúðir) samþykkt 27. janúar 2026',
-        'Regína baðst lausnar sem bæjarstjóri í feb. 2026 og þáði 7. heiðurssæti á lista Samfylkingarinnar',
-        'Þóra Margrét Hjaltested bæjarlögmaður ráðin bæjarstjóri innanbúðar frá 1. apríl 2026 til loka kjörtímabils',
-        '514 m.kr. afgangur í reikningsskilum 2025 — metár í fjárfestingum'
+        'Regína Ásvaldsdóttir tók við sem bæjarstjóri 11. júlí 2022 (fv. sviðsstjóri velferðarsviðs Reykjavíkur og bæjarstjóri Akraness)',
+        '„Börnin okkar" — 100 m.kr., 27 forvarnarúrræði fyrir börn og fjölskyldur',
+        'Blikastaðaland: 34,8 ha þróunarsvæði með allt að 1.260 íbúðum í 1. áfanga (heildarplan ~3.500 íbúðir). Deiliskipulag 1. áfanga samþykkt í skipulags- og umhverfisnefnd 27. mars 2026; landeigandi greiðir 16 ma.kr. á uppbyggingartíma',
+        '2024: +0,88 ma. AB (áætlun 0,945), skuldahlutfall 94,5%, metfjárfestingar 3,7 ma.',
+        '2025: +0,514 ma. AB, metfjárfestingar 4,3 ma. (leikskólinn Sumarhús, Varmá, Helgafellsskóli), skuldahlutfall 98,2%',
+        'Regína baðst lausnar sem bæjarstjóri í feb. 2026 og þáði 7. heiðurssæti á S-lista',
+        'Þóra Margrét Hjaltested bæjarlögmaður ráðin bæjarstjóri innanbúðar frá 1. apríl 2026 til loka kjörtímabils'
       ]
     }
   ]
