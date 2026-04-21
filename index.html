@@ -3103,23 +3103,39 @@ function renderStuttu(){
   var y2025 = FINANCE_2025_PARTIAL;
   var budgetLast = BUDGETS[last.yr] || {};
 
-  // Heildarmerki heilsu — byggt á 4 þáttum (ekki 3; AB einn og sér er
-  // of þröngur mælikvarði því bókhaldsaðlaganir geta ýtt honum upp).
-  // 1. A-hluti (kjarna-rekstur) jákvæður?
-  // 2. AB (samstæða) jákvæður?
-  // 3. Batnar AB milli ára?
-  // 4. Hafa skuldir lækkað?
+  // Heildarmerki heilsu — byggt á 6 þáttum sem ná bæði yfir síðasta ár og
+  // 5 ára sýn. Eitt-árs mat felur langtímaþróun: skuldir hafa hækkað 9 ár í röð
+  // og A-hluti var í tapi 5 ár í röð áður en 2024 rétt rataði í plús. Slíkt
+  // samhengi þarf að endurspeglast í stöðumatinu.
+  var last5 = FINANCE.slice(-5);
+  var aAvg5 = last5.reduce(function(s,d){return s+d.A.nidurstada;},0) / last5.length;
+  var abAvg5 = last5.reduce(function(s,d){return s+d.AB.nidurstada;},0) / last5.length;
+  var skuldirEverFellLast5 = last5.some(function(d,i){
+    if(i===0) return false;
+    return d.AB.skuldir < last5[i-1].AB.skuldir;
+  });
+
+  // 1. A-hluti jákvæður síðasta ár
   var aPos          = last.A.nidurstada  >= 0;
+  // 2. A-hluti jákvæður að meðaltali síðustu 5 ár (langtímasýn)
+  var aAvgPos       = aAvg5 >= 0;
+  // 3. AB jákvætt síðasta ár
   var abPos         = last.AB.nidurstada >= 0;
-  var abBetter      = last.AB.nidurstada > prev.AB.nidurstada;
-  var skuldirLower  = last.AB.skuldir    < prev.AB.skuldir;
-  var score = (aPos?1:0) + (abPos?1:0) + (abBetter?1:0) + (skuldirLower?1:0);
+  // 4. AB jákvætt að meðaltali síðustu 5 ár
+  var abAvgPos      = abAvg5 >= 0;
+  // 5. Skuldir lækkuðu milli síðustu tveggja ára
+  var skuldirLower  = last.AB.skuldir < prev.AB.skuldir;
+  // 6. Skuldir lækkuðu einhvern tíma á síðustu 5 árum
+  var skuldirAnyFall= skuldirEverFellLast5;
+
+  var score = (aPos?1:0) + (aAvgPos?1:0) + (abPos?1:0) + (abAvgPos?1:0) + (skuldirLower?1:0) + (skuldirAnyFall?1:0);
   var health;
-  if(score === 4)      health = {clr:'#2E7D32', bg:'#E8F5E9', lbl:'Gott',     dsc:'Bæði kjarna-rekstur og samstæða jákvæð, batnar milli ára, skuldir lækka.'};
-  else if(score === 3) health = {clr:'#7B9000', bg:'#F4F6E8', lbl:'Frekar gott', dsc:'Flest ljós eru græn — en eitt er rautt.'};
-  else if(score === 2) health = {clr:'#854F0B', bg:'#FFF8E1', lbl:'Blandað', dsc:'Helmingur ljósa er rauður. Bakvið jákvæða AB-niðurstöðu liggja oft bókhaldsaðlaganir.'};
-  else if(score === 1) health = {clr:'#B8541B', bg:'#FFE8D6', lbl:'Erfitt',  dsc:'Fá græn ljós. Raunrekstur er veikur.'};
-  else                 health = {clr:'#C62828', bg:'#FFEBEE', lbl:'Slæmt',   dsc:'Borgin rekur tap, hallar á alla mælikvarða.'};
+  if(score === 6)      health = {clr:'#2E7D32', bg:'#E8F5E9', lbl:'Gott',   dsc:'Bæði síðasta ár og 5 ára sýn jákvæð, skuldir lækka.'};
+  else if(score === 5) health = {clr:'#7B9000', bg:'#F4F6E8', lbl:'Frekar gott', dsc:'Flest ljós græn, eitt rautt.'};
+  else if(score === 4) health = {clr:'#854F0B', bg:'#FFF8E1', lbl:'Blandað', dsc:'Síðasta ár er skárra en langtímamyndin er veik.'};
+  else if(score === 3) health = {clr:'#B8541B', bg:'#FFE8D6', lbl:'Veikt',   dsc:'Helmingur ljósa er rauður. AB-hagnaður hefur oft verið borinn uppi af bókhaldsaðlögunum.'};
+  else if(score === 2) health = {clr:'#C62828', bg:'#FFEBEE', lbl:'Erfitt',  dsc:'Lítið af grænum ljósum. Kjarna-rekstur hefur verið í tapi og skuldir hækka.'};
+  else                 health = {clr:'#A01515', bg:'#FFD6D6', lbl:'Slæmt',   dsc:'Flestir mælikvarðar rauðir — langtímaþróunin er neikvæð.'};
 
   // Hjálpartól til að forsníða stórar tölur sem „á hvern íbúa"
   function perIbua(val, yr){
@@ -3148,7 +3164,7 @@ function renderStuttu(){
   // Heilsumerki-kortið
   html += '<div class="card" style="background:'+health.bg+';border-color:'+health.clr+'40;margin-bottom:1rem;">'
     +'<div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">'
-      +'<div style="width:56px;height:56px;border-radius:50%;background:'+health.clr+';display:flex;align-items:center;justify-content:center;color:#fff;font-size:26px;font-family:\'Playfair Display\',serif;font-weight:700;flex-shrink:0;">'+(score>=2?'✓':score===1?'~':'✕')+'</div>'
+      +'<div style="width:56px;height:56px;border-radius:50%;background:'+health.clr+';display:flex;align-items:center;justify-content:center;color:#fff;font-size:26px;font-family:\'Playfair Display\',serif;font-weight:700;flex-shrink:0;">'+(score>=5?'✓':score>=3?'~':'✕')+'</div>'
       +'<div style="flex:1;min-width:200px;">'
         +'<div style="font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:'+health.clr+';margin-bottom:2px;">Staða fjárhags · '+last.yr+'</div>'
         +'<div style="font-family:\'Playfair Display\',serif;font-size:22px;color:var(--ink);margin-bottom:3px;">'+health.lbl+'</div>'
