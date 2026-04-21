@@ -1264,7 +1264,7 @@ if(btn){document.querySelectorAll('#poll-filter-btns .nfbtn').forEach(b=>b.class
 const fp=filter==='all'?polls:polls.filter(p=>p.tag===filter);
 const tps=PARTIES.filter(p=>fp.some(poll=>poll.data[p.id]>0)).sort((a,b)=>(fp[0]?fp[0].data[b.id]||0:0)-(fp[0]?fp[0].data[a.id]||0:0));
 let t=`<table style="width:100%;font-size:12px;border-collapse:collapse"><tr style="border-bottom:0.5px solid var(--bdr)"><th style="text-align:left;padding:6px 8px;color:var(--ink3);font-weight:400">Könnun</th>`;
-tps.forEach(p=>t+=`<th style="padding:6px 4px;font-weight:500;color:${p.color}">${p.id}</th>`);
+tps.forEach(p=>t+=`<th style="padding:6px 2px;font-weight:500;color:${p.color};text-align:center" title="${p.name}"><div style="display:flex;flex-direction:column;align-items:center;gap:2px">${renderPartyBadge(p, 22)}<span style="font-size:10px">${p.id}</span></div></th>`);
 t+='</tr>';
 fp.forEach((poll,i)=>{
   t+=`<tr style="border-bottom:0.5px solid var(--bdr);background:${i%2?'var(--bg)':'var(--white)'}"><td style="padding:7px 8px"><div style="font-size:12px;font-weight:500">${poll.source}</div><div style="font-size:10px;color:var(--ink3)">${poll.date}</div></td>`;
@@ -1301,13 +1301,13 @@ function initCoalitions(){
   document.getElementById('coa-grid').innerHTML=COALITIONS.map(c=>{
     const seats=c.parties.reduce((s,id)=>s+(gP(id).seats||0),0);
     const isMaj=seats>=12;
-    return`<div class="coa-card"><h3>${c.name}</h3><p class="csub">${c.desc}</p><div class="coa-parties">${c.parties.map(id=>`<div class="coa-party"><div class="coa-dot" style="background:${gP(id).color}"></div>${gP(id).id} (${gP(id).seats})</div>`).join('')}</div><div class="coa-bar">${c.parties.map(id=>`<div class="coa-seg" style="width:${Math.round((gP(id).seats/23)*100)}%;background:${gP(id).color}"></div>`).join('')}</div><div class="coa-stat"><div><div class="coa-seats" style="color:${c.parties[0]?gP(c.parties[0]).color:'#888'}">${seats}</div><div class="coa-label">sæti af 23</div></div><div class="coa-result ${isMaj?'majority':'minority'}">${isMaj?'Meirihluti ✓':'Minnihluti ✗'}</div></div></div>`;
+    return`<div class="coa-card"><h3>${c.name}</h3><p class="csub">${c.desc}</p><div class="coa-parties" style="display:flex;flex-wrap:wrap;gap:6px">${c.parties.map(id=>`<div class="coa-party" style="display:flex;align-items:center;gap:4px;padding:3px 8px 3px 3px;background:${gP(id).color}15;border-radius:99px">${renderPartyBadge(gP(id), 20)}<span style="font-size:11px;color:${gP(id).color};font-weight:500">${gP(id).id} (${gP(id).seats})</span></div>`).join('')}</div><div class="coa-bar">${c.parties.map(id=>`<div class="coa-seg" style="width:${Math.round((gP(id).seats/23)*100)}%;background:${gP(id).color}"></div>`).join('')}</div><div class="coa-stat"><div><div class="coa-seats" style="color:${c.parties[0]?gP(c.parties[0]).color:'#888'}">${seats}</div><div class="coa-label">sæti af 23</div></div><div class="coa-result ${isMaj?'majority':'minority'}">${isMaj?'Meirihluti ✓':'Minnihluti ✗'}</div></div></div>`;
   }).join('');
   initBuilder();
 }
 let toggled=new Set(['S','P','A','J']);
 function initBuilder(){
-  document.getElementById('ptogs').innerHTML=PARTIES.filter(p=>p.seats>0).map(p=>`<div class="ptog${toggled.has(p.id)?' on':''}" onclick="toggleP('${p.id}')" style="${toggled.has(p.id)?`background:${p.color};border-color:${p.color}`:''}">`+`<div class="coa-dot" style="background:${toggled.has(p.id)?'rgba(255,255,255,.7)':p.color}"></div>${p.id} ${p.name.split(' ')[0]} (${p.seats})</div>`).join('');
+  document.getElementById('ptogs').innerHTML=PARTIES.filter(p=>p.seats>0).map(p=>`<div class="ptog${toggled.has(p.id)?' on':''}" onclick="toggleP('${p.id}')" style="display:flex;align-items:center;gap:6px;${toggled.has(p.id)?`background:${p.color};border-color:${p.color};color:#fff`:''}">`+`${renderPartyBadge(p, 20)}<span>${p.id} ${p.name.split(' ')[0]} (${p.seats})</span></div>`).join('');
   updateBuilder();
 }
 function toggleP(id){if(toggled.has(id))toggled.delete(id);else toggled.add(id);initBuilder();}
@@ -2229,7 +2229,7 @@ function renderAfstoduMatrix(){
   var pollSeats = (window._POLLS && window._POLLS[0] ? window._POLLS[0].seats : {}) || {};
   var sorted = PARTIES.slice().sort(function(a,b){return (pollSeats[b.id]||0)-(pollSeats[a.id]||0);});
   var head = '<tr><th style="text-align:left;padding:8px 10px;font-size:11px;color:var(--ink3);font-weight:500;text-transform:uppercase;letter-spacing:.07em">Málefni</th>'
-    + sorted.map(function(p){return '<th style="padding:8px 4px;font-size:11px;font-weight:500;color:'+p.color+';text-align:center">'+p.id+'</th>';}).join('')
+    + sorted.map(function(p){return '<th style="padding:6px 2px;text-align:center" title="'+p.name+'"><div style="display:flex;flex-direction:column;align-items:center;gap:3px">'+renderPartyBadge(p, 24)+'<span style="font-size:10px;color:'+p.color+';font-weight:500">'+p.id+'</span></div></th>';}).join('')
     +'</tr>';
   var rows = AFSTADA_ISSUES.map(function(iss,i){
     var bg = i%2 ? 'var(--bg)' : 'var(--white)';
@@ -2513,7 +2513,8 @@ function spRenderResults(){
         +scores.map(function(s){
           return '<div class="sp-result-row" onclick="spShowDetail(\''+s.party.id+'\')">'
             +'<div class="sp-result-pct" style="color:'+s.party.color+'">'+s.pct+'%</div>'
-            +'<div class="sp-result-name">'+s.party.id+' · '+s.party.name+'</div>'
+            +renderPartyBadge(s.party, 26)
+            +'<div class="sp-result-name">'+s.party.name+'</div>'
             +'<div class="sp-result-bar"><div class="sp-result-bar-fill" style="width:'+s.pct+'%;background:'+s.party.color+'"></div></div>'
             +'<div class="sp-result-arrow">→</div>'
           +'</div>';
@@ -2563,7 +2564,7 @@ function spRenderDetail(){
   return ''
     +'<div class="sp-detail">'
       +'<div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:1rem;padding-bottom:1rem;border-bottom:0.5px solid var(--bdr)">'
-        +'<div style="width:44px;height:44px;border-radius:50%;background:'+p.color+'18;display:flex;align-items:center;justify-content:center;font-family:\'Playfair Display\',serif;font-size:17px;font-weight:700;color:'+p.color+';flex-shrink:0">'+p.id+'</div>'
+        +renderPartyBadge(p, 44)
         +'<div style="flex:1">'
           +'<div style="font-family:\'Playfair Display\',serif;font-size:20px">'+p.name+'</div>'
           +'<div style="font-size:12px;color:'+p.color+'">Samsvörun: <strong>'+s.pct+'%</strong> · '+s.got+'/'+s.max+' stig</div>'
@@ -3603,8 +3604,10 @@ function renderStjornCards() {
     var nidSum_A = yrs.reduce((s,d)=>s+d.A.nidurstada,0);
     var nidSum_AB = yrs.reduce((s,d)=>s+d.AB.nidurstada,0);
     var meirihlDots = kt.meirihluti.map(function(pid){
-      return '<span style="display:inline-flex;align-items:center;gap:3px;font-size:11px;padding:2px 8px;border-radius:99px;background:'+pidColor(pid)+'15;color:'+pidColor(pid)+';font-weight:500">'
-        +'<span style="width:6px;height:6px;border-radius:50%;background:'+pidColor(pid)+'"></span>'+pid+'</span>';
+      var p = PARTIES.find(function(x){return x.id===pid;}) || {id:pid, name:pid, color:pidColor(pid)};
+      var badge = PARTY_LOGOS && PARTY_LOGOS[pid] ? renderPartyBadge(p, 18) : '<span style="width:10px;height:10px;border-radius:50%;background:'+pidColor(pid)+'"></span>';
+      return '<span style="display:inline-flex;align-items:center;gap:5px;font-size:11px;padding:3px 8px 3px 3px;border-radius:99px;background:'+pidColor(pid)+'15;color:'+pidColor(pid)+';font-weight:500">'
+        +badge+pid+'</span>';
     }).join(' ');
     var lykilList = isOpen ? '<ul style="margin:.75rem 0 0 1rem;font-size:12px;color:var(--ink);line-height:1.7">'+kt.lykilmal.map(m=>'<li>'+m+'</li>').join('')+'</ul>' : '';
     var yrDetails = isOpen && yrs.length ? '<div style="margin-top:.75rem;padding-top:.75rem;border-top:0.5px solid var(--bdr)">'
