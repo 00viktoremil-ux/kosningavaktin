@@ -390,12 +390,12 @@ header{background:var(--ink);color:var(--white);padding:0 1.5rem;display:flex;al
     <div class="forsida-hero-inner">
       <div class="forsida-intro">
         <div class="forsida-eyebrow">Kosningavaktin · Hlutlaus upplýsingavefur</div>
-        <h1 class="forsida-h1">Borgarstjórnarkosningar<br>Reykjavíkur <em>2026</em></h1>
-        <p class="forsida-subtitle">Allt um framboðin, stefnumálin, kannanirnar og fjármál borgarinnar — á einum stað, byggt á opnum gögnum.</p>
+        <h1 class="forsida-h1" id="forsida-title">Borgarstjórnarkosningar<br>Reykjavíkur <em>2026</em></h1>
+        <p class="forsida-subtitle" id="forsida-subtitle">Allt um framboðin, stefnumálin, kannanirnar og fjármál borgarinnar — á einum stað, byggt á opnum gögnum.</p>
         <div class="forsida-badges">
           <span class="forsida-badge">Hlutlaus efnistök</span>
           <span class="forsida-badge">Uppfært daglega</span>
-          <span class="forsida-badge">11 framboð</span>
+          <span class="forsida-badge" id="forsida-badge-framb">11 framboð</span>
           <span class="forsida-badge">Óháð framboðum</span>
         </div>
       </div>
@@ -409,19 +409,19 @@ header{background:var(--ink);color:var(--white);padding:0 1.5rem;display:flex;al
 
   <div class="forsida-stats-row">
     <div class="forsida-stat">
-      <div class="stat-num">11</div>
+      <div class="stat-num" id="stat-framb">11</div>
       <div class="stat-lbl">framboð</div>
     </div>
     <div class="forsida-stat">
-      <div class="stat-num">460</div>
+      <div class="stat-num" id="stat-cands">460</div>
       <div class="stat-lbl">frambjóðendur</div>
     </div>
     <div class="forsida-stat">
-      <div class="stat-num">23</div>
-      <div class="stat-lbl">borgarfulltrúar kjörnir</div>
+      <div class="stat-num" id="stat-council">23</div>
+      <div class="stat-lbl" id="stat-council-lbl">borgarfulltrúar kjörnir</div>
     </div>
     <div class="forsida-stat">
-      <div class="stat-num">12</div>
+      <div class="stat-num" id="stat-majority">12</div>
       <div class="stat-lbl">þarf til meirihluta</div>
     </div>
   </div>
@@ -506,8 +506,8 @@ header{background:var(--ink);color:var(--white);padding:0 1.5rem;display:flex;al
 <!-- FRAMBJÓÐENDUR -->
 <div id="page-framb" class="page">
   <div class="hero">
-    <h1>Reykjavík 2026 — <em>11 framboð, 460 frambjóðendur</em></h1>
-    <p>Allir frambjóðendur í borgarstjórnarkosningum. Gögn sótt af reykjavik.is.</p>
+    <h1 id="framb-hero-title">Reykjavík 2026 — <em>11 framboð, 460 frambjóðendur</em></h1>
+    <p id="framb-hero-subtitle">Allir frambjóðendur í borgarstjórnarkosningum. Gögn sótt af reykjavik.is.</p>
     <div class="search-row">
       <input id="sq" type="text" placeholder="Leita að nafni eða starfsheiti..." oninput="render()">
       <button onclick="document.getElementById('sq').value='';render()">Hreinsa</button>
@@ -519,7 +519,7 @@ header{background:var(--ink);color:var(--white);padding:0 1.5rem;display:flex;al
       <button class="pbtn active" onclick="setParty('all',this)">
         <div class="pdot" style="background:#888"></div>
         <span class="pname">Allir listar</span>
-        <span class="pcnt">460</span>
+        <span class="pcnt" id="allir-listar-count">460</span>
       </button>
       <div id="plist"></div>
     </div>
@@ -1200,6 +1200,11 @@ async function doLoadNews(replace){
   }catch(e){if(replace)document.getElementById('news-list').innerHTML=`<div class="lmsg">Villa: ${e.message||'Þarf Claude API lykil.'}</div>`;}
 }
 function initPolls(){
+// Aðeins Reykjavík hefur kannanir enn sem komið er. Fyrir önnur sveitarfélög
+// má ekki láta þessa Reykjavíkur-könnun breyta PARTIES (syncParties mutar
+// pct/seats beint á núverandi PARTIES array — annars verða Kópavogs-sætin
+// skrifuð yfir af Reykjavíkur-spá).
+if(CURRENT_MUNI !== 'rvk') return;
 // Kosningakannanir 2025–2026 — öll númer staðfest á Wikipedia (is.wikipedia.org/wiki/Borgarstjórnarkosningar_í_Reykjavík_2026)
 // Kosningaspá Baldurs Héðinssonar (apríl 2026) reiknuð sem vegið meðaltal: 59% Gallup apr + 41% Maskína mar.
 // Sæti eru REIKNUÐ með D'Hondt-aðferð fyrir 23 sæti — ekki geymd fyrirfram.
@@ -1469,7 +1474,8 @@ function parseHash(){
 
 function applyRoute(){
   var r = parseHash();
-  if(r.muni !== CURRENT_MUNI){
+  var muniChanged = r.muni !== CURRENT_MUNI;
+  if(muniChanged){
     // Reynum að skipta yfir í nýtt muni. Ef það er ekki tilbúið, höldum í núverandi.
     if(!loadMuni(r.muni)){
       // Sveitarfélag ekki fyllt út enn — sýnum skilaboð og höldum áfram í núverandi.
@@ -1477,6 +1483,10 @@ function applyRoute(){
       return;
     }
     // Eftir muni-skipti: endurteiknum það sem þarf (polls, page title o.s.frv.)
+    if(typeof rerenderAllForMuni === 'function') rerenderAllForMuni();
+  } else {
+    // Sama muni en hardcoded texti á forsíðu þarf að uppfærast við upphaflega
+    // hleðslu ef t.d. URL-ið er #/kopv/forsida og var kopv núvandi frá upphafi.
     if(typeof rerenderAllForMuni === 'function') rerenderAllForMuni();
   }
   // Fallback á forsida ef síðan er ekki til
@@ -1520,9 +1530,52 @@ function initRouter(){
   window.addEventListener('hashchange', applyRoute);
 }
 
-// Placeholder — fyllist inn í fasa 2 þegar mörg sveitarfélög eru í boði og
-// breytingar á muni þurfa að endurteikna kannanir, töflur o.fl.
-function rerenderAllForMuni(){}
+// Uppfærir texta og tölur á forsíðu, frambjóðenda-síðu og öðrum efnistöxtum
+// þegar skipt er um sveitarfélag. Köllum á þetta eftir að loadMuni hefur
+// endurstillt PARTIES/CANDS o.s.frv. Pages sem þurfa sérstaka render (eins og
+// fjármál) geta enn birt „ekki til" placeholder ef gögnin eru tóm.
+function rerenderAllForMuni(){
+  var m = getMuni();
+  var council = m.councilName.toLowerCase();                 // 'borgarstjórn' / 'bæjarstjórn'
+  var councilMember = m.councilName === 'Borgarstjórn' ? 'borgarfulltrúar' : 'bæjarfulltrúar';
+  var kosnHeiti = m.councilName === 'Borgarstjórn' ? 'Borgarstjórnarkosningar' : 'Bæjarstjórnarkosningar';
+  var majority = Math.floor(m.councilSize/2) + 1;
+
+  // Forsíða — titlar og tölfræði
+  var elTitle = document.getElementById('forsida-title');
+  if(elTitle) elTitle.innerHTML = kosnHeiti+'<br>'+m.name+' <em>2026</em>';
+  var elSub = document.getElementById('forsida-subtitle');
+  if(elSub) elSub.textContent = 'Allt um framboðin, stefnumálin, kannanirnar og fjármál '+m.name.toLowerCase()+' — á einum stað, byggt á opnum gögnum.';
+  var elBadge = document.getElementById('forsida-badge-framb');
+  if(elBadge) elBadge.textContent = PARTIES.length+' framboð';
+  var sf = document.getElementById('stat-framb'); if(sf) sf.textContent = PARTIES.length;
+  var sc = document.getElementById('stat-cands'); if(sc) sc.textContent = CANDS.length;
+  var scu = document.getElementById('stat-council'); if(scu) scu.textContent = m.councilSize;
+  var scuL = document.getElementById('stat-council-lbl'); if(scuL) scuL.textContent = councilMember+' kjörnir';
+  var smj = document.getElementById('stat-majority'); if(smj) smj.textContent = majority;
+
+  // Frambjóðenda-síða (framb) — fyrirsögn
+  var fhT = document.getElementById('framb-hero-title');
+  if(fhT) fhT.innerHTML = m.name+' 2026 — <em>'+PARTIES.length+' framboð, '+CANDS.length+' frambjóðendur</em>';
+  var fhS = document.getElementById('framb-hero-subtitle');
+  if(fhS){
+    var gogn = CURRENT_MUNI === 'rvk' ? 'reykjavik.is' : 'kopavogur.is og vefsíðum framboða';
+    fhS.textContent = 'Allir frambjóðendur í '+council+'arkosningum. Gögn sótt af '+gogn+'.';
+  }
+  var alcnt = document.getElementById('allir-listar-count');
+  if(alcnt) alcnt.textContent = CANDS.length;
+
+  // Haus-statusmiði (grænn dot)
+  var liveEl = document.querySelector('#muni-picker-label');
+  if(liveEl) liveEl.textContent = m.name;
+
+  // Page title
+  document.title = 'Kosningavaktin — '+m.name+' 16. maí 2026';
+
+  // Endurteikna frambjóðenda-listann ef það fall er til staðar
+  try { if(typeof render === 'function') render(); } catch(e){}
+  try { if(typeof renderForsidaPollSummary === 'function') renderForsidaPollSummary(); } catch(e){}
+}
 
 // Opna/loka dropdown-pickerinn.
 function toggleMuniPicker(){
@@ -2949,6 +3002,177 @@ MUNI_DATA.rvk = {
   // Athugasemd: POLLS_RAW er declarað inni í initPolls() og meðhöndlað sérstaklega
   // — polls per sveitarfélag verða bætt við í seinni fasa þegar við höfum kannanir
   // fyrir Kópavog o.s.frv.
+};
+
+// ============================================================================
+// === KÓPAVOGUR — FASI 2 =====================================================
+// ============================================================================
+// 7 framboðslistar 2026: B Framsókn, C Viðreisn, D Sjálfstæði, J Sósíalistar,
+// M Miðflokkur, S Samfylking, V Vinstri grænir og óháðir. Píratar og Vinir
+// Kópavogs (Y 2022) bjóða ekki fram 2026. Bæjarstjóri er Ásdís Kristjánsdóttir
+// (D) frá 31. maí 2022 — fyrsta kona Sjálfstæðisflokks til að gegna því
+// embætti í Kópavogi. Meirihluti: D + B (6 af 11 sætum).
+// Seats dálkurinn sýnir núverandi sæti (byggt á 2022 úrslitum); pct er 0
+// fyrir alla nema þar sem kannanir hafa komið fram (ekki enn fyrir 2026).
+// Heimildir: kopavogur.is, vísir.is, mbl.is, ruv.is, kjarninn.is, og vefir
+// flokkanna (xd.is, framsokn.is, xs.is, vidreisn.is, midflokkurinn.is,
+// sosialistaflokkurinn.is, vg.is).
+var KOPV_RAW = [
+  // B — Framsóknarflokkurinn (Orri V. Hlöðversson, 2 sæti 2022)
+  ['B',1,'Orri V. Hlöðversson','framkvæmdastjóri og bæjarfulltrúi'],
+  ['B',2,'Björg Baldursdóttir','grunnskólastjóri og bæjarfulltrúi'],
+  ['B',3,'Gunnar Sær Ragnarsson','lögfræðingur'],
+  ['B',4,'Svava H. Friðgeirsdóttir','skjalastjóri'],
+  ['B',5,'Heiðdís Geirsdóttir','félagsfræðingur'],
+  ['B',6,'Ásgerður Stefanía Baldursdóttir','forstöðumaður'],
+  ['B',7,'Bergrún Ósk Ólafsdóttir','hönnuður'],
+  ['B',8,'Sveinn Gíslason','rekstrarhagfræðingur'],
+  ['B',9,'Stefán Atli Rúnarsson','ráðgjafi'],
+  ['B',10,'Haukur Thors Einarsson','sálfræðingur'],
+  ['B',11,'Atli Ársælsson','nemi'],
+  ['B',12,'Kristinn Dagur Gissurarson','viðskiptafræðingur'],
+  ['B',13,'Guðrún S. Viggósdóttir','fv. hjúkrunardeildarstjóri'],
+  ['B',14,'Atli Ómarsson','viðskiptafræðingur'],
+  ['B',15,'Þórunn K. Matthíasdóttir','kennslufræðingur og eldri borgari'],
+  ['B',16,'Baldur Þór Baldvinsson','eldri borgari og húsasmíðameistari'],
+  ['B',17,'Díana Íva Gunnarsdóttir','stílisti'],
+  ['B',18,'Einar Gunnar Bollason','fyrrum kennari og fyrrum framkvæmdastjóri'],
+  ['B',19,'Margrét Sigmundsdóttir','lífsþjálfi'],
+  ['B',20,'Sigrún Hulda Jónsdóttir','deildarstjóri'],
+  ['B',21,'Willum Þór Þórsson','forseti ÍSÍ, fv. ráðherra og þingmaður'],
+  ['B',22,'Birkir Jón Jónsson','fv. bæjarfulltrúi og fyrrum alþingismaður'],
+  // C — Viðreisn (María Ellen Steingrímsdóttir, 1 sæti 2022). Aðeins 3 efstu
+  // + 10 staðfest opinberlega; fullur listi fylgir síðar.
+  ['C',1,'María Ellen Steingrímsdóttir','oddviti Viðreisnar í Kópavogi'],
+  ['C',2,'Pétur Björgvin Sveinsson','frambjóðandi'],
+  ['C',3,'Arnar Grétarsson','frambjóðandi'],
+  ['C',10,'Sigurlín Margrét Sigurðardóttir','frambjóðandi'],
+  // D — Sjálfstæðisflokkurinn (Ásdís Kristjánsdóttir — bæjarstjóri, 4 sæti 2022)
+  ['D',1,'Ásdís Kristjánsdóttir','bæjarstjóri'],
+  ['D',2,'Hjördís Ýr Johnson','bæjarfulltrúi'],
+  ['D',3,'Andri Steinn Hilmarsson','bæjarfulltrúi'],
+  ['D',4,'Elísabet Sveinsdóttir','bæjarfulltrúi'],
+  ['D',5,'Guðmundur Jóhann Jónsson','fyrrv. forstjóri'],
+  ['D',6,'Hildur Einarsdóttir','sölu- og markaðsstjóri'],
+  ['D',7,'Karen Rúnarsdóttir','lögfræðingur'],
+  ['D',8,'Kristinn Jakobsson','framkvæmdastjóri og fyrrv. knattspyrnudómari'],
+  ['D',9,'Sigrún Bjarnadóttir','skólastjóri'],
+  ['D',10,'Leifur Andri Leifsson','sölustjóri'],
+  ['D',11,'Ragna Klara Magnúsdóttir','viðskipta- og sölustjóri'],
+  ['D',12,'Guðný Svandís Guðjónsdóttir','grunnskólakennari'],
+  ['D',13,'Jóhann Sveinn Friðleifsson','viðskiptafræðingur'],
+  ['D',14,'Arnór Aðalsteinsson','grunnskólakennari'],
+  ['D',15,'Berglind Haraldsdóttir','verkefnastjóri og flugfreyja'],
+  ['D',16,'Þorsteinn Vilhelmsson','fyrrv. skipstjóri'],
+  ['D',17,'Helga Guðrún Jónasdóttir','samskiptastjóri'],
+  ['D',18,'Kristófer Breki Halldórsson','viðskiptafræðinemi og formaður Vöku'],
+  ['D',19,'Haukur Már Hauksson','verkstjóri'],
+  ['D',20,'Birgir Ari Óskarsson','viðskiptafræðinemi'],
+  ['D',21,'Jón Atli Kristjánsson','fyrrv. ráðgjafi'],
+  ['D',22,'Sólveig G. Pétursdóttir','fyrrv. ráðherra og forseti Alþingis'],
+  // J — Sósíalistaflokkur Íslands (Markús Candi, 0 sæti 2022 — nýtt framboð).
+  // Aðeins 3 efstu staðfest opinberlega; fullur listi fylgir síðar.
+  ['J',1,'Markús Candi','stuðningsfulltrúi og leikjahönnuður'],
+  ['J',2,'Anna Ceridwen Auðnudóttir','stuðningsfulltrúi og listasögunemi'],
+  ['J',3,'Marzuk Ingi Lamsiah Svanlaugar','tölvunarfræðingur'],
+  // M — Miðflokkurinn (Einar Jóhannes Guðnason, 0 sæti 2022 — nýtt framboð)
+  ['M',1,'Einar Jóhannes Guðnason','rekstrar- og sölustjóri og varaþingmaður'],
+  ['M',2,'Nína Berglind Sigurgeirsdóttir','leikskólastjóri og hlaupaþjálfari'],
+  ['M',3,'Beitir Ólafsson','byggingaverktaki og fv. fótboltamaður'],
+  ['M',4,'Thelma Bergmann Árnadóttir','atvinnurekandi'],
+  ['M',5,'Trausti Örn Þórðarson','lögfræðingur'],
+  ['M',6,'Ævar Örn Jóhannsson','fasteignasali'],
+  ['M',7,'Una María Óskarsdóttir','uppeldis-, menntunar- og lýðheilsufræðingur'],
+  ['M',8,'Guðmundur Pétur Pálsson','Microsoft hönnuður'],
+  ['M',9,'Eva Guðrún Hilmarsdóttir','framleiðslumaður'],
+  ['M',10,'Högni Guðmundsson','múrarameistari'],
+  ['M',11,'Inga Jóna Gunnarsdóttir','eldri borgari'],
+  ['M',12,'Kolbeinn Sturla Baldursson','sölumaður'],
+  ['M',13,'Anna Pétursdóttir','húsvörður'],
+  ['M',14,'Matthildur Skúladóttir','atvinnurekandi'],
+  ['M',15,'Sigurður Bjarni Jónsson','flugstjóri'],
+  ['M',16,'Guðrún Stefánsdóttir','sjúkraliði'],
+  ['M',17,'Magnús Valur Böðvarsson','golfvallasérfræðingur'],
+  ['M',18,'Alda Viggósdóttir','eldri borgari'],
+  ['M',19,'Ásgeir Önundarson','skoðunarmaður'],
+  ['M',20,'Kristján Atli Marteinsson','íþróttakennari og knattspyrnumaður'],
+  ['M',21,'Einar Baldursson','kennari'],
+  ['M',22,'Ragnheiður Brynjólfsdóttir','framkvæmdastjóri'],
+  // S — Samfylkingin (Jónas Már Torfason, 1 sæti 2022)
+  ['S',1,'Jónas Már Torfason','lögfræðingur'],
+  ['S',2,'Eydís Inga Valsdóttir','sérfræðingur hjá Rannís'],
+  ['S',3,'Hákon Gunnarsson','sérfræðingur í stefnumótun'],
+  ['S',4,'Sólveig Skaftadóttir','verkefnastjóri stjórnsýslu hjá Reykjavíkurborg'],
+  ['S',5,'Orri Thor Eggertsson','nemi í rekstrarverkfræði og stjórnarmaður Taekwondofélagi Kópavogs'],
+  ['S',6,'Hildur María Friðriksdóttir','frambjóðandi'],
+  ['S',7,'Örn Arnarson','kennari og formaður Samleiks'],
+  ['S',8,'Mirabela Blaga','fasteignasali'],
+  ['S',9,'Björn Þór Rögnvaldsson','lögfræðingur'],
+  ['S',10,'Sólveig Jóhannesdóttir Larsen','nemi í stjórnmálafræði'],
+  ['S',11,'Sigurður Kári Harðarson','nemi við lýðháskóla'],
+  ['S',12,'Friðmey Jónsdóttir','deildarstjóri félagsmiðstöðva og fyrrverandi framkvæmdastjóri Samfés'],
+  ['S',13,'Kristján Bjarnar Ólafsson','hagfræðingur hjá FSRE'],
+  ['S',14,'Margrét Tryggvadóttir','formaður Rithöfundasambands Íslands'],
+  ['S',15,'Jón Júlíusson','formaður GKG og fyrrverandi bæjarfulltrúi'],
+  ['S',16,'Ingunn S. Unnsteinsdóttir Kristensen','Dr. í sálfræði, Opni háskólinn HR'],
+  ['S',17,'Ingi Hafliði Guðjónsson','matvinnslumaður og viðskiptafræðingur'],
+  ['S',18,'Heiða Björk Þórbergsdóttir','framkvæmdastjóri'],
+  ['S',19,'Erlendur Geirdal','tæknifræðingur'],
+  ['S',20,'Kristín Sævarsdóttir','vörustjóri'],
+  ['S',21,'Bergljót Kristinsdóttir','bæjarfulltrúi'],
+  ['S',22,'Rannveig Guðmundsdóttir','fyrrum ráðherra og bæjarfulltrúi'],
+  // V — Vinstri grænir og óháðir (Anna Sigríður Hafliðadóttir, 0 sæti 2022 — nýtt í Kópavogi).
+  // Aðeins 4 efstu staðfest opinberlega; fullur listi fylgir síðar.
+  ['V',1,'Anna Sigríður Hafliðadóttir','formaður Vinstri grænna'],
+  ['V',2,'Bjarki Valberg','skipulagsfulltrúi'],
+  ['V',3,'Kjartan Sveinn Guðmundsson','laganemi'],
+  ['V',4,'Védís Einarsdóttir','iðnnemi']
+];
+
+MUNI_DATA.kopv = {
+  parties: [
+    // Núverandi sæti byggt á 2022 úrslitum. Heildarfylgi (pct) er ekki til staðar
+    // fyrir 2026 — engar kannanir birtar enn. Pct 0 = „óþekkt"; UI á að birta
+    // „engar kannanir" í stað stöpla á meðan.
+    {id:'B', name:'Framsóknarflokkurinn',         color:'#1E8A3E', pct:0, seats:2},
+    {id:'C', name:'Viðreisn',                     color:'#D84315', pct:0, seats:1},
+    {id:'D', name:'Sjálfstæðisflokkurinn',        color:'#1565C0', pct:0, seats:4},
+    {id:'J', name:'Sósíalistaflokkur Íslands',    color:'#B71C1C', pct:0, seats:0},
+    {id:'M', name:'Miðflokkurinn',                color:'#6A1B9A', pct:0, seats:0},
+    {id:'S', name:'Samfylkingin',                 color:'#C62828', pct:0, seats:1},
+    {id:'V', name:'Vinstri grænir og óháðir',     color:'#2E7D32', pct:0, seats:0}
+  ],
+  rawCands: KOPV_RAW,
+  photos: {},   // bætt við í fasa 2b með myndum af oddvitum
+  bios: {},     // æviágrip fylgja í fasa 2c
+  partyInfo: {
+    B: { fullname:'Framsóknarflokkurinn', ideology:'Miðja, búnaðarstefna', founded:1916 },
+    C: { fullname:'Viðreisn',             ideology:'Frjálslyndi, miðja',    founded:2016 },
+    D: { fullname:'Sjálfstæðisflokkurinn',ideology:'Miðju-hægri, frjálslyndir markaðir', founded:1929 },
+    J: { fullname:'Sósíalistaflokkur Íslands', ideology:'Vinstri, sósíalismi', founded:2017 },
+    M: { fullname:'Miðflokkurinn',        ideology:'Miðju-hægri, þjóðernisleg áhersla', founded:2017 },
+    S: { fullname:'Samfylkingin',         ideology:'Miðju-vinstri, jafnaðarstefna', founded:2000 },
+    V: { fullname:'Vinstri grænir og óháðir', ideology:'Vinstri, umhverfissinnar', founded:1999 }
+  },
+  stefnumal: {},          // fyllist inn í fasa 2c
+  sattmali2022: null,      // meirihlutasáttmáli D+B 2022 bætist við síðar
+  finance: [],             // fjárhagsgögn Kópavogs bætast við í fasa 2d
+  budgets: {},
+  finance2025Partial: null,
+  kjortimabil: [
+    {
+      titill: '2022–2026',
+      bst: 'Ásdís Kristjánsdóttir (D)',
+      meirihluti: ['D','B'],
+      ar: [2022,2023,2024,2025],
+      lykilmal: [
+        'D+B samstarf með 6 af 11 sætum (D=4, B=2)',
+        'Ásdís Kristjánsdóttir (D) varð fyrsta konan til að gegna bæjarstjóraembætti fyrir Sjálfstæðisflokkinn í Kópavogi — tók við 31. maí 2022',
+        'Formaður bæjarráðs úr Framsókn samkvæmt samstarfssamkomulagi',
+        'Skattalækkun boðuð í fjárhagsáætlun 2026 (3,7 ma. kr.) en rekstur með halla'
+      ]
+    }
+  ]
 };
 
 // loadMuni — endurstillir allar top-level breytur úr MUNI_DATA[id].
