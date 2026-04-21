@@ -5487,6 +5487,42 @@ function malaflokkPerIbuar(muniId, key){
   return Math.abs(v) * 1e9 / ibuar / 1000; // þús.kr/íbúa
 }
 
+// Lýðfræðigögn 1. janúar 2025 — Hagstofa Íslands (MAN02005, breytt aðferðafræði 2024).
+// ungBorn (1-5 ára) = u.þ.b. leikskólamögulegir; flestir á þessum aldri eru á leikskóla.
+// grunnskBorn (6-15 ára) = nánast allir í grunnskóla (skólaskylda). eldri = 67 ára og eldri.
+// Heimild: px.hagstofa.is/pxis/api/v1/is/Ibuar/mannfjoldi/2_byggdir/sveitarfelog/MAN02005.px
+var DEMO_2025 = {
+  rvk:  {ungBorn: 7685, grunnskBorn:15674, eldri:18069, ibuar:138772},
+  kopv: {ungBorn: 2441, grunnskBorn: 5120, eldri: 6041, ibuar: 40040},
+  hafn: {ungBorn: 1980, grunnskBorn: 4211, eldri: 3802, ibuar: 31525},
+  gard: {ungBorn: 1497, grunnskBorn: 2617, eldri: 2981, ibuar: 20116},
+  mos:  {ungBorn:  949, grunnskBorn: 1895, eldri: 1602, ibuar: 13715},
+  selt: {ungBorn:  276, grunnskBorn:  638, eldri:  799, ibuar:  4585}
+};
+
+// Útgjöld í fræðslumál / (ungBorn + grunnskBorn) = kr. á hvern grunnskóla- og
+// leikskólanemanda (nálgun — 1-5 ára eru ekki allir á leikskóla en flestir, og
+// 6-15 ára eru nánast allir í grunnskóla vegna skólaskyldu).
+function malaflokkPerNemanda(muniId){
+  var malafl = MALAFLOKKAR_2024[muniId];
+  var demo = DEMO_2025[muniId];
+  if(!malafl || !demo || malafl.fradsluMal == null) return null;
+  var nemendur = (demo.ungBorn || 0) + (demo.grunnskBorn || 0);
+  if(!nemendur) return null;
+  return Math.abs(malafl.fradsluMal) * 1e9 / nemendur / 1000; // þús.kr/nemanda
+}
+
+// Útgjöld í félagsþjónustu / fjöldi eldri borgara = nálgun á kr. á eldri borgara.
+// ATH: félagsþjónusta inniheldur líka málefni fatlaðra, barnaverndar, fjárhags-
+// aðstoð o.fl. — þetta er „byrði" flokksins á hvern eldri borgara en ekki
+// raunveruleg greiðsla til hans.
+function malaflokkPerEldri(muniId){
+  var malafl = MALAFLOKKAR_2024[muniId];
+  var demo = DEMO_2025[muniId];
+  if(!malafl || !demo || malafl.felagsMal == null || !demo.eldri) return null;
+  return Math.abs(malafl.felagsMal) * 1e9 / demo.eldri / 1000; // þús.kr/eldri borgara
+}
+
 function samanbExtractRow(muniId){
   var d = MUNI_DATA[muniId];
   if(!d) return null;
@@ -5551,7 +5587,10 @@ function samanbExtractRow(muniId){
     umhverfiAibua:  malaflokkPerIbuar(muniId, 'umhverfis'),
     samgonguAibua:  malaflokkPerIbuar(muniId, 'samgongur'),
     skipulagAibua:  malaflokkPerIbuar(muniId, 'skipulag'),
-    sameiginAibua:  malaflokkPerIbuar(muniId, 'sameiginl')
+    sameiginAibua:  malaflokkPerIbuar(muniId, 'sameiginl'),
+    // NÝTING (þjónusta per viðtakanda) — Hagstofa lýðfræði 1. jan. 2025.
+    fradsluPerNemandi: malaflokkPerNemanda(muniId),   // fræðslumál / (ung+grunnsk börn)
+    felagsPerEldri:    malaflokkPerEldri(muniId)      // félagsþjónusta / 67+
   };
 }
 
@@ -5614,7 +5653,12 @@ var SAMANB_METRICS = [
   {id:'umhverfiAibua',  label:'Umhverfismál á íbúa',     unit:'þús.kr/íbúa', lowerBetter:false, desc:'Útgjöld í umhverfismál (sorphirða, fráveita, náttúruvernd, skógrækt) á hvern íbúa.',                                                                                                                     hasTrend:false, group:'thjonusta'},
   {id:'samgonguAibua',  label:'Samgöngur og umferð á íbúa', unit:'þús.kr/íbúa', lowerBetter:false, desc:'Útgjöld í umferðar- og samgöngumál (götur, viðhald, ljós, snjómokstur) á hvern íbúa.',                                                                                                                hasTrend:false, group:'thjonusta'},
   {id:'skipulagAibua',  label:'Skipulags- og byggingarmál á íbúa', unit:'þús.kr/íbúa', lowerBetter:false, desc:'Útgjöld í skipulags- og byggingarmál (deiliskipulag, byggingarleyfi, eftirlit) á hvern íbúa.',                                                                                                hasTrend:false, group:'thjonusta'},
-  {id:'sameiginAibua',  label:'Stjórnsýsla á íbúa',      unit:'þús.kr/íbúa', lowerBetter:true,  desc:'Útgjöld í sameiginlegan kostnað (bæjarstjórn, kjörnir fulltrúar, yfirstjórn, ráðgjöf, sameiginleg þjónusta). Lægra = minni yfirbygging.',                                                               hasTrend:false, group:'thjonusta'}
+  {id:'sameiginAibua',  label:'Stjórnsýsla á íbúa',      unit:'þús.kr/íbúa', lowerBetter:true,  desc:'Útgjöld í sameiginlegan kostnað (bæjarstjórn, kjörnir fulltrúar, yfirstjórn, ráðgjöf, sameiginleg þjónusta). Lægra = minni yfirbygging.',                                                               hasTrend:false, group:'thjonusta'},
+  // NÝTING — hve mikil þjónusta í hlutfalli við viðtakendahóp. Hærra = meiri
+  // útgjöld í hvern viðtakanda, sem getur þýtt betri þjónustu eða óhagkvæmari
+  // rekstur — kjósandi metur sjálfur.
+  {id:'fradsluPerNemandi', label:'Fræðslumál á nemanda',    unit:'þús.kr/nem.',   lowerBetter:false, desc:'Útgjöld í fræðslu- og uppeldismál deilt með fjölda ungra barna (1-5 ára) og grunnskóla-nemenda (6-15 ára). Hærra = meira eytt í hvern nemanda. Mælir þjónustu-dýpt óháð fólksfjölgun. Heimild: Hagstofa Íslands (MAN02005, 1. jan. 2025) og PDF-ársreikningar 2024.', hasTrend:false, group:'nyting'},
+  {id:'felagsPerEldri',    label:'Félagsþjónusta á eldri',  unit:'þús.kr/67+',    lowerBetter:false, desc:'Útgjöld í félagsþjónustu deilt með fjölda eldri borgara (67+). ATH: félagsþjónusta inniheldur líka málefni fatlaðs fólks, barnavernd og fjárhagsaðstoð — þetta er því „kostnaður flokks á hvern eldri borgara" en ekki raunveruleg greiðsla til þeirra.', hasTrend:false, group:'nyting'}
 ];
 
 var _samanbRows = null;
