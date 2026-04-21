@@ -3699,11 +3699,12 @@ function renderFinancePlaceholder(){
     +'<div style="font-family:\'Playfair Display\',serif;font-size:22px;color:#854F0B;margin-bottom:8px;">Fjármálagögn '+m.name+' koma von bráðar</div>'
     +'<div style="font-size:13px;color:var(--ink2);line-height:1.6;">Ársreikningar '+m.name+' 2015–2024 og bráðabirgðatölur 2025 bætast við í næsta áfanga. Fjárhagsáætlun 2026 var samþykkt í '+raadLower+' og inniheldur bæði skattalækkun og hallarekstur — úthugsuð greining fylgir síðar.</div>'
     +'</div>';
-  ['stuttu-content','itarlegt-content','aaetlun-content','borgarstjornir-content'].forEach(function(id){
+  // Skrifum placeholder beint inn í öll flipatól og földum hardcoded RVK-texta
+  ['fintab-stuttu','fintab-yfirlit','fintab-aaetlun','fintab-stjorn','fintab-sundur','fintab-leidretting','fintab-ai'].forEach(function(id){
     var el = document.getElementById(id);
     if(el) el.innerHTML = msg;
   });
-  // Flet nnur content-svæði
+  // Földum 2025-banner og falsar
   var banner = document.getElementById('fin-2025-banner');
   if(banner) banner.style.display = 'none';
 }
