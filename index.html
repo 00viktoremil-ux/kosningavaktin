@@ -459,7 +459,7 @@ header{background:var(--ink);color:var(--white);padding:0 1.5rem;display:flex;al
       <button class="nav-card" onclick="goPage('framb')">
         <div class="nav-card-icon">▦</div>
         <div class="nav-card-title">Frambjóðendur</div>
-        <div class="nav-card-desc">460 einstaklingar í framboði á 11 listum. Leitaðu eftir nafni, starfi eða flokki.</div>
+        <div class="nav-card-desc" id="nav-card-framb-desc">460 einstaklingar í framboði á 11 listum. Leitaðu eftir nafni, starfi eða flokki.</div>
       </button>
       <button class="nav-card" onclick="goPage('flokkar')">
         <div class="nav-card-icon">◫</div>
@@ -536,16 +536,7 @@ header{background:var(--ink);color:var(--white);padding:0 1.5rem;display:flex;al
   <div class="news-page">
     <h2>Fréttavakt</h2>
     <p class="sub">Fréttir úr íslenskum miðlum — RÚV, Vísi, Mbl, DV, Heimildinni og Viljanum — sóttar beint úr RSS. Uppfærast sjálfkrafa á 10 mínútna fresti.</p>
-    <div class="news-filters">
-      <button class="nfbtn active" onclick="loadNews('kosningar Reykjavík 2026',this)">Allt</button>
-      <button class="nfbtn" onclick="loadNews('Sanna Magdalena Mörtudóttir Vinstrið Reykjavík 2026',this)">A · Vinstrið</button>
-      <button class="nfbtn" onclick="loadNews('Einar Þorsteinsson Framsókn borgarstjórnarkosningar 2026',this)">B · Framsókn</button>
-      <button class="nfbtn" onclick="loadNews('Björg Magnúsdóttir Viðreisn Reykjavík 2026',this)">C · Viðreisn</button>
-      <button class="nfbtn" onclick="loadNews('Hildur Björnsdóttir Sjálfstæðisflokkur Reykjavík 2026',this)">D · Sjálfstæðisflokkur</button>
-      <button class="nfbtn" onclick="loadNews('Ari Edwald Miðflokkur Reykjavík 2026',this)">M · Miðflokkur</button>
-      <button class="nfbtn" onclick="loadNews('Kristinn Jón Ólafsson Píratar Reykjavík 2026',this)">P · Píratar</button>
-      <button class="nfbtn" onclick="loadNews('Pétur Marteinsson Heiða Björg Samfylkingin Reykjavík 2026',this)">S · Samfylkingin</button>
-    </div>
+    <div class="news-filters" id="news-filters"></div>
     <div id="news-list"><div class="lmsg">Smelltu á flokk til að sækja fréttir.</div></div>
     <button id="loadMoreNews" style="display:none" onclick="loadMoreNews()">Sækja fleiri fréttir ↓</button>
   </div>
@@ -1156,7 +1147,9 @@ async function fetchCandNews(c, el){
 async function fetchCandNewsAI(c, el){
   el.innerHTML = '<div class="lmsg">Claude leitar ítarlegar…</div>';
   try {
-    const txt = await aiCall('Finndu 3-5 nýlegar fréttir eða greinar um '+c.name+', nr. '+c.num+' á '+gP(c.party).name+' lista í borgarstjórnarkosningum Reykjavíkur 2026. Svaraðu EINUNGIS með JSON fylki: [{"source":"miðill","title":"fyrirsögn","date":"dagsetning","url":"slóð","summary":"ein setning"}]', true);
+    var _mm = getMuni();
+    var _mraad = _mm.councilName.toLowerCase();
+    const txt = await aiCall('Finndu 3-5 nýlegar fréttir eða greinar um '+c.name+', nr. '+c.num+' á '+gP(c.party).name+' lista í '+_mraad+'arkosningum '+_mm.name+' 2026. Svaraðu EINUNGIS með JSON fylki: [{"source":"miðill","title":"fyrirsögn","date":"dagsetning","url":"slóð","summary":"ein setning"}]', true);
     const news = parseJSON(txt);
     if(news && news.length){
       el.innerHTML = '<div class="aibadge">Claude AI · vefleit</div>'
@@ -1175,7 +1168,9 @@ async function fetchCandNewsAI(c, el){
 }
 async function fetchAI(c,el){
   try{
-    const txt=await aiCall(`Skrifaðu 3-4 setningar á íslensku um ${c.name}, ${c.title}, nr.${c.num} á ${gP(c.party).name} lista í borgarstjórnarkosningum Reykjavíkur 2026. Vertu hlutlæg/ur og fræðileg/ur.`,true);
+    var _mm2 = getMuni();
+    var _mraad2 = _mm2.councilName.toLowerCase();
+    const txt=await aiCall(`Skrifaðu 3-4 setningar á íslensku um ${c.name}, ${c.title}, nr.${c.num} á ${gP(c.party).name} lista í ${_mraad2}arkosningum ${_mm2.name} 2026. Vertu hlutlæg/ur og fræðileg/ur.`,true);
     el.innerHTML=`<div class="aibadge">Claude AI</div><div style="font-size:13px;line-height:1.7">${txt}</div>`;
   }catch(e){el.innerHTML=`<div class="lmsg">Villa: ${e.message||'Þarf Claude API lykil.'}</div>`;}
 }
@@ -1251,9 +1246,10 @@ let POLLS_RAW=[
    note:'Elsta könnun í safninu. S með 28,1% — hámarksmæling Samfylkingar.'}
 ];
 
-// D'Hondt-aðferð fyrir 23 sæta borgarstjórn. Engir þröskuldar í sveitarstjórnarkosningum.
+// D'Hondt-aðferð. Engir þröskuldar í sveitarstjórnarkosningum. Default-sætafjöldi
+// tekur mið af núverandi sveitarfélagi (Reykjavík:23, Kópavogur:11, o.s.frv.).
 function dhondt(data, totalSeats){
-  totalSeats = totalSeats || 23;
+  totalSeats = totalSeats || (typeof getMuni === 'function' ? getMuni().councilSize : 23);
   var divs = [];
   Object.keys(data).forEach(function(p){
     var v = data[p];
@@ -1351,16 +1347,19 @@ function toggleP(id){if(toggled.has(id))toggled.delete(id);else toggled.add(id);
 function updateBuilder(){
   const sel=PARTIES.filter(p=>toggled.has(p.id));
   const seats=sel.reduce((s,p)=>s+p.seats,0);
-  document.getElementById('builder-bar').innerHTML=sel.map(p=>`<div class="builder-seg" style="width:${Math.round((p.seats/23)*100)}%;background:${p.color}"></div>`).join('');
-  const isMaj=seats>=12;
-  document.getElementById('builder-stats').innerHTML=`<div class="bstat"><strong>${seats}</strong> sæti</div><div class="bstat" style="color:var(--ink3)">af 23</div><div class="bstat-result ${isMaj?'majority':'minority'}" style="margin-left:auto">${isMaj?'Meirihluti ✓':'Vantar '+(12-seats)+' sæti ✗'}</div>`;
+  var _m=getMuni(), _csz=_m.councilSize, _maj=Math.floor(_csz/2)+1;
+  document.getElementById('builder-bar').innerHTML=sel.map(p=>`<div class="builder-seg" style="width:${Math.round((p.seats/_csz)*100)}%;background:${p.color}"></div>`).join('');
+  const isMaj=seats>=_maj;
+  document.getElementById('builder-stats').innerHTML=`<div class="bstat"><strong>${seats}</strong> sæti</div><div class="bstat" style="color:var(--ink3)">af ${_csz}</div><div class="bstat-result ${isMaj?'majority':'minority'}" style="margin-left:auto">${isMaj?'Meirihluti ✓':'Vantar '+(_maj-seats)+' sæti ✗'}</div>`;
 }
 async function loadCoalitionAI(){
   const el=document.getElementById('coalition-ai');
   el.innerHTML=`<div class="lmsg">Claude greinir samstarfsmöguleika...</div>`;
   try{
     const sum=PARTIES.filter(p=>p.seats>0).map(p=>`${p.name}: ${p.seats} sæti`).join(', ');
-    const txt=await aiCall(`Greindu samstarfsmöguleika í borgarstjórn Reykjavíkur eftir 16. maí 2026 (23 sæti, þarf 12). Sæti: ${sum}. Vitað er að Framsókn mun ekki fara í samstarf með Samfylkinguna. Útskýrðu 3-4 líklegar borgarstjórnarmyndir á íslensku.`,true);
+    var m=getMuni(), csz=m.councilSize, maj=Math.floor(csz/2)+1;
+    var raadLower=m.councilName.toLowerCase(); // borgarstjórn / bæjarstjórn
+    const txt=await aiCall(`Greindu samstarfsmöguleika í ${raadLower} ${m.name} eftir 16. maí 2026 (${csz} sæti, þarf ${maj}). Sæti: ${sum}. Útskýrðu 3-4 líklegar ${raadLower}armyndir á íslensku.`,true);
     el.innerHTML=`<div class="aibadge">Claude AI · Greining</div><div style="font-size:13px;line-height:1.8">${txt}</div>`;
   }catch(e){el.innerHTML=`<div class="lmsg">Villa: ${e.message||'Þarf Claude API lykil.'}</div>`;}
 }
@@ -1401,11 +1400,23 @@ function groupOfPage(pageId){
   return NAV_GROUPS[0];
 }
 
+// Skiptir út Reykjavík-sértækum orðum í nav-label fyrir bæjarstjórnir
+// (kopv, hafn, gard, mos, selt) — „Borgarstjórnir" → „Bæjarstjórnir",
+// „Fjármál borgar" → „Fjármál bæjar" o.s.frv.
+function muniLabel(label){
+  if(CURRENT_MUNI === 'rvk') return label;
+  return label
+    .replace(/Borgarstjórnir/g, 'Bæjarstjórnir')
+    .replace(/Borgarstjórn/g,   'Bæjarstjórn')
+    .replace(/borgarstjórn/g,   'bæjarstjórn')
+    .replace(/Fjármál borgar/g, 'Fjármál bæjar')
+    .replace(/borgar(?!stj|lí)/g,'bæjar'); // generic „borgar" → „bæjar" nema í „borgarstj" eða „borgarlína"
+}
 function renderTopnav(){
   var main = document.getElementById('topnav-main');
   if(!main) return;
   main.innerHTML = NAV_GROUPS.map(function(g){
-    return '<button class="tnav" data-group="'+g.id+'" onclick="showGroup(\''+g.id+'\')"><span class="tnav-icon">'+g.icon+'</span>'+g.label+'</button>';
+    return '<button class="tnav" data-group="'+g.id+'" onclick="showGroup(\''+g.id+'\')"><span class="tnav-icon">'+g.icon+'</span>'+muniLabel(g.label)+'</button>';
   }).join('');
 }
 
@@ -1437,7 +1448,7 @@ function showPage(id, btn){
     if(group.pages.length > 1){
       sub.classList.remove('empty');
       sub.innerHTML = group.pages.map(function(p){
-        return '<button class="subnav-btn'+(p.id===id?' active':'')+'" onclick="showPage(\''+p.id+'\')">'+p.label+'</button>';
+        return '<button class="subnav-btn'+(p.id===id?' active':'')+'" onclick="showPage(\''+p.id+'\')">'+muniLabel(p.label)+'</button>';
       }).join('');
     } else {
       sub.classList.add('empty');
@@ -1530,6 +1541,31 @@ function initRouter(){
   window.addEventListener('hashchange', applyRoute);
 }
 
+// Setur upphaflega HTML-efnið í muni-sértæku DOM til að hægt sé að endurskapa
+// „ósnert" útgáfu af hverri síðu þegar muni er breytt til baka. Kallað einu
+// sinni við upphaf.
+var _PAGE_SNAPSHOTS = {};
+function snapshotPages(){
+  ['page-kannanir','page-flokkar','page-fjarmal','page-borgar','page-stefnuprof'].forEach(function(id){
+    var el = document.getElementById(id);
+    if(el && _PAGE_SNAPSHOTS[id] === undefined) _PAGE_SNAPSHOTS[id] = el.innerHTML;
+  });
+}
+function restorePageSnapshot(id){
+  var el = document.getElementById(id);
+  if(el && _PAGE_SNAPSHOTS[id] !== undefined) el.innerHTML = _PAGE_SNAPSHOTS[id];
+}
+
+// Setur „kemur von bráðar"-skilaboð inn á alla síðu þegar viðkomandi gögn vantar.
+function setPagePlaceholder(pageId, title, subtitle){
+  var el = document.getElementById(pageId);
+  if(!el) return;
+  el.innerHTML = '<div style="max-width:560px;margin:3rem auto;padding:2rem;background:#FFF8E1;border:0.5px solid #854F0B40;border-radius:12px;text-align:center;">'
+    +'<div style="font-family:\'Playfair Display\',serif;font-size:22px;color:#854F0B;margin-bottom:8px;">'+title+'</div>'
+    +'<div style="font-size:13px;color:var(--ink2);line-height:1.6;">'+subtitle+'</div>'
+    +'</div>';
+}
+
 // Uppfærir texta og tölur á forsíðu, frambjóðenda-síðu og öðrum efnistöxtum
 // þegar skipt er um sveitarfélag. Köllum á þetta eftir að loadMuni hefur
 // endurstillt PARTIES/CANDS o.s.frv. Pages sem þurfa sérstaka render (eins og
@@ -1565,6 +1601,27 @@ function rerenderAllForMuni(){
   var alcnt = document.getElementById('allir-listar-count');
   if(alcnt) alcnt.textContent = CANDS.length;
 
+  // Fjármála-síðan — titill og undirtexti
+  var finT = document.getElementById('fjarmal-title');
+  if(finT){
+    if(CURRENT_MUNI === 'rvk') finT.textContent = 'Fjármál Reykjavíkurborgar 2015–2025';
+    else finT.textContent = 'Fjármál '+m.name+' 2015–2025';
+  }
+  var finS = document.getElementById('fjarmal-subtitle');
+  if(finS){
+    if(CURRENT_MUNI === 'rvk'){
+      finS.textContent = 'Tölur úr opinberum ársreikningum borgarinnar. Skipt upp í A-hluta (aðalsjóður + eignasjóður) og samstæðu A+B (inniheldur OR, Félagsbústaði, Faxaflóahafnir o.fl.). Raunvirði (á verðlagi 2024) má virkja í sundurliðun.';
+    } else {
+      finS.textContent = 'Tölur úr opinberum ársreikningum '+m.name.toLowerCase()+'. Skipt upp í A-hluta (aðalsjóður) og samstæðu A+B (inniheldur bæjarfyrirtæki). Ársreikningar eru í vinnslu fyrir þetta sveitarfélag.';
+    }
+  }
+  // Fjármála-síðuflipanna merkimiði „Borgarstjórnir" → „Bæjarstjórnir"
+  document.querySelectorAll('#fin-tabs .vtab').forEach(function(b){
+    if(b.textContent.trim() === 'Borgarstjórnir' || b.textContent.trim() === 'Bæjarstjórnir'){
+      b.textContent = (CURRENT_MUNI === 'rvk') ? 'Borgarstjórnir' : 'Bæjarstjórnir';
+    }
+  });
+
   // Haus-statusmiði (grænn dot)
   var liveEl = document.querySelector('#muni-picker-label');
   if(liveEl) liveEl.textContent = m.name;
@@ -1572,9 +1629,68 @@ function rerenderAllForMuni(){
   // Page title
   document.title = 'Kosningavaktin — '+m.name+' 16. maí 2026';
 
-  // Endurteikna frambjóðenda-listann ef það fall er til staðar
+  // Kannanir / stefnupróf / borgarstjórnir — sýnum placeholder ef gögn vantar
+  // fyrir núverandi muni. Fyrir rvk endurheimum upphafs-snapshot.
+  var hasPolls = (CURRENT_MUNI === 'rvk'); // POLLS er enn aðeins skráð fyrir rvk
+  var hasStefnumal = STEFNUMAL && Object.keys(STEFNUMAL).length > 0;
+  var hasFinance = FINANCE && FINANCE.length > 0;
+
+  if(!hasPolls){
+    setPagePlaceholder('page-kannanir',
+      'Kannanir í '+m.name+' koma von bráðar',
+      'Engar kannanir hafa enn verið birtar fyrir '+council+'arkosningar í '+m.name+' 2026. Vefurinn sækir kannanir sjálfvirkt þegar þær birtast.');
+    setPagePlaceholder('page-stefnuprof',
+      'Stefnuprófun fyrir '+m.name+' kemur von bráðar',
+      'Spurningar og stefnugreining eru í smíðum fyrir '+m.name+'. Reykjavíkur-útgáfan er fullbúin og má skoða með sveitarfélags-vali í haus.');
+    // Borgarstjórnir-flipinn er byggður utan um POLLS — birtum placeholder
+    setPagePlaceholder('page-borgar',
+      m.councilName+'armyndir í '+m.name+' koma von bráðar',
+      'Reiknivél fyrir meirihlutamyndir byggir á könnunum. Þegar kannanir birtast fyrir '+m.name+' verður flipinn virkur.');
+  } else {
+    restorePageSnapshot('page-kannanir');
+    restorePageSnapshot('page-stefnuprof');
+    restorePageSnapshot('page-borgar');
+  }
+
+  if(!hasStefnumal){
+    // Flokkar-síðan er byggð utan um stefnumálin — keyrum placeholder frá initPartyCards
+    // sem nú þegar meðhöndlar tómt STEFNUMAL.
+    // En við endurheimum ekki page-flokkar-snapshot; initPartyCards handlar það.
+  }
+
+  // Endurteikna nav með dynamic labels (Borgarstjórnir↔Bæjarstjórnir o.s.frv.)
+  try { if(typeof renderTopnav === 'function') renderTopnav(); } catch(e){}
+  // Uppfæra forsíðunnar nav-card-texta (Borgarstjórnarmyndir → Bæjarstjórnarmyndir)
+  try { updateForsidaNavCards(); } catch(e){}
+  // Sérstaka uppfærslu á „460 einstaklingar á 11 listum" sem er ekki tekin af muniLabel
+  var navFrambDesc = document.getElementById('nav-card-framb-desc');
+  if(navFrambDesc) navFrambDesc.textContent = CANDS.length+' einstaklingar í framboði á '+PARTIES.length+' listum. Leitaðu eftir nafni, starfi eða flokki.';
+  // Flokkar-síðan — titill „Stjórnmálaflokkar í <sveitarfélag> 2026"
+  var flokkarT = document.getElementById('flokkar-title');
+  if(flokkarT) flokkarT.textContent = 'Stjórnmálaflokkar í '+m.name+' 2026';
+
+  // Fréttir-takkarnir fyrir hvert framboð — byggðir kvikt utan um núverandi PARTIES og oddvita
+  var nf = document.getElementById('news-filters');
+  if(nf){
+    var raad = m.councilName.toLowerCase()+'arkosningar';
+    var all = '<button class="nfbtn active" onclick="loadNews(\'kosningar '+m.name+' 2026\',this)">Allt</button>';
+    var buttons = PARTIES.map(function(p){
+      var oddviti = CANDS.find(function(c){return c.party===p.id && c.num===1;});
+      var oddName = oddviti ? oddviti.name.split(' ').slice(0,2).join(' ') : '';
+      var q = (oddName+' '+p.name+' '+m.name+' 2026').trim();
+      return '<button class="nfbtn" onclick="loadNews(\''+q.replace(/'/g, "&apos;")+'\',this)">'+p.id+' · '+p.name.split(' ')[0]+'</button>';
+    }).join('');
+    nf.innerHTML = all + buttons;
+  }
+  // Uppfæra forsíðu-footer (borgarstjórnarkosningar → bæjarstjórnarkosningar)
+  try { updateForsidaFooter(); } catch(e){}
+  // Endurteikna frambjóðenda-listann og önnur render-föll
   try { if(typeof render === 'function') render(); } catch(e){}
-  try { if(typeof renderForsidaPollSummary === 'function') renderForsidaPollSummary(); } catch(e){}
+  try { if(hasPolls && typeof renderForsidaPollSummary === 'function') renderForsidaPollSummary(); } catch(e){}
+  try { if(typeof initPartyCards === 'function') initPartyCards(); } catch(e){}
+  try { if(typeof initFinance === 'function') initFinance(); } catch(e){}
+  try { if(hasPolls && typeof initPolls === 'function') initPolls(); } catch(e){}
+  try { if(hasPolls && typeof initCoalitions === 'function') initCoalitions(); } catch(e){}
 }
 
 // Opna/loka dropdown-pickerinn.
@@ -1619,6 +1735,43 @@ function renderMuniPickerMenu(){
 function updateMuniPicker(){
   var lbl = document.getElementById('muni-picker-label');
   if(lbl) lbl.textContent = getMuni().name;
+}
+
+// Uppfærir nav-cards á forsíðunni (texti „Borgarstjórnarmyndir"→„Bæjarstjórnarmyndir"
+// o.s.frv.) út frá muniLabel.
+function updateForsidaNavCards(){
+  var nav = document.querySelector('.forsida-nav-grid');
+  if(!nav) return;
+  nav.querySelectorAll('.nav-card-title').forEach(function(el){
+    var t = el.dataset.original;
+    if(!t){ el.dataset.original = el.textContent; t = el.textContent; }
+    el.textContent = muniLabel(t);
+  });
+  nav.querySelectorAll('.nav-card-desc').forEach(function(el){
+    var t = el.dataset.original;
+    if(!t){ el.dataset.original = el.textContent; t = el.textContent; }
+    el.textContent = muniLabel(t);
+  });
+}
+
+// Uppfærir footer á forsíðu — „borgarstjórnarkosningar Reykjavíkur" verður
+// „bæjarstjórnarkosningar <Nafn sveitarfélagsins>" fyrir aðra muni. Heimildir
+// (reykjavik.is) eru lagaðar miðað við muni.
+function updateForsidaFooter(){
+  var m = getMuni();
+  var foot = document.querySelector('.forsida-footer');
+  if(!foot) return;
+  var raad = m.councilName.toLowerCase();  // borgarstjórn / bæjarstjórn
+  var kosn = raad+'arkosningar';           // borgarstjórnarkosningar / bæjarstjórnarkosningar
+  var ps = foot.querySelectorAll('p');
+  if(ps[0]) ps[0].textContent = 'Kosningavaktin er hlutlaus, óháður upplýsingavefur um '+kosn+' '+m.name+' laugardaginn 16. maí 2026.';
+  if(ps[1]){
+    var site = CURRENT_MUNI === 'rvk' ? 'reykjavik.is' : m.id+'avogur.is'.replace('kopv','kopavogur').replace('hafnavogur.is','hafnarfjordur.is');
+    // Fallback á muni-website
+    var sites = {rvk:'reykjavik.is', kopv:'kopavogur.is', hafn:'hafnarfjordur.is', gard:'gardabaer.is', mos:'mos.is', selt:'seltjarnarnes.is'};
+    ps[1].textContent = 'Heimildir: '+(sites[CURRENT_MUNI]||'sveitarfélagsvefur')+' · Hagstofa Íslands · Gallup · Maskína · Baldur Héðinsson (Vísir) · RÚV · Vísir · Mbl · DV · Heimildin';
+  }
+  if(ps[2]) ps[2].textContent = 'Vefurinn er ekki tengdur neinu framboði eða flokki. Athugasemdir og ábendingar eru vel þegnar.';
 }
 
 // ========================================================================
@@ -2213,13 +2366,27 @@ let SATTMALI_2022 = {
 };
 
 function initPartyCards() {
+  // Engin stefnumál fyrir þetta sveitarfélag (STEFNUMAL tóm) — sýnum placeholder
+  var hasStefnumal = STEFNUMAL && Object.keys(STEFNUMAL).length > 0;
   // Bygging samanburðarhnappa úr ISSUES
   const topicBtns = document.getElementById('topic-btns');
   if(topicBtns){
-    topicBtns.innerHTML = ISSUES.map((iss,i)=>`<button class="nfbtn${i===0?' active':''}" onclick="setTopic('${iss.id}',this)">${iss.label}</button>`).join('');
+    if(!hasStefnumal){
+      topicBtns.innerHTML = '';
+    } else {
+      topicBtns.innerHTML = ISSUES.map((iss,i)=>`<button class="nfbtn${i===0?' active':''}" onclick="setTopic('${iss.id}',this)">${iss.label}</button>`).join('');
+    }
   }
-  // Birta samanburð fyrir fyrsta málaefnið sjálfkrafa
-  if(document.getElementById('comparison-results')) renderComparison('husnaedi');
+  // Birta samanburð fyrir fyrsta málaefnið sjálfkrafa (eða placeholder)
+  var compEl = document.getElementById('comparison-results');
+  if(compEl){
+    if(!hasStefnumal){
+      var m = getMuni();
+      compEl.innerHTML = '<div style="max-width:560px;margin:2rem auto;padding:1.5rem;background:#FFF8E1;border:0.5px solid #854F0B40;border-radius:12px;text-align:center;"><div style="font-family:\'Playfair Display\',serif;font-size:18px;color:#854F0B;margin-bottom:6px;">Stefnumál '+m.name+' koma von bráðar</div><div style="font-size:12px;color:var(--ink2);line-height:1.6;">Samanburður á stefnumálum flokka í '+m.name+' bætist við í næsta áfanga.</div></div>';
+    } else {
+      renderComparison('husnaedi');
+    }
+  }
   // Afstöðumatrix
   renderAfstoduMatrix();
   // Flokkaspjöld
@@ -2347,7 +2514,9 @@ function renderStefnumal(id, p, el) {
 
 async function fetchPartyPolicy(id, p, info, el) {
   try {
-    const txt = await aiCall(`Þú ert að lesa stefnuskrá ${info.fullname||p.name} fyrir borgarstjórnarkosningar í Reykjavík 2026. Leitaðu að stefnuskránni á netinu og dragðu saman helstu stefnumál flokksins á íslensku í eftirfarandi flokkum (notaðu HTML með <strong> fyrirsögnum): Húsnæðismál, Samgöngur, Umhverfismál, Menntamál, Velferðarmál, Fjármál og skattar. Vertu nákvæm/ur og hlutlæg/ur.`, true);
+    var _mm3 = getMuni();
+    var _mraad3 = _mm3.councilName.toLowerCase();
+    const txt = await aiCall(`Þú ert að lesa stefnuskrá ${info.fullname||p.name} fyrir ${_mraad3}arkosningar í ${_mm3.name} 2026. Leitaðu að stefnuskránni á netinu og dragðu saman helstu stefnumál flokksins á íslensku í eftirfarandi flokkum (notaðu HTML með <strong> fyrirsögnum): Húsnæðismál, Samgöngur, Umhverfismál, Menntamál, Velferðarmál, Fjármál og skattar. Vertu nákvæm/ur og hlutlæg/ur.`, true);
     el.innerHTML = `<div class="aibadge">Claude AI · Les stefnuskrá ${p.name}</div><div style="font-size:13px;line-height:1.8">${txt}</div>`;
   } catch(e) { el.innerHTML = `<div class="lmsg">Villa: ${e.message||'Þarf API lykil.'}</div>`; }
 }
@@ -2361,7 +2530,9 @@ async function fetchPartyHistory(id, p, info, el) {
 
 async function fetchPartyNews(id, p, el) {
   try {
-    const txt = await aiCall(`Finndu 5 nýjustu fréttirnar um ${p.name} í tengslum við borgarstjórnarkosningar í Reykjavík 2026. Svaraðu EINUNGIS með JSON: [{"source":"miðill","title":"fyrirsögn","date":"dagsetning","summary":"ein setning","url":"slóð"}]`, true);
+    var _mm4 = getMuni();
+    var _mraad4 = _mm4.councilName.toLowerCase();
+    const txt = await aiCall(`Finndu 5 nýjustu fréttirnar um ${p.name} í tengslum við ${_mraad4}arkosningar í ${_mm4.name} 2026. Svaraðu EINUNGIS með JSON: [{"source":"miðill","title":"fyrirsögn","date":"dagsetning","summary":"ein setning","url":"slóð"}]`, true);
     const news = JSON.parse(txt.replace(/\`\`\`json|\`\`\`/g,'').trim());
     el.innerHTML = news.map(n=>`<div class="ni"><div class="ndot"></div><div><div class="ns">${n.source||''}</div><div class="nt">${n.url?`<a href="${n.url}" style="color:var(--ink)">${n.title}</a>`:n.title}</div><div style="font-size:11px;color:var(--ink2);margin-top:2px">${n.summary||''}</div><div class="nd">${n.date||''}</div></div></div>`).join('');
   } catch(e) { el.innerHTML = `<div class="lmsg">Villa: ${e.message||'Þarf API lykil.'}</div>`; }
@@ -2415,6 +2586,16 @@ function afstodaGlyph(v){
 function renderAfstoduMatrix(){
   var el = document.getElementById('afstodu-matrix');
   if(!el) return;
+  // Engin afstaða skráð fyrir núverandi sveitarfélag (AFSTODUR er Reykjavík-sértækt
+  // nú sem stendur — bætist per-muni í seinni áfanga). Sýnum placeholder.
+  var hasAfstada = PARTIES.some(function(p){
+    return AFSTADA_ISSUES.some(function(iss){ return AFSTODUR[iss.id] && AFSTODUR[iss.id][p.id] !== undefined; });
+  });
+  if(!hasAfstada){
+    var m = getMuni();
+    el.innerHTML = '<div style="max-width:560px;margin:1rem auto;padding:1.25rem;background:#FFF8E1;border:0.5px solid #854F0B40;border-radius:10px;text-align:center;"><div style="font-size:14px;color:#854F0B;margin-bottom:4px;font-family:\'Playfair Display\',serif;">Afstöðumatrix fyrir '+m.name+' í smíðum</div><div style="font-size:12px;color:var(--ink2);line-height:1.5;">Samanburður á afstöðu flokka til sveitarfélags-mála í '+m.name+' bætist við í næsta áfanga.</div></div>';
+    return;
+  }
   var pollSeats = (window._POLLS && window._POLLS[0] ? window._POLLS[0].seats : {}) || {};
   var sorted = PARTIES.slice().sort(function(a,b){return (pollSeats[b.id]||0)-(pollSeats[a.id]||0);});
   var head = '<tr><th style="text-align:left;padding:8px 10px;font-size:11px;color:var(--ink3);font-weight:500;text-transform:uppercase;letter-spacing:.07em">Málefni</th>'
@@ -3494,6 +3675,11 @@ function setRaun(v){ finRaun=v; renderYfirlit(); renderMainTable(null); renderSu
 
 function initFinance() {
   if(!document.getElementById('fin-stats2')) return; // verjandi — byrjar ekki ef HTML er ekki til staðar enn
+  // Engin fjárhagsgögn fyrir þetta sveitarfélag (t.d. Kópavogur í fasa 2a) — sýnum placeholder
+  if(!FINANCE || !FINANCE.length){
+    renderFinancePlaceholder();
+    return;
+  }
   render2025Banner();
   renderYrBtns('yr-btns', 'renderMainTable');
   renderYrBtns('yr-btns2', 'renderSundur');
@@ -3502,6 +3688,24 @@ function initFinance() {
   renderLeidretting();
   renderAaetlun();
   renderStuttu();
+}
+
+// Sýnir „kemur von bráðar"-spjöld á öllum Fjármála-flipa-hlutum þegar FINANCE er
+// tómt (t.d. fyrir Kópavog þar sem ársreikningar hafa ekki enn verið fluttir inn).
+function renderFinancePlaceholder(){
+  var m = getMuni();
+  var raadLower = m.councilName.toLowerCase();
+  var msg = '<div style="max-width:560px;margin:2rem auto;padding:2rem;background:#FFF8E1;border:0.5px solid #854F0B40;border-radius:12px;text-align:center;">'
+    +'<div style="font-family:\'Playfair Display\',serif;font-size:22px;color:#854F0B;margin-bottom:8px;">Fjármálagögn '+m.name+' koma von bráðar</div>'
+    +'<div style="font-size:13px;color:var(--ink2);line-height:1.6;">Ársreikningar '+m.name+' 2015–2024 og bráðabirgðatölur 2025 bætast við í næsta áfanga. Fjárhagsáætlun 2026 var samþykkt í '+raadLower+' og inniheldur bæði skattalækkun og hallarekstur — úthugsuð greining fylgir síðar.</div>'
+    +'</div>';
+  ['stuttu-content','itarlegt-content','aaetlun-content','borgarstjornir-content'].forEach(function(id){
+    var el = document.getElementById(id);
+    if(el) el.innerHTML = msg;
+  });
+  // Flet nnur content-svæði
+  var banner = document.getElementById('fin-2025-banner');
+  if(banner) banner.style.display = 'none';
 }
 
 // ========================================================================
@@ -4306,7 +4510,9 @@ async function askFinance(q) {
   el.innerHTML='<div class="lmsg">Claude svarar: "'+q+'"...</div>';
   try {
     var summary=FINANCE.map(function(d){return d.yr+': A-niðurst '+d.A.nidurstada+'ma, AB-niðurst '+d.AB.nidurstada+'ma, AB-skuldir '+d.AB.skuldir+'ma';}).join(', ');
-    var txt=await aiCall('Þú ert sérfræðingur í fjármálum sveitarfélaga. Svara þessari spurningu á íslensku: '+q+'\n\nGögn Reykjavíkurborgar 2015-2024 (úr opinberum ársreikningum): '+summary,true);
+    var _mFin = getMuni();
+    var _mGen = CURRENT_MUNI === 'rvk' ? 'Reykjavíkurborgar' : _mFin.name;
+    var txt=await aiCall('Þú ert sérfræðingur í fjármálum sveitarfélaga. Svara þessari spurningu á íslensku: '+q+'\n\nGögn '+_mGen+' 2015-2024 (úr opinberum ársreikningum): '+summary,true);
     el.innerHTML='<div style="font-size:12px;font-weight:500;color:var(--gold);margin-bottom:8px">'+q+'</div><div class="aibadge">Claude AI</div><div style="font-size:13px;line-height:1.8">'+txt+'</div>';
   } catch(e){el.innerHTML='<div class="lmsg">Villa: '+(e.message||'Þarf API lykil.')+'</div>';}
 }
@@ -4611,6 +4817,9 @@ function renderFrettavakt(){
 
 function initAll(){
   updateApiChip();
+  // Tökum snapshot af upphaflega HTML-innihaldinu áður en router er ræst — svo
+  // við getum endurheimt það þegar notandi skiptir tilbaka í rvk úr kopv.
+  snapshotPages();
   initRouter();          // nýr tveggja-laga nav + hash-ruting
   initSidebar();
   render();
@@ -4700,7 +4909,7 @@ if (document.readyState === 'loading') {
 <div id="page-flokkar" class="page">
   <div style="max-width:960px;margin:0 auto;padding:1.5rem;">
     <div style="margin-bottom:1.5rem;">
-      <h2 style="font-family:'Playfair Display',serif;font-size:22px;margin-bottom:4px;">Stjórnmálaflokkar í Reykjavík 2026</h2>
+      <h2 id="flokkar-title" style="font-family:'Playfair Display',serif;font-size:22px;margin-bottom:4px;">Stjórnmálaflokkar í Reykjavík 2026</h2>
       <p style="font-size:13px;color:var(--ink2);">Saga, gildi og helstu stefnumál hvers framboðs 2026. Smelltu á flokk til að sjá alla stefnumálin hans.</p>
     </div>
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;margin-bottom:1.5rem;" id="party-cards"></div>
@@ -4728,8 +4937,8 @@ if (document.readyState === 'loading') {
 <!-- FJÁRMÁL BORGAR - FULL REPLACEMENT PAGE -->
 <div id="page-fjarmal" class="page">
   <div style="max-width:1000px;margin:0 auto;padding:1.5rem;">
-    <h2 style="font-family:'Playfair Display',serif;font-size:22px;margin-bottom:4px;">Fjármál Reykjavíkurborgar 2015–2025</h2>
-    <p style="font-size:13px;color:var(--ink2);margin-bottom:1.25rem;">Tölur úr opinberum ársreikningum borgarinnar. Skipt upp í A-hluta (aðalsjóður + eignasjóður) og samstæðu A+B (inniheldur OR, Félagsbústaði, Faxaflóahafnir o.fl.). Raunvirði (á verðlagi 2024) má virkja í sundurliðun.</p>
+    <h2 id="fjarmal-title" style="font-family:'Playfair Display',serif;font-size:22px;margin-bottom:4px;">Fjármál Reykjavíkurborgar 2015–2025</h2>
+    <p id="fjarmal-subtitle" style="font-size:13px;color:var(--ink2);margin-bottom:1.25rem;">Tölur úr opinberum ársreikningum borgarinnar. Skipt upp í A-hluta (aðalsjóður + eignasjóður) og samstæðu A+B (inniheldur OR, Félagsbústaði, Faxaflóahafnir o.fl.). Raunvirði (á verðlagi 2024) má virkja í sundurliðun.</p>
     <div id="fin-2025-banner" style="display:none;"></div>
 
     <!-- FLIPAR -->
