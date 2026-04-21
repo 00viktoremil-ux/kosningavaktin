@@ -3103,16 +3103,23 @@ function renderStuttu(){
   var y2025 = FINANCE_2025_PARTIAL;
   var budgetLast = BUDGETS[last.yr] || {};
 
-  // Heildarmerki heilsu — byggt á 3 þáttum
-  // 1. Er AB-niðurstaða jákvæð? 2. Er hún betri en fyrra ár? 3. Hefur skuldaviðmið lækkað?
-  var abPos = last.AB.nidurstada >= 0;
-  var abBetter = last.AB.nidurstada > prev.AB.nidurstada;
-  var skuldirLower = last.AB.skuldir < prev.AB.skuldir;
-  var score = (abPos?1:0) + (abBetter?1:0) + (skuldirLower?1:0);
+  // Heildarmerki heilsu — byggt á 4 þáttum (ekki 3; AB einn og sér er
+  // of þröngur mælikvarði því bókhaldsaðlaganir geta ýtt honum upp).
+  // 1. A-hluti (kjarna-rekstur) jákvæður?
+  // 2. AB (samstæða) jákvæður?
+  // 3. Batnar AB milli ára?
+  // 4. Hafa skuldir lækkað?
+  var aPos          = last.A.nidurstada  >= 0;
+  var abPos         = last.AB.nidurstada >= 0;
+  var abBetter      = last.AB.nidurstada > prev.AB.nidurstada;
+  var skuldirLower  = last.AB.skuldir    < prev.AB.skuldir;
+  var score = (aPos?1:0) + (abPos?1:0) + (abBetter?1:0) + (skuldirLower?1:0);
   var health;
-  if(score >= 2) health = {clr:'#2E7D32', bg:'#E8F5E9', lbl:'Gott', dsc:'Borgin skilar hagnaði, staðan batnar milli ára.'};
-  else if(score === 1) health = {clr:'#854F0B', bg:'#FFF8E1', lbl:'Blandað', dsc:'Sum ljós eru græn, önnur rauð.'};
-  else health = {clr:'#C62828', bg:'#FFEBEE', lbl:'Erfitt', dsc:'Borgin rekur tap og skuldir hækka.'};
+  if(score === 4)      health = {clr:'#2E7D32', bg:'#E8F5E9', lbl:'Gott',     dsc:'Bæði kjarna-rekstur og samstæða jákvæð, batnar milli ára, skuldir lækka.'};
+  else if(score === 3) health = {clr:'#7B9000', bg:'#F4F6E8', lbl:'Frekar gott', dsc:'Flest ljós eru græn — en eitt er rautt.'};
+  else if(score === 2) health = {clr:'#854F0B', bg:'#FFF8E1', lbl:'Blandað', dsc:'Helmingur ljósa er rauður. Bakvið jákvæða AB-niðurstöðu liggja oft bókhaldsaðlaganir.'};
+  else if(score === 1) health = {clr:'#B8541B', bg:'#FFE8D6', lbl:'Erfitt',  dsc:'Fá græn ljós. Raunrekstur er veikur.'};
+  else                 health = {clr:'#C62828', bg:'#FFEBEE', lbl:'Slæmt',   dsc:'Borgin rekur tap, hallar á alla mælikvarða.'};
 
   // Hjálpartól til að forsníða stórar tölur sem „á hvern íbúa"
   function perIbua(val, yr){
@@ -3184,6 +3191,29 @@ function renderStuttu(){
 
   html += '</div>';
 
+  // Skuldir yfir tíma — mikilvægt samhengi sem eitt ár felur
+  var first = FINANCE[0];
+  var skuldGrowth = ((last.AB.skuldir / first.AB.skuldir - 1) * 100).toFixed(0);
+  var consecutiveRising = 0;
+  for(var i = FINANCE.length-1; i > 0; i--){
+    if(FINANCE[i].AB.skuldir > FINANCE[i-1].AB.skuldir) consecutiveRising++;
+    else break;
+  }
+  html += '<div class="card" style="margin-bottom:1rem;">'
+    +'<div style="font-family:\'Playfair Display\',serif;font-size:17px;margin-bottom:3px;">Skuldir yfir tíma</div>'
+    +'<div style="font-size:12px;color:var(--ink2);margin-bottom:1rem;">Samstæðuskuldir hafa hækkað úr '+first.AB.skuldir.toFixed(0)+' ma. ('+first.yr+') í '+last.AB.skuldir.toFixed(0)+' ma. ('+last.yr+') — '
+    +'<strong style="color:#C62828">+'+skuldGrowth+'%</strong> á '+(last.yr-first.yr)+' árum. '
+    +'Hafa hækkað '+consecutiveRising+' ár í röð.</div>'
+    +buildStuttuSkuldirChart()
+    +'</div>';
+
+  // Hvað fegrar myndina? — gagnsæi um bókhaldsaðlaganir
+  html += '<div class="card" style="margin-bottom:1rem;border-left:3px solid #854F0B;">'
+    +'<div style="font-family:\'Playfair Display\',serif;font-size:17px;margin-bottom:3px;">Hvað getur fegrað myndina?</div>'
+    +'<div style="font-size:12px;color:var(--ink2);margin-bottom:1rem;">AB-niðurstaðan (samstæða) inniheldur oft stórar færslur sem eiga ekki uppruna í raunverulegum rekstri. Sum ár er „hagnaður" borgar að mestu knúinn af þessum bókhaldsaðlögunum.</div>'
+    +buildStuttuAdjustments()
+    +'</div>';
+
   // Þróun yfir tíma — einfölduð útgáfa
   html += '<div class="card" style="margin-bottom:1rem;">'
     +'<div style="font-family:\'Playfair Display\',serif;font-size:17px;margin-bottom:3px;">Hvernig hefur fjárhagurinn þróast?</div>'
@@ -3245,6 +3275,87 @@ function buildStuttuBarChart(){
   });
   return '<svg viewBox="0 0 '+W+' '+H+'" width="100%" style="display:block;min-width:560px">'+grid+zero+bars+labels+'</svg>'
     +'<div style="font-size:11px;color:var(--ink3);margin-top:8px;line-height:1.5">Tölur í milljörðum króna. Jákvæð tala = hagnaður, neikvæð = tap. Þetta er „samstæða A+B" sem inniheldur bæði aðalsjóð og fyrirtæki eins og Orkuveitu.</div>';
+}
+
+// Skuldir-chart: línurit sem sýnir samfellda hækkun samstæðuskulda 2015–2024
+// (+ 2025 bráðabirgða ef til). Tekjur sem samanburðarlína til að setja í samhengi.
+function buildStuttuSkuldirChart(){
+  var data = FINANCE.map(function(d){return {yr:d.yr, skuldir:d.AB.skuldir, tekjur:d.AB.tekjur};});
+  if(typeof FINANCE_2025_PARTIAL !== 'undefined' && FINANCE_2025_PARTIAL.AB && FINANCE_2025_PARTIAL.AB.skuldir){
+    data.push({yr:FINANCE_2025_PARTIAL.yr, skuldir:FINANCE_2025_PARTIAL.AB.skuldir, tekjur:FINANCE_2025_PARTIAL.AB.tekjur, partial:true});
+  }
+  var W = 720, H = 210, PAD = {l:40, r:14, t:20, b:32};
+  var plotW = W - PAD.l - PAD.r, plotH = H - PAD.t - PAD.b;
+  var xStep = plotW / (data.length - 1);
+  var maxV = Math.ceil(Math.max.apply(null, data.map(function(d){return d.skuldir;}))/50)*50 + 50;
+  var minV = 0;
+  function yS(v){ return PAD.t + plotH - (v-minV)/(maxV-minV)*plotH; }
+  function xS(i){ return PAD.l + i*xStep; }
+
+  var grid = '';
+  for(var yv=0; yv<=maxV; yv+=100){
+    var yy = yS(yv);
+    grid += '<line x1="'+PAD.l+'" x2="'+(W-PAD.r)+'" y1="'+yy+'" y2="'+yy+'" stroke="#eee" stroke-width="0.5"/>';
+    grid += '<text x="'+(PAD.l-4)+'" y="'+(yy+3)+'" text-anchor="end" font-size="9" fill="#888" font-family="DM Sans">'+yv+'</text>';
+  }
+
+  // Skuldalína (rauðleit) — samsett af punktum
+  var skuldPath = data.map(function(d,i){return (i===0?'M':'L')+xS(i)+','+yS(d.skuldir);}).join(' ');
+  var skuldFill = skuldPath + ' L '+xS(data.length-1)+','+yS(0)+' L '+xS(0)+','+yS(0)+' Z';
+
+  var dots = data.map(function(d,i){
+    return '<circle cx="'+xS(i)+'" cy="'+yS(d.skuldir)+'" r="3" fill="#C62828"'+(d.partial?' stroke="#fff" stroke-width="1.5"':'')+'><title>'+d.yr+(d.partial?' (bráðab.)':'')+': '+d.skuldir.toFixed(0)+' ma.</title></circle>';
+  }).join('');
+
+  var labels = data.map(function(d,i){
+    return '<text x="'+xS(i)+'" y="'+(H-PAD.b+14)+'" text-anchor="middle" font-size="10" fill="#888" font-family="DM Sans">'+(d.yr%2===0||i===data.length-1?d.yr:'')+'</text>';
+  }).join('');
+
+  // Gildi-tölur við fyrsta og síðasta punkt
+  var valLabels = '<text x="'+xS(0)+'" y="'+(yS(data[0].skuldir)-8)+'" text-anchor="start" font-size="10" font-weight="500" fill="#C62828" font-family="DM Sans">'+data[0].skuldir.toFixed(0)+'</text>'
+    +'<text x="'+xS(data.length-1)+'" y="'+(yS(data[data.length-1].skuldir)-8)+'" text-anchor="end" font-size="10" font-weight="500" fill="#C62828" font-family="DM Sans">'+data[data.length-1].skuldir.toFixed(0)+'</text>';
+
+  return '<svg viewBox="0 0 '+W+' '+H+'" width="100%" style="display:block;min-width:560px">'
+    +grid
+    +'<path d="'+skuldFill+'" fill="#C6282815" stroke="none"/>'
+    +'<path d="'+skuldPath+'" fill="none" stroke="#C62828" stroke-width="2"/>'
+    +dots+valLabels+labels
+    +'</svg>'
+    +'<div style="font-size:11px;color:var(--ink3);margin-top:8px;line-height:1.5">Samstæðuskuldir í milljörðum króna. Hækkunin á sér að hluta skýringar í fjárfestingum (Orkuveita), verðbólgu­uppfærslu lána og uppbyggingu Félagsbústaða — en þróunin er samfelld og krefst athygli.</div>';
+}
+
+// Bókhaldsaðlaganir sem fegra AB-niðurstöðu — tekið úr adj-reit í FINANCE
+function buildStuttuAdjustments(){
+  // Safna saman öllum adj-færslum og raða eftir stærð
+  var adjs = [];
+  FINANCE.forEach(function(d){
+    if(!d.adj) return;
+    d.adj.forEach(function(a){
+      adjs.push({yr:d.yr, label:a.label, value:a.value, hluti:a.hluti, abResult:d.AB.nidurstada, aResult:d.A.nidurstada});
+    });
+  });
+  if(adjs.length===0) return '<div style="font-size:12px;color:var(--ink2);">Engar skráðar aðlaganir í gagnasafni.</div>';
+
+  // Helstu dæmi útskýrð fyrst
+  var examples = [
+    {title:'Matsbreyting Félagsbústaða', dsc:'Fasteignir Félagsbústaða eru endurmetnar árlega á „gangvirði". Þegar markaðsverð hækkar er mismunurinn <strong>tekjufærður sem hagnaður</strong> í samstæðu — þótt ekkert lausafé komi inn og engin eign hafi verið seld.', hits:'2016, 2017, 2021 (+19,4 ma.), 2022 (+14,5 ma. yfir áætlun)'},
+    {title:'Afleiðubreytingar OR', dsc:'Orkuveitan er með langtímasamninga um raforkusölu og lán. Breytingar á gengi álmarkaða eða vöxtum breyta „gangvirði" þessara samninga — sem kemur í gegn um rekstrarreikning þótt reiðufé hreyfist ekki.', hits:'2016, 2017, 2021 (+6,6 ma.)'},
+    {title:'Verðbólguáhrif á fjármagn', dsc:'Þegar verðbólga er há hækka verðtryggð lán Orkuveitu sjálfkrafa. Það birtist sem <strong>tap í AB</strong> — hins vegar sama fyrirbæri veldur matsbreytingum fasteigna sem birtast sem <strong>hagnaður</strong>. Þessir tveir liðir geta vegið hvor annan upp á óljósan hátt.', hits:'2022 (12,7 ma. tap), 2023 (13 ma.)'},
+    {title:'Lífeyrisskuldbindingar', dsc:'Borgin á skuldbindingu gagnvart gömlum B-deilda­lífeyri. Þegar forsendur breytast (t.d. um langlífi) er <strong>stór einskiptis­færsla</strong> gjalda- eða tekjufærð — óskyld rekstri ársins.', hits:'2015 (+14,7 ma. gjaldfært umfram áætlun), 2024 (0,8 ma. tekjufært)'},
+    {title:'Málefni fatlaðs fólks', dsc:'Ríkið flutti málaflokk fatlaðs fólks til sveitarfélaga 2011 án fullrar fjármögnunar. Borgin hefur síðan rekið hann með margra milljarða halla á ári — <strong>án þessa halla væri A-hluti jákvæður</strong>.', hits:'2022 (9,3 ma.), 2023 (8,2 ma.)'}
+  ];
+
+  var html = '<div style="display:flex;flex-direction:column;gap:10px;">';
+  examples.forEach(function(e){
+    html += '<div style="padding:10px;background:#FAF8F3;border-radius:8px;border:0.5px solid var(--bdr);">'
+      +'<div style="font-size:13px;font-weight:500;color:var(--ink);margin-bottom:3px;">'+e.title+'</div>'
+      +'<div style="font-size:12px;color:var(--ink2);line-height:1.55;margin-bottom:4px;">'+e.dsc+'</div>'
+      +'<div style="font-size:11px;color:var(--ink3);font-style:italic;">Ár: '+e.hits+'</div>'
+      +'</div>';
+  });
+  html += '</div>';
+  html += '<div style="font-size:11px;color:var(--ink3);margin-top:10px;line-height:1.5">Heimildir: athugasemdir í ársreikningum borgarinnar 2015–2024. Þessir liðir eru allir lögformlega réttir og í samræmi við reikningsskilavenjur — en þeir eiga ekki uppruna í daglegum rekstri borgar og ber að lesa með því.</div>';
+  return html;
 }
 
 function buildStuttuTimeline(){
