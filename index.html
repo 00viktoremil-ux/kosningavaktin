@@ -4121,10 +4121,53 @@ var GARD_RAW = [
   ['G',10,'Askur Hrafn Hannesson','frístundaleiðbeinandi og háskólanemi'],
   ['G',11,'Guðrún Elín Herbertsdóttir','viðskiptafræðingur'],
   ['G',12,'Tómas Þór Jacobsen','tómstunda- og félagsmálafræðingur'],
-  // S — Samfylkingin (Kjartan Atli Kjartansson). Sjálfstætt framboð í fyrsta
-  // sinn — var áður hluti af G-listanum. 0 sæti 2022 sjálfstætt.
+  // C — Viðreisn full 22-manna listi (staðfestur á vidreisn.is/gardabaer/frambjodendur,
+  // kynnt feb. 2026). Sæti 2–22 bætt við í fasa 2c.
+  ['C',2,'Harpa Þorsteinsdóttir','fv. varabæjarfulltrúi Garðabæjarlistans'],
+  ['C',3,'Jón Bjarni Steinsson','frambjóðandi'],
+  ['C',4,'Sigríður Þóra Ásgeirsdóttir','frambjóðandi'],
+  ['C',5,'Hreiðar Þór Jónsson','frambjóðandi'],
+  ['C',6,'Tamara Klara Lipka Þormarsdóttir','frambjóðandi'],
+  ['C',7,'Júlíus Arnarson','framkvæmdastjóri'],
+  ['C',8,'Þyrí Halla Steingrímsdóttir','lögfræðingur'],
+  ['C',9,'Árni Björn Eiríksson','viðskiptafræðingur'],
+  ['C',10,'Herdís Anna Ingimarsdóttir','verkefnastjóri og markþjálfi'],
+  ['C',11,'Hafsteinn Ezekíel Hafsteinsson','sölustjóri'],
+  ['C',12,'Geirþrúður Alfreðsdóttir','verkfræðingur'],
+  ['C',13,'Jens Guðjón Einarsson','fv. kennari og framkvæmdastjóri'],
+  ['C',14,'Maria Rosario Blöndal','markaðsstjóri'],
+  ['C',15,'Viðar Kristinsson','þjónustustjóri'],
+  ['C',16,'Tinna Borg Arnfinnsdóttir','innri endurskoðandi'],
+  ['C',17,'Eyþór Eðvarðsson','stjórnendaþjálfari og ráðgjafi'],
+  ['C',18,'Ásta Sigríður Guðjónsdóttir','sérfræðingur markaðs- og samskiptamálum'],
+  ['C',19,'Ingi Þór Hermannsson','fv. formaður GKG'],
+  ['C',20,'Heiðrún Sigurðardóttir','viðskiptafræðingur'],
+  ['C',21,'Eiríkur Björn Björgvinsson','alþingismaður og fv. bæjarstjóri (heiðurssæti)'],
+  ['C',22,'Sara Dögg Svanhildardóttir','fv. bæjarfulltrúi (heiðurssæti)'],
+  // S — Samfylkingin full 22-manna listi (kynntur 16. mars 2026, Kjartan Atli
+  // leiðir). Sjálfstætt framboð í fyrsta sinn — var áður hluti af G-listanum.
   ['S',1,'Kjartan Atli Kjartansson','stjórnmálafræðingur, fjölmiðlamaður og rithöfundur'],
-  ['S',2,'Vilborg Anna Strange','frambjóðandi']
+  ['S',2,'Vilborg Anna Strange Garðarsdóttir','fjármála- og rekstrarstjóri'],
+  ['S',3,'Rakel Margrét Viggósdóttir','kennari og deildarstjóri'],
+  ['S',4,'Vilmar Pétursson','sérfræðingur hjá Vinnumálastofnun'],
+  ['S',5,'Ögmundur Árni Sveinsson','viðskiptafræðinemi og þjálfari'],
+  ['S',6,'Katrín Júlíusdóttir','fyrrverandi ráðherra, ráðgjafi og rithöfundur'],
+  ['S',7,'Rósanna Andrésdóttir','grunnskólakennari, alþjóðafræði'],
+  ['S',8,'Bjarni Thor Kristinsson','óperusöngvari og menningarstjóri'],
+  ['S',9,'Guðfinna Guðmundsdóttir','fv. bæjarfulltrúi, matreiðslumeistari og kennari'],
+  ['S',10,'Ragnheiður Hergeirsdóttir','fv. bæjarstjóri, félagsráðgjafi og lektor'],
+  ['S',11,'Freyja Kvaran','stjórnmálafræðinemi'],
+  ['S',12,'Jón Gunnlaugur Viggósson','íþróttastjóri HSÍ'],
+  ['S',13,'Ásdís Magnúsdóttir','lögfræðingur'],
+  ['S',14,'Ósk Sigurðardóttir','deildarstjóri'],
+  ['S',15,'Stefán Arinbjarnarson','fv. íþróttafulltrúi, kennari og þjálfari'],
+  ['S',16,'Gréta Ósk Óskarsdóttir','bókmenntafræðingur og næringarráðgjafi'],
+  ['S',17,'Birta Mjöll Antonsdóttir','launaráðgjafi'],
+  ['S',18,'Heiða Mist Kristjánsdóttir','hjúkrunarfræðingur'],
+  ['S',19,'Kristján Sveinbjörnsson','fv. bæjarfulltrúi, rafvirki og hönnuður'],
+  ['S',20,'Rafn Svanur Oddsson','fv. slökkviliðs- og sjúkraflutningamaður'],
+  ['S',21,'Edda Gíslrún Kjartansdóttir','grunnskólakennari'],
+  ['S',22,'Guðmundur Andri Thorsson','fv. alþingismaður og rithöfundur (heiðurssæti)']
   // M — Miðflokkurinn: 3,67% 2022, 0 sæti. Oddviti og listi fyrir 2026 ekki
   // staðfestir í opinberum heimildum á birtingartíma — bætist við þegar birt.
 ];
@@ -4142,8 +4185,16 @@ MUNI_DATA.gard = {
     {id:'S', name:'Samfylkingin',          color:'#C62828', pct:0, seats:0}
   ],
   rawCands: GARD_RAW,
-  photos: {},
-  bios: {},
+  photos: {},   // oddvita-myndir bætast við í fasa 2b
+  bios: {
+    // Oddvitar allra 5 staðfestra framboða (M óstaðfest). Heimildir: gardabaer.is,
+    // gardabaejarlistinn.is, framsokn.is, xs.is, vidreisn.is, ruv.is, mbl.is.
+    'B-1': 'Hlynur Bæringsson er rekstrarstjóri og fyrrum atvinnuleikmaður í körfuknattleik (m.a. Snæfell, Keflavík og landsliðið). Hann var varabæjarfulltrúi og valinn oddviti Framsóknar í mars 2026 eftir að fyrrum oddviti Brynja Dan var færð í 2. sætið — uppstillingarferli sem sumir innan flokksins lýstu sem „klíku".',
+    'C-1': 'Guðlaugur Kristmundsson er bæjarfulltrúi í Garðabæ frá 2024 (tók sæti af Söru Dögg). BA í stjórnmálafræði og kynjafræði frá HÍ, forstjóri FlyOver Iceland frá 2023 og fv. framkvæmdastjóri þingflokks Viðreisnar 2020–2021. Kjörinn oddviti Viðreisnar í Garðabæ mars 2026.',
+    'D-1': 'Almar Guðmundsson er bæjarstjóri Garðabæjar frá 2022 og oddviti Sjálfstæðisflokksins. Hagfræðingur frá HÍ og MBA frá London Business School; fv. framkvæmdastjóri Félags atvinnurekenda og Samtaka iðnaðarins. Leggur áherslu á lágt útsvar, ábyrgan rekstur og lækkun skuldahlutfalls.',
+    'G-1': 'Þorbjörg Þorvaldsdóttir er bæjarfulltrúi Garðabæjarlistans frá 2022 og málvísindamaður að mennt (BA HÍ 2015, MA Leiden Universiteit 2017) og grunnskólakennari. Hún er fv. formaður Samtakanna ’78 og leiðir G-listann áfram sem óháðan bæjarlista eftir að Samfylkingin klauf sig út.',
+    'S-1': 'Kjartan Atli Kjartansson (f. 1984) er stjórnmálafræðingur frá HÍ, fjölmiðlamaður (umsjón Domino’s Körfuboltakvölds á Stöð 2 Sport 2015–2023, morgunþátturinn Brennslan á FM957 2014–2020), körfuboltaþjálfari og rithöfundur. Leiðir nýjan sjálfstæðan lista Samfylkingar í Garðabæ 2026 eftir klofning úr G-listanum.'
+  },
   partyInfo: {
     B: { fullname:'Framsóknarflokkurinn',  ideology:'Miðja, búnaðarstefna',               founded:1916 },
     C: { fullname:'Viðreisn',              ideology:'Frjálslyndi, miðja',                 founded:2016 },
@@ -4152,24 +4203,170 @@ MUNI_DATA.gard = {
     M: { fullname:'Miðflokkurinn',         ideology:'Miðju-hægri, þjóðernisleg áhersla',  founded:2017 },
     S: { fullname:'Samfylkingin',          ideology:'Miðju-vinstri, jafnaðarstefna',      founded:2000 }
   },
-  stefnumal: {},
-  sattmali2022: null,
-  finance: [],
-  budgets: {},
-  finance2025Partial: null,
+  stefnumal: {
+    // Stefnumál Garðabæjar-framboða 2026 í 7 málaflokkum. Heimildir: flokkssíður,
+    // gardabaejarlistinn.is, xd.is, vidreisn.is, framsokn.is, xs.is, mbl.is,
+    // ruv.is, globenewswire og Postar.is. M-stefnur óstaðfestar — landsstefna notuð.
+    'B': {
+      husnaedi:'Ekki birt ítarleg afstaða 2026; landsstefna Framsóknar leggur áherslu á uppbyggingu innviða í takt við íbúafjölgun.',
+      samgongur:'Ekki birt ítarleg afstaða 2026; styður almennt samgöngusáttmála höfuðborgarsvæðisins.',
+      umhverfi:'Ekki birt ítarleg afstaða 2026.',
+      menntun:'Áhersla á þjónustu við börn og fjölskyldur.',
+      velferd:'Stuðningur við íþróttir og tómstundir.',
+      fjarmal:'Ekki birt ítarleg afstaða 2026 (innri uppstillingardeilur hafa yfirskyggt stefnuumræðu).',
+      atvinnu:'Ekki birt ítarleg afstaða 2026.'
+    },
+    'C': {
+      husnaedi:'Aukið framboð lóða og fjölbreyttari húsnæðiskostir; Arnarland-uppbygging með BREEAM-vottunar-viðmiðum.',
+      samgongur:'Eindreginn stuðningur við Borgarlínu og samgöngusáttmála höfuðborgarsvæðisins.',
+      umhverfi:'BREEAM-vottanir (Urriðaholt sem fyrirmynd) og samþættur grænn skipulagsrammi.',
+      menntun:'Gagnrýni á Kópavogs-módelið sem Garðabær tók upp; fjölskylduvænni leikskólastefna með lengri tíma.',
+      velferd:'Aukið inngildingarstarf og þjónusta við eldra fólk.',
+      fjarmal:'Hefur talið „eðlilegt" að hækka útsvar fyrir bætta þjónustu — andstætt lágskatta-stefnu D.',
+      atvinnu:'Atvinnuuppbygging í Arnarlandi og Vífilsstöðum.'
+    },
+    'D': {
+      husnaedi:'Áframhaldandi uppbygging í Hnoðraholti (auglýsing byggingarrétta), Urriðaholti og Vetrarmýri; enginn nýr skóli fyrr en íbúafjöldi kallar á.',
+      samgongur:'Samstarfsaðili samgöngusáttmálans (Borgarlína í 6 áföngum til 2040) en krefjandi afstaða til útfærslu.',
+      umhverfi:'BREEAM Communities sem viðmið; uppfærsla á loftslagsstefnu 2026.',
+      menntun:'Tók upp Kópavogs-módelið í leikskólum (40 klst hámark, 37 klst með afslætti) — sparnaður ~500 m.kr./ári. Nýr Urriðaholtsskóli með sundlaug og íþróttasal; Hnoðraholtsskóli í hönnun.',
+      velferd:'Stærsti tómstundastyrkur á landinu (+11,6% í 67.000 kr./ári 2026). Búsetuklasi fyrir fatlað fólk í Hnoðraholti. Aukinn stuðningur við lágtekjuheimili.',
+      fjarmal:'LÆGSTA útsvar á höfuðborgarsvæðinu (14,71% 2025 og 2026). Almar gagnrýnir harðlega „þvingaðar útsvarshækkanir" ríkisstjórnarinnar. Lækkun fasteignaskatta 2026. Skuldahlutfall stefnir í 87,2% 2026 (úr 110% 2025).',
+      atvinnu:'Arnarland, atvinnusvæði í Urriðaholti og aukið samráð við atvinnulífið.'
+    },
+    'G': {
+      husnaedi:'Fjölbreyttari uppbygging — „Garðabær er fyrir okkur öll". Hóflegri uppbygging á Garðaholti og Garðahverfi.',
+      samgongur:'Stuðningur við Borgarlínu og almenningssamgöngur.',
+      umhverfi:'Náttúruvernd og uppfærð loftslagsstefna með skýrari losunarmarkmiðum.',
+      menntun:'Barnvæn sveitarfélög (Barnasáttmáli SÞ). Gagnrýni á „Hádegispælingarnar" (skólamatarmál) og Kópavogs-módelið.',
+      velferd:'Aðgengi og sjálfstæði eldra fólks; stuðningur við Torgið.',
+      fjarmal:'Hefur stutt hækkun útsvars 2023 til að bæta þjónustu (andstætt D).',
+      atvinnu:'Fjölbreyttari atvinnulíf og inngilding innflytjenda.'
+    },
+    'M': {
+      husnaedi:'Ekki birt ítarleg afstaða 2026; landsstefna M vill draga úr reglubyrði og auka lóðaframboð.',
+      samgongur:'Ekki birt ítarleg afstaða 2026; landsstefna M gagnrýnir Borgarlínu.',
+      umhverfi:'Ekki birt ítarleg afstaða 2026.',
+      menntun:'Ekki birt ítarleg afstaða 2026.',
+      velferd:'Ekki birt ítarleg afstaða 2026.',
+      fjarmal:'Líklega áhersla á lækkun skatta og aðhald í útgjöldum — landsstefna M.',
+      atvinnu:'Ekki birt ítarleg afstaða 2026.'
+    },
+    'S': {
+      husnaedi:'Aukið framboð á hagkvæmu húsnæði og félagslegu húsnæði.',
+      samgongur:'Eindreginn stuðningur við Borgarlínu.',
+      umhverfi:'Áhersla á loftslagsmál og vistvottun hverfa.',
+      menntun:'Gegn Kópavogs-módelinu; heitur matur í skólum; lengri leikskólatími. Deilir gagnrýni með G og C.',
+      velferd:'Jöfnuður, félagslegt húsnæði og inngilding.',
+      fjarmal:'Tilbúin að hækka útsvar fyrir aukna þjónustu.',
+      atvinnu:'Fjölbreyttari atvinnulíf og frumkvöðlastuðningur.'
+    }
+  },
+  sattmali2022: {
+    titill: 'Hreinn meirihluti Sjálfstæðisflokks (2022–2026) — ENGINN sáttmáli',
+    gildi: '2022–2026',
+    flokkar: ['D'],
+    kjarni: 'Sjálfstæðisflokkur vann hreinan meirihluta með 7 af 11 sætum í kosningunum 14. maí 2022 (~49,1% atkvæða). Almar Guðmundsson tók við sem bæjarstjóri 3. júní 2022 eftir 17 ára setu Gunnars Einarssonar (2005–2022). Garðabær er eina sveitarfélagið á höfuðborgarsvæðinu sem hefur haldið hreinum flokksmeirihluta samfellt síðan bærinn fékk kaupstaðarréttindi 1976.',
+    lykilatridi: [
+      'Lægsta útsvar á höfuðborgarsvæðinu samfellt (14,71% 2026)',
+      'Ábyrgur rekstur með skuldahlutfall undir 150%-markinu og stefnt í 87,2% 2026',
+      'Urriðaholt — fyrsta íslenska hverfið með BREEAM Communities vottun',
+      'Kópavogs-módel tekið upp í leikskólum 2023 (sparnaður ~500 m.kr./ári)',
+      'Áframhaldandi lóðaframboð og uppbygging í Hnoðraholti, Urriðaholti og Vetrarmýri',
+      '„Nýtt Álftanes á einu kjörtímabili" — uppbygging eftir sameiningu 2013'
+    ],
+    heimild: 'Sjálfstæðisflokkur í Garðabæ / gardabaer.is'
+  },
+  finance: [
+    // Garðabær — ársreikningar 2021–2024. Tölur í milljörðum króna (ma.kr.).
+    // Heimildir: globenewswire-tilkynningar 2025–2026, gardabaer.is/stjornsysla/fjarmal.
+    // 2015–2020 tölur vantar í vefleit — þarf úr PDF-ársreikningum.
+    {yr:2021,
+      A:{tekjur:null, gjold:null, nidurstada:null, skatttekjur:null, eignir:null, skuldir:null, eiginfe:null},
+      AB:{tekjur:null, nidurstada:0.41, eignir:null, skuldir:null, eiginfe:null},
+      ibuar:17721, baejarstjori:'Gunnar Einarsson', bstAf:'D',
+      meirihluti:['D'], kjor:'2018–2022',
+      athugasemd:'Veltufé frá rekstri 3,12 ma.kr. (15,4% af tekjum). Skuldaviðmið 82%, skuldahlutfall AB 111%. Fjárfestingar 23,6% af tekjum. Niðurstaða +0,41 ma. (áætlun 0,13 ma.).',
+      adj:[]
+    },
+    {yr:2022,
+      A:{tekjur:null, gjold:null, nidurstada:null, skatttekjur:null, eignir:null, skuldir:null, eiginfe:null},
+      AB:{tekjur:null, nidurstada:null, eignir:null, skuldir:null, eiginfe:null},
+      ibuar:18239, baejarstjori:'Gunnar Einarsson → Almar Guðmundsson (3. júní)', bstAf:'D',
+      meirihluti:['D'], kjor:'2022–2026',
+      skipti:'Kjörtímabilaskipti. Gunnar Einarsson (bæjarstjóri 2005–2022) lét af störfum. Almar Guðmundsson (D) tók við 3. júní 2022 eftir hreinan meirihluta D (7/11 sæti, ~49,1%).',
+      athugasemd:'Rekstrarniðurstaða +5,1% af tekjum. Lántaka 1,17 ma.kr. Skuldahlutfall 93%. Fjárfestingar 17% af tekjum.',
+      adj:[]
+    },
+    {yr:2023,
+      A:{tekjur:null, gjold:null, nidurstada:null, skatttekjur:null, eignir:null, skuldir:null, eiginfe:null},
+      AB:{tekjur:null, nidurstada:null, eignir:null, skuldir:null, eiginfe:null},
+      ibuar:19022, baejarstjori:'Almar Guðmundsson', bstAf:'D',
+      meirihluti:['D'], kjor:'2022–2026',
+      athugasemd:'Skuldir A-sjóðs lækkuðu um 2 ma.kr. milli 2023 og 2024. Skuldahlutfall ~131% (heildarmynd). Nákvæmar tölur ekki aðgengilegar í vefleit — þarf úr PDF.',
+      adj:[]
+    },
+    {yr:2024,
+      A:{tekjur:null, gjold:null, nidurstada:0.56, skatttekjur:null, eignir:null, skuldir:null, eiginfe:null},
+      AB:{tekjur:30.48, gjold:25.25, nidurstada:1.18, eignir:null, skuldir:null, eiginfe:28.67},
+      ibuar:20116, baejarstjori:'Almar Guðmundsson', bstAf:'D',
+      meirihluti:['D'], kjor:'2022–2026',
+      athugasemd:'Markvissar aðgerðir í rekstri skila +0,56 ma. A / +1,18 ma. AB — bæði yfir áætlun (0,09 A / 0,47 AB). Skuldahlutfall 118% (A) / 120% (AB); skuldaviðmið 97%. Eiginfjárhlutfall 43,9%.',
+      adj:[]
+    }
+  ],
+  budgets: {
+    2024: {
+      A:  {tekjur:null, gjold:null, nidurstada:0.094},
+      AB: {tekjur:null, gjold:null, nidurstada:0.47, skuldir:null},
+      notes:'Áætlun 2024 gerði ráð fyrir minniháttar jákvæðri niðurstöðu (+0,09 A, +0,47 AB). Raun varð mun betri (+0,56 A, +1,18 AB) — markvissar aðgerðir í rekstri.'
+    },
+    2025: {
+      A:  {tekjur:null, gjold:null, nidurstada:null},
+      AB: {tekjur:null, gjold:null, nidurstada:0.70, skuldir:null},
+      notes:'Útsvar 14,71%. Áætlað AB-afgangur yfir 700 m.kr. Raunin varð margfalt betri (+2,75 ma. AB) — sjá 2025 bráðabirgða.'
+    },
+    2026: {
+      A:  {tekjur:null, gjold:null, nidurstada:0.146},
+      AB: {tekjur:null, gjold:null, nidurstada:0.594, skuldir:null},
+      notes:'Útsvar 14,71% óbreytt (lægsta á höfuðborgarsvæðinu meðal 10 stærstu). Áætlað +0,146 ma. A / +0,594 ma. AB. EBITDA 4,36 ma., veltufé frá rekstri 2,05 ma. Fjárfestingar 6,32 ma. heildar (1,73 ma. fjárheimild). Skuldahlutfall stefnir í 87,2% (-10 prósentustig á 2 árum). Samþykkt 4. desember 2025.'
+    }
+  },
+  finance2025Partial: {
+    yr:2025, timabil:'Ársreikningur 2025 (birtur 14. apríl 2026)',
+    A:{tekjur:null, nidurstada:null, skatttekjur:null},
+    AB:{tekjur:35.24, nidurstada:2.75, eignir:null, skuldir:null, eiginfe:null},
+    baejarstjori:'Almar Guðmundsson', bstAf:'D',
+    meirihluti:['D'], kjor:'2022–2026',
+    athugasemd:'„Sterk afkoma og skuldahlutföll lækka." Tekjur 9,1% yfir áætlun. Niðurstaða +2,75 ma. AB (7,8% af tekjum) — rúmlega tvöfalt 2024. Veltufé frá rekstri 2,39 ma. Skuldaviðmið 86% (úr 97% 2024), skuldahlutfall AB 110% (úr 120%). Eiginfjárhlutfall 45,8%. Lántaka 3,16 ma. (0,87 ma. undir áætlun). Fjárfestingar 5,09 ma. (14,4% af tekjum). Menntun 61,3% skatttekna (úr 56,3%). Íbúar 20.724 (+608).'
+  },
   kjortimabil: [
     {
-      titill: '2022–2026',
-      bst: 'Almar Guðmundsson (D)',
+      titill: '2018–2022',
+      bst: 'Gunnar Einarsson (D)',
+      meirihluti: ['D'],
+      ar: [2021],
+      lykilmal: [
+        'Gunnar Einarsson var bæjarstjóri Garðabæjar 2005–2022 (17 ár samfellt)',
+        'D með hreinan meirihluta allt tímabilið',
+        '2021: +0,41 ma. AB (áætlun 0,13 ma.); skuldaviðmið 82%; veltufé frá rekstri 3,12 ma.',
+        'Álftanes sameinað 2013 hefur verið í uppbyggingu allt tímabilið'
+      ]
+    },
+    {
+      titill: '2022–2026 (núverandi)',
+      bst: 'Almar Guðmundsson (D) frá 3. júní 2022',
       meirihluti: ['D'],
       ar: [2022,2023,2024,2025],
       lykilmal: [
-        'Hreinn meirihluti Sjálfstæðisflokks (7 af 11 sætum) — einstakt á höfuðborgarsvæðinu',
-        'Lægsta útsvar á höfuðborgarsvæðinu: 14,71% (2026) — aðrir stórir í 14,97%',
-        'Rekstrarafgangur 2025 2.753 m.kr. (1.183 m.kr. 2024); skuldahlutfall lækkar úr 120% í 110%',
-        'Urriðaholt áframhaldandi — fyrsta íslenska hverfið með BREEAM Communities vottun',
-        'Samfylking klýfur sig út úr Garðabæjarlistanum 2026 og býður fram sjálfstætt í fyrsta sinn',
-        'Deilur við ríkið um þvingaðar útsvarshækkanir — Almar hefur gagnrýnt stefnu ríkisstjórnarinnar'
+        'Hreinn meirihluti D (7 af 11 sætum) — einstakt á höfuðborgarsvæðinu',
+        'Almar Guðmundsson (hagfræðingur, MBA London Business School) tók við af Gunnari Einarssyni eftir 17 ára þjónustu hans',
+        'Lægsta útsvar á höfuðborgarsvæðinu (14,71% 2025 og 2026) — Almar hefur gagnrýnt „þvingaðar útsvarshækkanir" ríkisins',
+        '2024: „markvissar aðgerðir" skila +1,18 ma. AB (yfir áætlun 0,47 ma.); skuldahlutfall AB 120%',
+        '2025 bráðabirgða: +2,75 ma. AB (7,8% af tekjum) — tvöfalt 2024. Skuldahlutfall lækkar úr 120% í 110%; skuldaviðmið úr 97% í 86%',
+        'Kópavogs-módelið tekið upp í leikskólum 2023 (hámark 40 klst/viku) — sparnaður ~500 m.kr./ári. Gagnrýni frá G, C og S',
+        'Samfylking klýfur sig úr Garðabæjarlistanum 2026 og býður fram sjálfstætt í fyrsta sinn frá 2010',
+        'Framsókn 2026: umdeild uppstilling — Brynja Dan (oddviti 2022) færð úr 1. í 2. sæti; Hlynur Bæringsson nýr oddviti'
       ]
     }
   ]
@@ -4648,27 +4845,29 @@ function renderStuttu(){
   var budgetLast = BUDGETS[last.yr] || {};
 
   // Heildarmerki heilsu — byggt á 6 þáttum sem ná bæði yfir síðasta ár og
-  // 5 ára sýn. Eitt-árs mat felur langtímaþróun: skuldir hafa hækkað 9 ár í röð
-  // og A-hluti var í tapi 5 ár í röð áður en 2024 rétt rataði í plús. Slíkt
-  // samhengi þarf að endurspeglast í stöðumatinu.
+  // 5 ára sýn. Null-safe: ef reitur er ekki skráður telst hann „ekki vitað"
+  // (ekki neikvætt). Skilar samt vísi jafnvel við sparsar gögn.
   var last5 = FINANCE.slice(-5);
-  var aAvg5 = last5.reduce(function(s,d){return s+d.A.nidurstada;},0) / last5.length;
-  var abAvg5 = last5.reduce(function(s,d){return s+d.AB.nidurstada;},0) / last5.length;
+  function avgNonNull(arr){ var v=arr.filter(function(x){return x!=null;}); return v.length ? v.reduce(function(s,x){return s+x;},0)/v.length : null; }
+  var aAvg5 = avgNonNull(last5.map(function(d){return d.A && d.A.nidurstada;}));
+  var abAvg5 = avgNonNull(last5.map(function(d){return d.AB && d.AB.nidurstada;}));
   var skuldirEverFellLast5 = last5.some(function(d,i){
-    if(i===0) return false;
-    return d.AB.skuldir < last5[i-1].AB.skuldir;
+    if(i===0 || !d.AB || d.AB.skuldir==null) return false;
+    var prevD = last5[i-1];
+    if(!prevD.AB || prevD.AB.skuldir==null) return false;
+    return d.AB.skuldir < prevD.AB.skuldir;
   });
 
-  // 1. A-hluti jákvæður síðasta ár
-  var aPos          = last.A.nidurstada  >= 0;
-  // 2. A-hluti jákvæður að meðaltali síðustu 5 ár (langtímasýn)
-  var aAvgPos       = aAvg5 >= 0;
+  // 1. A-hluti jákvæður síðasta ár (null = 0 vísir)
+  var aPos          = (last.A  && last.A.nidurstada  != null) ? (last.A.nidurstada  >= 0) : false;
+  // 2. A-hluti jákvæður að meðaltali síðustu 5 ár
+  var aAvgPos       = (aAvg5  != null) ? (aAvg5  >= 0) : false;
   // 3. AB jákvætt síðasta ár
-  var abPos         = last.AB.nidurstada >= 0;
+  var abPos         = (last.AB && last.AB.nidurstada != null) ? (last.AB.nidurstada >= 0) : false;
   // 4. AB jákvætt að meðaltali síðustu 5 ár
-  var abAvgPos      = abAvg5 >= 0;
+  var abAvgPos      = (abAvg5 != null) ? (abAvg5 >= 0) : false;
   // 5. Skuldir lækkuðu milli síðustu tveggja ára
-  var skuldirLower  = last.AB.skuldir < prev.AB.skuldir;
+  var skuldirLower  = (last.AB && last.AB.skuldir != null && prev && prev.AB && prev.AB.skuldir != null) ? (last.AB.skuldir < prev.AB.skuldir) : false;
   // 6. Skuldir lækkuðu einhvern tíma á síðustu 5 árum
   var skuldirAnyFall= skuldirEverFellLast5;
 
@@ -4692,15 +4891,23 @@ function renderStuttu(){
     if(v >= 1e3) return (Math.round(v/1e3)).toLocaleString('is-IS') + ' þ.';
     return Math.round(v).toLocaleString('is-IS');
   }
-  function plusMinus(v){ return (v>=0?'+':'') + v.toFixed(1).replace('.',','); }
+  function plusMinus(v){ if(v==null || isNaN(v)) return '—'; return (v>=0?'+':'') + v.toFixed(1).replace('.',','); }
 
-  // Reikna helstu tölur
-  var abResult = last.AB.nidurstada;                    // ma.kr.
-  var abResultPrev = prev.AB.nidurstada;
-  var abSkuldir = last.AB.skuldir;                      // ma.kr.
-  var skuldirPerIbua = perIbua(abSkuldir, last.yr);     // kr.
-  var resultPerIbua = perIbua(abResult, last.yr);       // kr.
-  var budgetDev = (budgetLast.AB && budgetLast.AB.nidurstada!=null) ? (abResult - budgetLast.AB.nidurstada) : null;
+  // Reikna helstu tölur — fallback á nýjustu entry sem hefur populated field
+  function findLastWith(pred){ for(var ii=FINANCE.length-1; ii>=0; ii--){ if(pred(FINANCE[ii])) return FINANCE[ii]; } return null; }
+  function findPrevWith(pred, ref){ var ri = FINANCE.indexOf(ref); if(ri<=0) return null; for(var ii=ri-1; ii>=0; ii--){ if(pred(FINANCE[ii])) return FINANCE[ii]; } return null; }
+  var lastForResult  = findLastWith(function(d){ return d.AB && d.AB.nidurstada != null; }) || last;
+  var prevForResult  = findPrevWith(function(d){ return d.AB && d.AB.nidurstada != null; }, lastForResult);
+  var lastForSkuldir = findLastWith(function(d){ return d.AB && d.AB.skuldir    != null; }) || last;
+  var prevForSkuldir = findPrevWith(function(d){ return d.AB && d.AB.skuldir    != null; }, lastForSkuldir);
+
+  var abResult     = lastForResult.AB  ? lastForResult.AB.nidurstada  : null;
+  var abResultPrev = prevForResult && prevForResult.AB ? prevForResult.AB.nidurstada : null;
+  var abSkuldir    = lastForSkuldir.AB ? lastForSkuldir.AB.skuldir    : null;
+  var prevSkuldir  = prevForSkuldir && prevForSkuldir.AB ? prevForSkuldir.AB.skuldir : null;
+  var skuldirPerIbua = (abSkuldir != null) ? perIbua(abSkuldir, lastForSkuldir.yr) : null;
+  var budgetForResult = BUDGETS[lastForResult.yr] || {};
+  var budgetDev = (abResult != null && budgetForResult.AB && budgetForResult.AB.nidurstada != null) ? (abResult - budgetForResult.AB.nidurstada) : null;
 
   // Byggja upp HTML
   var html = '';
@@ -4719,25 +4926,31 @@ function renderStuttu(){
   // Þrjú lykilkort
   html += '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin-bottom:1rem;">';
 
-  // Kort 1: Hagnaður / tap
-  html += '<div class="card">'
-    +'<div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.07em;color:var(--ink3);margin-bottom:4px;">Er '+cityN('nef')+' með hagnað?</div>'
-    +'<div style="font-family:\'Playfair Display\',serif;font-size:32px;color:'+(abResult>=0?'#2E7D32':'#C62828')+';line-height:1;margin-bottom:6px;">'+plusMinus(abResult)+' <span style="font-size:15px;color:var(--ink2);font-family:\'DM Sans\',sans-serif;">ma.</span></div>'
-    +'<div style="font-size:12px;color:var(--ink2);line-height:1.5;">'
-      +(abResult>=0?cityN('nef-u')+' skilaði <strong>hagnaði</strong> í fyrra.':cityN('nef-u')+' rak <strong>tap</strong> í fyrra.')
-      +'<br>Þetta er '+(abResult>abResultPrev?'betra':'verra')+' en árið á undan ('+plusMinus(abResultPrev)+' ma.).'
-      +(budgetDev!=null ? '<br><span style="color:'+(budgetDev>=0?'#2E7D32':'#C62828')+';font-weight:500">'+(budgetDev>=0?'Betri':'Verri')+' en áætlun var</span> ('+plusMinus(budgetDev)+' ma. frávik).' : '')
-    +'</div></div>';
+  // Kort 1: Hagnaður / tap — sleppt ef engin niðurstaða er skráð
+  if(abResult != null){
+    html += '<div class="card">'
+      +'<div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.07em;color:var(--ink3);margin-bottom:4px;">Er '+cityN('nef')+' með hagnað? <span style="color:var(--ink3);font-weight:400">('+lastForResult.yr+')</span></div>'
+      +'<div style="font-family:\'Playfair Display\',serif;font-size:32px;color:'+(abResult>=0?'#2E7D32':'#C62828')+';line-height:1;margin-bottom:6px;">'+plusMinus(abResult)+' <span style="font-size:15px;color:var(--ink2);font-family:\'DM Sans\',sans-serif;">ma.</span></div>'
+      +'<div style="font-size:12px;color:var(--ink2);line-height:1.5;">'
+        +(abResult>=0?cityN('nef-u')+' skilaði <strong>hagnaði</strong> í fyrra.':cityN('nef-u')+' rak <strong>tap</strong> í fyrra.')
+        +(abResultPrev!=null ? '<br>Þetta er '+(abResult>abResultPrev?'betra':'verra')+' en árið á undan ('+plusMinus(abResultPrev)+' ma.).' : '')
+        +(budgetDev!=null ? '<br><span style="color:'+(budgetDev>=0?'#2E7D32':'#C62828')+';font-weight:500">'+(budgetDev>=0?'Betri':'Verri')+' en áætlun var</span> ('+plusMinus(budgetDev)+' ma. frávik).' : '')
+      +'</div></div>';
+  }
 
-  // Kort 2: Skuldir
-  html += '<div class="card">'
-    +'<div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.07em;color:var(--ink3);margin-bottom:4px;">Hvað skuldar '+cityN('nef')+'?</div>'
-    +'<div style="font-family:\'Playfair Display\',serif;font-size:32px;color:var(--ink);line-height:1;margin-bottom:6px;">'+abSkuldir.toFixed(0)+' <span style="font-size:15px;color:var(--ink2);font-family:\'DM Sans\',sans-serif;">ma.</span></div>'
-    +'<div style="font-size:12px;color:var(--ink2);line-height:1.5;">'
-      +'Það gerir <strong>'+fmtISK(skuldirPerIbua)+' kr.</strong> á hvern íbúa '+cityGen()+'.'
-      +'<br>Inniheldur '+cityCompaniesClause()+'.'
-      +'<br><span style="color:'+(skuldirLower?'#2E7D32':'#C62828')+';font-weight:500">'+(skuldirLower?'Lækkaði':'Hækkaði')+'</span> frá fyrra ári ('+plusMinus(abSkuldir-prev.AB.skuldir)+' ma.).'
-    +'</div></div>';
+  // Kort 2: Skuldir — sleppt ef skuldatölur eru ekki skráðar
+  if(abSkuldir != null){
+    var skuldirDiff = (prevSkuldir!=null) ? abSkuldir - prevSkuldir : null;
+    var skuldirLowerLoc = (prevSkuldir!=null) ? abSkuldir < prevSkuldir : false;
+    html += '<div class="card">'
+      +'<div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.07em;color:var(--ink3);margin-bottom:4px;">Hvað skuldar '+cityN('nef')+'? <span style="color:var(--ink3);font-weight:400">('+lastForSkuldir.yr+')</span></div>'
+      +'<div style="font-family:\'Playfair Display\',serif;font-size:32px;color:var(--ink);line-height:1;margin-bottom:6px;">'+abSkuldir.toFixed(0)+' <span style="font-size:15px;color:var(--ink2);font-family:\'DM Sans\',sans-serif;">ma.</span></div>'
+      +'<div style="font-size:12px;color:var(--ink2);line-height:1.5;">'
+        +(skuldirPerIbua!=null ? 'Það gerir <strong>'+fmtISK(skuldirPerIbua)+' kr.</strong> á hvern íbúa '+cityGen()+'.':'')
+        +'<br>Inniheldur '+cityCompaniesClause()+'.'
+        +(skuldirDiff!=null ? '<br><span style="color:'+(skuldirLowerLoc?'#2E7D32':'#C62828')+';font-weight:500">'+(skuldirLowerLoc?'Lækkaði':'Hækkaði')+'</span> frá fyrra ári ('+plusMinus(skuldirDiff)+' ma.).' : '')
+      +'</div></div>';
+  }
 
   // Kort 3: Íbúar / tekjur per íbúa — A-tekjur eru ekki alltaf til staðar; fallback á AB.
   var tekjurForCard = (last.A && last.A.tekjur != null) ? last.A.tekjur : (last.AB && last.AB.tekjur != null ? last.AB.tekjur : null);
