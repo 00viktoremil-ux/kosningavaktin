@@ -800,6 +800,19 @@ const PARTY_LOGO_BG = {
 
 function logoFor(pid){ return PARTY_LOGOS[pid] || null; }
 
+// Helper: navigate to candidate detail panel (opens framb page, selects party, opens card)
+function gotoCandidate(candId){
+  var c = CANDS.find(function(x){return x.id===+candId;});
+  if(!c) return;
+  showPage('framb');
+  setTimeout(function(){
+    var btns = Array.from(document.querySelectorAll('#plist .pbtn'));
+    var pBtn = btns.find(function(b){var n=b.querySelector('.pname');return n && n.textContent.indexOf(gP(c.party).name)>=0;});
+    if(pBtn) setParty(c.party, pBtn);
+    selC(c.id);
+  }, 100);
+}
+
 // Skilar HTML-striki fyrir flokksmerki. Ef logo er til, sýnir það. Ef ekki,
 // notar letter-avatar (stafirnir í lit flokks). size = hliðarstærð í px.
 function renderPartyBadge(p, size){
@@ -938,7 +951,7 @@ function ini2(s){return s.split(' ').filter(w=>w.length>1&&/[A-ZÁÉÍÓÚÝÞÆ
 let selParty='all',selCand=null;
 function initSidebar(){
   const cnts={};CANDS.forEach(c=>{cnts[c.party]=(cnts[c.party]||0)+1;});
-  document.getElementById('plist').innerHTML=PARTIES.map(p=>`<button class="pbtn" onclick="setParty('${p.id}',this)"><div class="pdot" style="background:${p.color}"></div><span class="pname">${p.id} · ${p.name}</span><span class="pcnt">${cnts[p.id]||0}</span></button>`).join('');
+  document.getElementById('plist').innerHTML=PARTIES.map(p=>`<button class="pbtn" onclick="setParty('${p.id}',this)">${renderPartyBadge(p, 22)}<span class="pname">${p.id} · ${p.name}</span><span class="pcnt">${cnts[p.id]||0}</span></button>`).join('');
 }
 function setParty(id,btn){
   document.querySelectorAll('.pbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
@@ -1235,10 +1248,10 @@ window._dhondt = dhondt;
 const baldvin=POLLS[0];
 const sorted=PARTIES.filter(p=>baldvin.data[p.id]>0).sort((a,b)=>baldvin.data[b.id]-baldvin.data[a.id]);
 const bbEl=document.getElementById('baldvin-bars');
-if(bbEl) bbEl.innerHTML=sorted.map(p=>`<div class="bar-row"><span class="bar-party">${p.id} · ${p.name}</span><div class="bar-wrap"><div class="bar-fill" style="width:${baldvin.data[p.id]}%;background:${p.color}"><span class="bar-pct">${baldvin.data[p.id]>5?baldvin.data[p.id]+'%':''}</span></div></div><span class="bar-pct-out">${baldvin.data[p.id]}%</span></div>`).join('');
+if(bbEl) bbEl.innerHTML=sorted.map(p=>`<div class="bar-row" style="display:flex;align-items:center;gap:8px"><span style="display:flex;align-items:center;gap:6px;min-width:180px"><span style="flex-shrink:0">${renderPartyBadge(p, 22)}</span><span class="bar-party" style="font-size:12px">${p.id} · ${p.name}</span></span><div class="bar-wrap" style="flex:1"><div class="bar-fill" style="width:${baldvin.data[p.id]}%;background:${p.color}"><span class="bar-pct">${baldvin.data[p.id]>5?baldvin.data[p.id]+'%':''}</span></div></div><span class="bar-pct-out">${baldvin.data[p.id]}%</span></div>`).join('');
 
 const sfEl=document.getElementById('seat-forecast');
-if(sfEl) sfEl.innerHTML=sorted.filter(p=>baldvin.seats[p.id]>0).map(p=>`<div style="background:${p.color}18;border:0.5px solid ${p.color}40;border-radius:8px;padding:6px 12px;text-align:center"><div style="font-size:18px;font-weight:500;color:${p.color};font-family:'Playfair Display',serif">${baldvin.seats[p.id]}</div><div style="font-size:10px;color:${p.color}">${p.id}</div></div>`).join('');
+if(sfEl) sfEl.innerHTML=sorted.filter(p=>baldvin.seats[p.id]>0).map(p=>`<div style="background:${p.color}18;border:0.5px solid ${p.color}40;border-radius:8px;padding:8px 10px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:4px"><div style="font-size:18px;font-weight:500;color:${p.color};font-family:'Playfair Display',serif;line-height:1">${baldvin.seats[p.id]}</div>${renderPartyBadge(p, 20)}<div style="font-size:10px;color:${p.color}">${p.id}</div></div>`).join('');
 
 showPollTable_('all',null,POLLS);
 renderPollCards_(POLLS);
@@ -1536,7 +1549,7 @@ function renderSearchResults(r){
     html += '<div class="search-group"><div class="search-group-lbl">Flokkar ('+r.flokkar.length+')</div>';
     r.flokkar.forEach(function(p){
       searchResults.push({type:'party', id:p.id});
-      html += '<a class="search-item" onclick="gotoSearchResult(\'party\', \''+p.id+'\')"><div class="search-item-icon" style="background:'+p.color+'18;color:'+p.color+';font-weight:700;font-family:Playfair Display,serif">'+p.id+'</div><div class="search-item-main"><div class="search-item-title">'+p.name+'</div><div class="search-item-sub">'+((PARTY_INFO[p.id]||{}).ideology||'')+'</div></div><div class="search-item-arrow">→</div></a>';
+      html += '<a class="search-item" onclick="gotoSearchResult(\'party\', \''+p.id+'\')">'+renderPartyBadge(p, 28)+'<div class="search-item-main"><div class="search-item-title">'+p.name+'</div><div class="search-item-sub">'+((PARTY_INFO[p.id]||{}).ideology||'')+'</div></div><div class="search-item-arrow">→</div></a>';
     });
     html += '</div>';
   }
@@ -1568,7 +1581,7 @@ function renderSearchResults(r){
     r.stefnumal.slice(0, 6).forEach(function(s){
       var p = gP(s.party);
       searchResults.push({type:'stefnu', pid:s.party, issue:s.issue.id});
-      html += '<a class="search-item" onclick="gotoSearchResult(\'stefnu\', \''+s.party+'\', \''+s.issue.id+'\')"><div class="search-item-icon" style="background:'+p.color+'18;color:'+p.color+';font-weight:700;font-family:Playfair Display,serif">'+s.party+'</div><div class="search-item-main"><div class="search-item-title">'+p.name+' · '+s.issue.label+'</div><div class="search-item-sub">'+s.text.slice(0, 110)+(s.text.length>110?'…':'')+'</div></div><div class="search-item-arrow">→</div></a>';
+      html += '<a class="search-item" onclick="gotoSearchResult(\'stefnu\', \''+s.party+'\', \''+s.issue.id+'\')">'+renderPartyBadge(p, 28)+'<div class="search-item-main"><div class="search-item-title">'+p.name+' · '+s.issue.label+'</div><div class="search-item-sub">'+s.text.slice(0, 110)+(s.text.length>110?'…':'')+'</div></div><div class="search-item-arrow">→</div></a>';
     });
     if(r.stefnumal.length > 6) html += '<div style="padding:6px 18px;font-size:11px;color:var(--ink3)">+'+(r.stefnumal.length-6)+' fleiri…</div>';
     html += '</div>';
@@ -2025,6 +2038,11 @@ function initPartyCards() {
   grid.innerHTML = PARTIES.map(p => {
     const info = PARTY_INFO[p.id] || {};
     const cands = CANDS.filter(c=>c.party===p.id).length;
+    const oddviti = CANDS.find(c=>c.party===p.id && c.num===1);
+    const oddvPhoto = oddviti ? photoFor(oddviti) : null;
+    const oddvAvatar = oddvPhoto
+      ? `<div style="width:32px;height:32px;border-radius:50%;background-image:url('${oddvPhoto}');background-size:cover;background-position:center top;flex-shrink:0;box-shadow:0 0 0 2px ${p.color}30"></div>`
+      : (oddviti ? `<div style="width:32px;height:32px;border-radius:50%;background:${p.color}18;color:${p.color};display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:11px;font-weight:700;flex-shrink:0">${oddviti.name.split(' ').filter(w=>w.length>1).map(w=>w[0]).slice(0,2).join('')}</div>` : '');
     return `<div style="background:var(--white);border:0.5px solid var(--bdr);border-radius:12px;padding:1rem;cursor:pointer;transition:border-color .15s;"
       onmouseenter="this.style.borderColor='${p.color}'" onmouseleave="this.style.borderColor=''"
       onclick="showPartyDetail('${p.id}')">
@@ -2035,6 +2053,13 @@ function initPartyCards() {
           <div style="font-size:11px;color:var(--ink2)">${info.founded||''}</div>
         </div>
       </div>
+      ${oddviti ? `<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--bg);border-radius:8px;margin-bottom:.75rem;">
+        ${oddvAvatar}
+        <div style="flex:1;min-width:0">
+          <div style="font-size:9px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:${p.color};line-height:1">Oddviti</div>
+          <div style="font-size:12px;font-weight:500;color:var(--ink);line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${oddviti.name}</div>
+        </div>
+      </div>` : ''}
       <div style="font-size:11px;color:var(--ink2);line-height:1.5;margin-bottom:.75rem">${info.ideology||''}</div>
       <div style="display:flex;gap:4px;flex-wrap:wrap;">
         ${(info.keyTopics||[]).slice(0,3).map(t=>`<span style="font-size:10px;padding:2px 7px;border-radius:99px;background:${p.color}12;color:${p.color};font-weight:500">${t}</span>`).join('')}
@@ -2061,9 +2086,14 @@ function showPartyDetail(id) {
         </div>
         <button onclick="document.getElementById('party-detail').style.display='none'" style="background:none;border:none;cursor:pointer;font-size:18px;color:var(--ink3)">✕</button>
       </div>
-      ${oddviti?`<div style="display:flex;align-items:center;gap:10px;margin-bottom:1.25rem;padding:10px;background:var(--bg);border-radius:8px;">
-        <div style="width:38px;height:38px;border-radius:50%;background:${p.color}18;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:13px;font-weight:700;color:${p.color}">${oddviti.name.split(' ').filter(w=>w.length>1).map(w=>w[0]).slice(0,2).join('')}</div>
-        <div><div style="font-size:13px;font-weight:500">Oddviti: ${oddviti.name}</div><div style="font-size:11px;color:var(--ink2)">${oddviti.title}</div></div>
+      ${oddviti?`<div style="display:flex;align-items:center;gap:12px;margin-bottom:1.25rem;padding:10px 12px;background:var(--bg);border-radius:10px;cursor:pointer" onclick="gotoCandidate(${oddviti.id})">
+        ${(function(){var ph=photoFor(oddviti);return ph?`<div style="width:48px;height:48px;border-radius:50%;background-image:url('${ph}');background-size:cover;background-position:center top;flex-shrink:0;box-shadow:0 0 0 2px ${p.color}40"></div>`:`<div style="width:48px;height:48px;border-radius:50%;background:${p.color}18;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:${p.color};flex-shrink:0">${oddviti.name.split(' ').filter(w=>w.length>1).map(w=>w[0]).slice(0,2).join('')}</div>`;})()}
+        <div style="flex:1;min-width:0">
+          <div style="font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:${p.color};margin-bottom:2px">Oddviti</div>
+          <div style="font-size:14px;font-weight:500;color:var(--ink);line-height:1.3">${oddviti.name}</div>
+          <div style="font-size:11px;color:var(--ink2);line-height:1.4">${oddviti.title}</div>
+        </div>
+        <div style="color:var(--ink3);font-size:14px">→</div>
       </div>`:''}
       <div style="display:flex;gap:4px;margin-bottom:1rem;flex-wrap:wrap;">
         <button class="dtab active" onclick="showPartyTab('stefnu',this,'${id}')">Stefnumál 2026</button>
@@ -3763,8 +3793,9 @@ function renderForsidaPollSummary(){
   var baldvin = window._POLLS[0];
   var sorted = PARTIES.filter(p=>baldvin.data[p.id]>0).sort((a,b)=>baldvin.data[b.id]-baldvin.data[a.id]).slice(0, 7);
   el.innerHTML = sorted.map(p=>
-    '<div class="mini-bar">'
-    +'<span class="mini-bar-lbl">'+p.id+' · '+p.name+'</span>'
+    '<div class="mini-bar" style="display:flex;align-items:center;gap:6px">'
+    +renderPartyBadge(p, 18)
+    +'<span class="mini-bar-lbl" style="font-size:11px">'+p.id+' · '+p.name+'</span>'
     +'<div class="mini-bar-wrap"><div class="mini-bar-fill" style="width:'+(baldvin.data[p.id]*2)+'%;background:'+p.color+'"></div></div>'
     +'<span class="mini-bar-pct">'+baldvin.data[p.id]+'%</span>'
     +'</div>'
