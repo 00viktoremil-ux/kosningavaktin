@@ -191,6 +191,9 @@ header{background:var(--ink);color:var(--white);padding:0 1.5rem;display:flex;al
 .countdown-date{font-size:12px;color:var(--white);font-weight:500;padding-top:10px;border-top:0.5px solid rgba(255,255,255,.12);}
 .forsida-stats-row{max-width:1100px;margin:-1.5rem auto 0;padding:0 1.5rem;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;position:relative;z-index:5;}
 .forsida-stat{background:var(--white);border:0.5px solid var(--bdr);border-radius:10px;padding:1rem 1.25rem;box-shadow:0 2px 8px rgba(0,0,0,.04);}
+.forsida-stat-btn{cursor:pointer;text-align:left;font:inherit;color:inherit;transition:border-color .15s,transform .1s,box-shadow .15s;}
+.forsida-stat-btn:hover{border-color:var(--gold);transform:translateY(-1px);box-shadow:0 4px 14px rgba(0,0,0,.08);}
+.forsida-stat-btn .stat-cta{font-size:11px;color:var(--gold);margin-top:.5rem;font-weight:500;opacity:.85;}
 .stat-num{font-family:'Playfair Display',serif;font-size:30px;font-weight:500;color:var(--ink);line-height:1;margin-bottom:4px;}
 .stat-lbl{font-size:11px;color:var(--ink2);text-transform:uppercase;letter-spacing:.06em;}
 .forsida-body{max-width:1100px;margin:1.5rem auto;padding:0 1.5rem;}
@@ -416,22 +419,26 @@ header{background:var(--ink);color:var(--white);padding:0 1.5rem;display:flex;al
   </div>
 
   <div class="forsida-stats-row">
-    <div class="forsida-stat">
+    <button type="button" class="forsida-stat forsida-stat-btn" onclick="goPage('flokkar')" title="Skoða flokka og stefnumál">
       <div class="stat-num" id="stat-framb">11</div>
       <div class="stat-lbl">framboð</div>
-    </div>
-    <div class="forsida-stat">
+      <div class="stat-cta">Skoða flokka →</div>
+    </button>
+    <button type="button" class="forsida-stat forsida-stat-btn" onclick="goPage('framb')" title="Skoða alla frambjóðendur">
       <div class="stat-num" id="stat-cands">460</div>
       <div class="stat-lbl">frambjóðendur</div>
-    </div>
-    <div class="forsida-stat">
+      <div class="stat-cta">Skoða frambjóðendur →</div>
+    </button>
+    <button type="button" class="forsida-stat forsida-stat-btn" onclick="goPage('samanburdur')" title="Samanburður sveitarfélaga">
       <div class="stat-num" id="stat-council">23</div>
       <div class="stat-lbl" id="stat-council-lbl">borgarfulltrúar kjörnir</div>
-    </div>
-    <div class="forsida-stat">
+      <div class="stat-cta">Samanburður sveitarfélaga →</div>
+    </button>
+    <button type="button" class="forsida-stat forsida-stat-btn" onclick="goPage('borgar')" title="Mögulegar meirihlutamyndir">
       <div class="stat-num" id="stat-majority">12</div>
       <div class="stat-lbl">þarf til meirihluta</div>
-    </div>
+      <div class="stat-cta">Meirihlutamyndir →</div>
+    </button>
   </div>
 
   <div class="forsida-body">
@@ -439,8 +446,8 @@ header{background:var(--ink);color:var(--white);padding:0 1.5rem;display:flex;al
       <div class="forsida-card">
         <div class="card-header">
           <div>
-            <div class="card-eyebrow">Staðan í könnunum</div>
-            <div class="card-title">Baldur-módel · apríl 2026</div>
+            <div class="card-eyebrow">Nýjasta könnun</div>
+            <div class="card-title" id="forsida-poll-title">—</div>
           </div>
           <button class="card-link" onclick="goPage('kannanir')">Allar kannanir →</button>
         </div>
@@ -477,7 +484,7 @@ header{background:var(--ink);color:var(--white);padding:0 1.5rem;display:flex;al
       <button class="nav-card" onclick="goPage('kannanir')">
         <div class="nav-card-icon">◐</div>
         <div class="nav-card-title">Kannanir og spá</div>
-        <div class="nav-card-desc">Allar nýlegar kannanir með samantekt. Baldur-módel metur líkur á sætatölu.</div>
+        <div class="nav-card-desc">Staðfestar kannanir og sætaspá með D'Hondt-aðferð. Úrslit 2022 til samanburðar.</div>
       </button>
       <button class="nav-card" onclick="goPage('borgar')">
         <div class="nav-card-icon">◈</div>
@@ -7039,24 +7046,48 @@ function renderCountdown(){
 
 function renderForsidaPollSummary(){
   var el = document.getElementById('forsida-poll-summary');
+  var titleEl = document.getElementById('forsida-poll-title');
   if(!el) return;
-  // Aðeins Reykjavík er með POLLS-skráð enn. Fyrir önnur muni birtum við
-  // placeholder svo forsíðan sýni ekki Reykjavíkur-kannanir.
-  if(CURRENT_MUNI !== 'rvk' || !window._POLLS){
-    el.innerHTML = '<div style="font-size:12px;color:var(--ink3);line-height:1.6;padding:.5rem 0">Engar kannanir hafa verið birtar fyrir '+getMuni().name+' 2026. Vefurinn sækir þær sjálfkrafa þegar þær birtast.</div>';
-    return;
+  // Notum window._POLLS ef það er til (þegar búið að reikna sæti), annars föllum
+  // til baka á POLLS_BY_MUNI (án sæta) og reiknum ef _dhondt er aðgengilegt.
+  var m = getMuni();
+  var latest = (window._POLLS && window._POLLS.length) ? window._POLLS[0] : null;
+  if(!latest){
+    var raw = (typeof POLLS_BY_MUNI !== 'undefined' && POLLS_BY_MUNI[CURRENT_MUNI]) || [];
+    if(!raw.length){
+      if(titleEl) titleEl.textContent = 'Engin könnun enn';
+      el.innerHTML = '<div style="font-size:12px;color:var(--ink3);line-height:1.7;padding:.5rem 0">Engar kannanir hafa verið birtar fyrir '+m.name+' 2026 enn sem komið er. Smelltu á „Allar kannanir →" til að sjá úrslit 2022 og sækja nýjustu tölur sjálfvirkt.</div>';
+      return;
+    }
+    latest = raw[0];
   }
-  var baldvin = window._POLLS[0];
-  var sorted = PARTIES.filter(p=>baldvin.data[p.id]>0).sort((a,b)=>baldvin.data[b.id]-baldvin.data[a.id]).slice(0, 7);
-  el.innerHTML = sorted.map(p=>
-    '<div class="mini-bar" style="display:flex;align-items:center;gap:6px">'
-    +renderPartyBadge(p, 18)
-    +'<span class="mini-bar-lbl" style="font-size:11px">'+p.id+' · '+p.name+'</span>'
-    +'<div class="mini-bar-wrap"><div class="mini-bar-fill" style="width:'+(baldvin.data[p.id]*2)+'%;background:'+p.color+'"></div></div>'
-    +'<span class="mini-bar-pct">'+baldvin.data[p.id]+'%</span>'
-    +'</div>'
-  ).join('')
-  +'<div style="font-size:10px;color:var(--ink3);margin-top:.75rem;line-height:1.5">'+baldvin.source+' · '+baldvin.date+' · Sætaspá: '+PARTIES.filter(p=>(baldvin.seats[p.id]||0)>0).sort((a,b)=>baldvin.seats[b.id]-baldvin.seats[a.id]).map(p=>p.id+' '+baldvin.seats[p.id]).join(' · ')+'</div>';
+  var seats = latest.seats;
+  if(!seats && typeof window._dhondt === 'function'){
+    seats = window._dhondt(latest.data, m.councilSize);
+  }
+  if(titleEl){
+    titleEl.textContent = latest.source + ' · ' + latest.date;
+  }
+  var sorted = PARTIES.filter(function(p){return (latest.data[p.id]||0)>0;})
+    .sort(function(a,b){return latest.data[b.id]-latest.data[a.id];})
+    .slice(0, 7);
+  el.innerHTML = sorted.map(function(p){
+    var pct = latest.data[p.id]||0;
+    return '<div class="mini-bar" style="display:flex;align-items:center;gap:6px">'
+      +renderPartyBadge(p, 18)
+      +'<span class="mini-bar-lbl" style="font-size:11px">'+p.id+' · '+p.name+'</span>'
+      +'<div class="mini-bar-wrap"><div class="mini-bar-fill" style="width:'+(pct*2)+'%;background:'+p.color+'"></div></div>'
+      +'<span class="mini-bar-pct">'+pct+'%</span>'
+      +'</div>';
+  }).join('');
+  if(seats){
+    var seatList = PARTIES.filter(function(p){return (seats[p.id]||0)>0;})
+      .sort(function(a,b){return seats[b.id]-seats[a.id];})
+      .map(function(p){return p.id+' '+seats[p.id];}).join(' · ');
+    el.innerHTML += '<div style="font-size:10px;color:var(--ink3);margin-top:.75rem;line-height:1.5">n='+(latest.n||'—')+' · Sætaspá (D\'Hondt, '+m.councilSize+' sæti): '+seatList+'</div>';
+  } else {
+    el.innerHTML += '<div style="font-size:10px;color:var(--ink3);margin-top:.75rem;line-height:1.5">n='+(latest.n||'—')+'</div>';
+  }
 }
 
 // ========================================================================
