@@ -268,8 +268,13 @@ header{background:var(--ink);color:var(--white);padding:0 1.5rem;display:flex;al
 .hdr-search:hover{background-color:rgba(255,255,255,.14);}
 .hdr-search-kbd{color:rgba(255,255,255,.4);font-size:10px;font-family:monospace;margin-left:6px;}
 @media(max-width:720px){
-  .hdr-search{width:36px;padding:6px;background-position:center;color:transparent;}
+  .hdr-search{width:36px;height:32px;padding:0;background-position:center;font-size:0;}
+  .hdr-search-label{display:none;}
   .hdr-search-kbd{display:none;}
+}
+@media(max-width:480px){
+  .muni-picker-date{display:none;}
+  header{padding:0 1rem;}
 }
 .search-overlay{position:fixed;inset:0;background:rgba(26,24,20,0.5);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);z-index:500;display:none;padding:4rem 1rem 2rem;animation:fadeIn .15s ease;}
 .search-overlay.open{display:block;}
@@ -362,7 +367,7 @@ header{background:var(--ink);color:var(--white);padding:0 1.5rem;display:flex;al
       <button id="muni-picker-btn" onclick="toggleMuniPicker()" class="live" style="cursor:pointer;border:0.5px solid var(--bdr);background:#fff;display:flex;align-items:center;gap:6px;padding:4px 10px;border-radius:99px;font-family:inherit;font-size:11px;color:var(--ink2);">
         <div class="dot"></div>
         <span id="muni-picker-label">Reykjavík</span>
-        <span style="font-size:10px;color:var(--ink3);">· 16. maí 2026</span>
+        <span class="muni-picker-date" style="font-size:10px;color:var(--ink3);white-space:nowrap;">· 16. maí 2026</span>
         <span style="font-size:9px;color:var(--ink3);margin-left:2px;">▾</span>
       </button>
       <div id="muni-picker-menu" style="display:none;position:absolute;right:0;top:calc(100% + 4px);background:#fff;border:0.5px solid var(--bdr);border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.08);min-width:180px;z-index:100;overflow:hidden;"></div>
@@ -615,7 +620,7 @@ header{background:var(--ink);color:var(--white);padding:0 1.5rem;display:flex;al
 <div id="page-borgar" class="page">
   <div class="coalition-page">
     <h2>Borgarstjórnarmyndir</h2>
-    <p class="sub">Mögulegar borgarstjórnir eftir 16. maí. 12 fulltrúar þurfa til meirihluta af 23. Sætatölur byggjast á nýjustu kannaningum.</p>
+    <p class="sub">Mögulegar borgarstjórnir eftir 16. maí. 12 fulltrúar þurfa til meirihluta af 23. Sætatölur byggjast á nýjustu könnunum.</p>
     <div class="coa-grid" id="coa-grid"></div>
     <div class="builder">
       <h3>Reiknivellan — settu þína borgarstjórn saman</h3>
@@ -644,12 +649,12 @@ header{background:var(--ink);color:var(--white);padding:0 1.5rem;display:flex;al
 // Reykjavík er vefgrundvöllur; Kópavogur, Hafnarfjörður, Garðabær, Mosfellsbær
 // og Seltjarnarnes bætast við í áföngum.
 const MUNI_META = {
-  rvk:  {id:'rvk',  name:'Reykjavík',      shortName:'Reykjavík',      koen:'Rvk',  councilName:'Borgarstjórn',  councilSize:23, stjoriTitle:'borgarstjóri',  ibuar:145931},
-  kopv: {id:'kopv', name:'Kópavogur',      shortName:'Kópavogur',      koen:'Kóp',  councilName:'Bæjarstjórn',    councilSize:11, stjoriTitle:'bæjarstjóri',    ibuar:40870},
-  hafn: {id:'hafn', name:'Hafnarfjörður',  shortName:'Hafnarfj.',      koen:'Hfj',  councilName:'Bæjarstjórn',    councilSize:11, stjoriTitle:'bæjarstjóri',    ibuar:30817},
-  gard: {id:'gard', name:'Garðabær',       shortName:'Garðabær',       koen:'Gbr',  councilName:'Bæjarstjórn',    councilSize:11, stjoriTitle:'bæjarstjóri',    ibuar:19022},
-  mos:  {id:'mos',  name:'Mosfellsbær',    shortName:'Mosfellsb.',     koen:'Mos',  councilName:'Bæjarstjórn',    councilSize:9,  stjoriTitle:'bæjarstjóri',    ibuar:13699},
-  selt: {id:'selt', name:'Seltjarnarnes',  shortName:'Seltjarnarn.',   koen:'Slt',  councilName:'Bæjarstjórn',    councilSize:7,  stjoriTitle:'bæjarstjóri',    ibuar:4760}
+  rvk:  {id:'rvk',  name:'Reykjavík',      shortName:'Reykjavík',      nameEf:'Reykjavíkur',      koen:'Rvk',  councilName:'Borgarstjórn',  councilSize:23, stjoriTitle:'borgarstjóri',  ibuar:145931},
+  kopv: {id:'kopv', name:'Kópavogur',      shortName:'Kópavogur',      nameEf:'Kópavogs',         koen:'Kóp',  councilName:'Bæjarstjórn',    councilSize:11, stjoriTitle:'bæjarstjóri',    ibuar:40870},
+  hafn: {id:'hafn', name:'Hafnarfjörður',  shortName:'Hafnarfj.',      nameEf:'Hafnarfjarðar',    koen:'Hfj',  councilName:'Bæjarstjórn',    councilSize:11, stjoriTitle:'bæjarstjóri',    ibuar:30817},
+  gard: {id:'gard', name:'Garðabær',       shortName:'Garðabær',       nameEf:'Garðabæjar',       koen:'Gbr',  councilName:'Bæjarstjórn',    councilSize:11, stjoriTitle:'bæjarstjóri',    ibuar:19022},
+  mos:  {id:'mos',  name:'Mosfellsbær',    shortName:'Mosfellsb.',     nameEf:'Mosfellsbæjar',    koen:'Mos',  councilName:'Bæjarstjórn',    councilSize:9,  stjoriTitle:'bæjarstjóri',    ibuar:13699},
+  selt: {id:'selt', name:'Seltjarnarnes',  shortName:'Seltjarnarn.',   nameEf:'Seltjarnarness',   koen:'Slt',  councilName:'Bæjarstjórn',    councilSize:7,  stjoriTitle:'bæjarstjóri',    ibuar:4760}
 };
 const MUNI_ORDER = ['rvk','kopv','hafn','gard','mos','selt'];
 // Öll per-muni gögn vistuð hér (parties, rawCands, photos, finance, …). Fyllist inn
@@ -728,7 +733,7 @@ let PHOTOS = {
   'S-43': 'https://images.prismic.io/samfylkingin/987a7dbd-8cd9-4658-ac56-4ec9f7e76dc7_Untitled+design+%2895%29.png?auto=format,compress',
   'S-44': 'https://images.prismic.io/samfylkingin/abA7e1xvIZEnjiTo_Hlynur-15-.png?auto=format,compress',
   'S-45': 'https://images.prismic.io/samfylkingin/67be2639-48fb-4c92-bd06-6cb651a05dcc_Untitled+design+-+2022-04-22T101549.410.png?auto=format,compress',
-  'S-46': 'https://images.prismic.io/samfylkingin/8e72a885-9fbb-446c-ac64-d7e5ac43747f_Untitled+design+-+2022-04-22T101549.410.png?auto=format,compress',
+  // S-46: vantar mynd (URL var brotin, fjarlægt)
   // === Aðrir oddvitar — bætt við handvirkt úr vefsíðum framboða ===
   // === SJÁLFSTÆÐISFLOKKUR (D) — 15/46 frá xdreykjavik.is/frambjodendur ===
   'D-1':  'https://lirp.cdn-website.com/8450cd89/dms3rep/multi/opt/Studio+Session-1131-Edit-2-1920w.jpg',
@@ -801,19 +806,19 @@ let PHOTOS = {
 
 function photoFor(c){ return PHOTOS[c.party+'-'+c.num] || null; }
 
-// Flokksmerki (logos) — URL-ar sóttir af opinberum vefsíðum framboða.
-// A, M, P, S nota local logos í /logos/ (vistuð handvirkt úr opinberum efnivið).
+// Flokksmerki (logos) — öll vistuð lokalt í /logos/ úr opinberum efnivið
+// frá vefsíðum framboða svo vefurinn sé ekki háður ytri lénum.
 const PARTY_LOGOS = {
   'A': 'logos/vinstrid.png',
-  'B': 'https://framerusercontent.com/images/G4wBTblLDHELMEnizfVG5za8.svg',
-  'C': 'https://vidreisn.is/wp-content/uploads/2024/10/Vidreisn-icon_regular-landscape_rgb.png',
-  'D': 'https://xd.is/wp-content/uploads/2016/09/d_logo.png',
-  'F': 'https://flokkurfolksins.is/reykjavik/myndir/ff-logo-dokkt.png',
-  'G': 'https://gdf.is/wp-content/uploads/2026/03/godan-daginn-logo-white.svg',
-  'J': 'https://www.sosialistaflokkurinn.is/brand/emblem.svg',
+  'B': 'logos/framsoknarflokkurinn.svg',
+  'C': 'logos/vidreisn.png',
+  'D': 'logos/sjalfstaedisflokkurinn.png',
+  'F': 'logos/flokkurfolksins.png',
+  'G': 'logos/godan-daginn.svg',
+  'J': 'logos/sosialistaflokkurinn.svg',
   'M': 'logos/midflokkurinn.png',
   'P': 'logos/piratar.png',
-  'R': 'https://static.wixstatic.com/media/5f7800_22870e7a9673415d8a81e7d561b9e8d3~mv2.png/v1/fill/w_256,h_256,al_c,q_85/5f7800_22870e7a9673415d8a81e7d561b9e8d3~mv2.png',
+  'R': 'logos/okkar-borg.png',
   'S': 'logos/samfylkingin.png'
 };
 
@@ -1055,7 +1060,13 @@ function showDT(tab,btn,id){
   document.querySelectorAll('.dtab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
   const c=CANDS.find(x=>x.id===id),dc=document.getElementById(`dc-${id}`);
   if(tab==='news'){dc.innerHTML=`<div class="lmsg">Sæki fréttir um ${c.name}...</div>`;fetchCandNews(c,dc);}
-  else{dc.innerHTML=`<div class="lmsg">Greini ${c.name}...</div>`;fetchAI(c,dc);}
+  else{
+    if(!getApiKey()){
+      dc.innerHTML=`<div style="padding:16px;background:#FFF8E1;border:0.5px solid #E8C178;border-radius:10px;font-size:13px;line-height:1.6;color:var(--ink)">AI-greining krefst Anthropic API-lykils. Lykillinn er geymdur staðbundið í vafranum þínum og fer ekki á neinn netþjón hjá okkur.<br><br><button onclick="promptApiKey()" style="background:var(--gold);color:var(--white);border:none;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit">Setja API-lykil</button></div>`;
+      return;
+    }
+    dc.innerHTML=`<div class="lmsg">Greini ${c.name}...</div>`;fetchAI(c,dc);
+  }
 }
 // API-lykill geymdur í localStorage. Opnar alla AI-eiginleika.
 function getApiKey(){ try { return localStorage.getItem('kosn_anthropic_key') || ''; } catch(e){ return ''; } }
@@ -1336,7 +1347,7 @@ el.innerHTML=(polls||[]).map(poll=>`<div style="background:var(--white);border:0
 }
 async function loadPollsAI(){
   const el=document.getElementById('poll-ai-results');
-  el.innerHTML=`<div class="lmsg">Claude leitar að nýjustu kannaningum...</div>`;
+  el.innerHTML=`<div class="lmsg">Claude leitar að nýjustu könnunum...</div>`;
   try{
     var _mPoll = getMuni();
     var _mPollKos = _mPoll.councilName.toLowerCase()+'arkosningar';  // borgarstj.- / bæjarstj.-
@@ -1617,7 +1628,7 @@ function rerenderAllForMuni(){
   var elTitle = document.getElementById('forsida-title');
   if(elTitle) elTitle.innerHTML = kosnHeiti+'<br>'+m.name+' <em>2026</em>';
   var elSub = document.getElementById('forsida-subtitle');
-  if(elSub) elSub.textContent = 'Allt um framboðin, stefnumálin, kannanirnar og fjármál '+m.name.toLowerCase()+' — á einum stað, byggt á opnum gögnum.';
+  if(elSub) elSub.textContent = 'Allt um framboðin, stefnumálin, kannanirnar og fjármál '+(m.nameEf||m.name)+' — á einum stað, byggt á opnum gögnum.';
   var elBadge = document.getElementById('forsida-badge-framb');
   if(elBadge) elBadge.textContent = PARTIES.length+' framboð';
   var sf = document.getElementById('stat-framb'); if(sf) sf.textContent = PARTIES.length;
@@ -2118,7 +2129,7 @@ let PARTY_INFO = {
   'D': {
     fullname: 'Sjálfstæðisflokkurinn',
     founded: '1929',
-    ideology: 'Miðhægri, þjóðernislegur íhaldsflokkur, frjáls markaðshagkerfi',
+    ideology: 'Miðhægri íhaldsflokkur, frjáls markaðshagkerfi',
     url: 'https://xd.is',
     history: 'Stofnaður 1929. Stærsti flokkur Íslands um áratugi. Hildur Björnsdóttir leiðir listann — fyrsti oddviti sem leiðir flokkinn í tvær borgarstjórnarkosningar í röð síðan 1998.',
     keyTopics: ['Efnahagsmál','Rekstrarskilvirkni','Húsnæðismál','Skattalækkun'],
@@ -2127,7 +2138,7 @@ let PARTY_INFO = {
   'F': {
     fullname: 'Flokkur fólksins',
     founded: '2016',
-    ideology: 'Þjóðernissinnað, innflytjendamál, hægri',
+    ideology: 'Popúlismi, innflytjendamál, hægri',
     url: 'https://flokkurfolksins.is',
     history: 'Stofnaður 2016 með Ingu Sæland í forsvari. Leggur áherslu á takmörkun innflytjenda og forgangsröðun þjónustu við íslenska borgara. Guðmundur Ingi Þóroddsson, formaður Afstöðu, leiðir listann 2026.',
     keyTopics: ['Innflytjendamál','Húsnæðismál','Samgöngur','Eldra fólk'],
@@ -2154,7 +2165,7 @@ let PARTY_INFO = {
   'M': {
     fullname: 'Miðflokkurinn',
     founded: '2017',
-    ideology: 'Miðhægri, dreifing valds, þjóðernislegar áherslur',
+    ideology: 'Miðhægri, dreifing valds, áhersla á útlendinga- og fullveldismál',
     url: 'https://midflokkurinn.is',
     history: 'Stofnaður 2017 af Sigmundi Davíð Gunnlaugssyni. Ari Edwald, fyrrverandi forstjóri 365 miðla, leiðir lista í Reykjavík. Þekktur úr myndbandi þar sem hann ók um göngugötu.',
     keyTopics: ['Samgöngur','Bílastæðamál','Dreifing valds','Efnahagsmál'],
@@ -2172,7 +2183,7 @@ let PARTY_INFO = {
   'R': {
     fullname: 'Okkar borg',
     founded: '2026',
-    ideology: 'Þjóðernissinnað, útlendingamál',
+    ideology: 'Áhersla á útlendingamál og íbúalýðræði',
     url: '',
     history: 'Nýtt framboð frá hópi sem kallar sig Ísland þvert á flokka og hefur staðið fyrir útfundum á Austurvelli um útlendingamál. Sigfús Aðalsteinsson fasteignasali leiðir framboðið.',
     keyTopics: ['Innflytjendamál','Húsnæðismál'],
@@ -2771,7 +2782,7 @@ const SP_QUESTIONS = [
    ctx:'Núverandi meirihluti setti 36 gjaldfrjálsar vistunarstundir á viku (Reykjavíkurleiðin).',
    stance:{S:1,  D:0,  A:1,  C:0,  M:0,  B:0,  P:0,  J:1,  F:0,  G:0,  R:0}},
   {id:'q6',  stmt:'Borgin á að segja upp þjónustusamningum við Útlendingastofnun um hælisleitendur.',
-   ctx:'Okkar borg hefur gert þetta að megináhersu. Núverandi samningar kveða á um húsnæði og velferðarþjónustu.',
+   ctx:'Okkar borg hefur gert þetta að megináherslu. Núverandi samningar kveða á um húsnæði og velferðarþjónustu.',
    stance:{S:-1, D:0,  A:-1, C:0,  M:-1, B:0,  P:-1, J:-1, F:0,  G:0,  R:1}},
   {id:'q7',  stmt:'Útsvar og aðrar álögur borgarinnar á að lækka.',
    ctx:'Útsvar í Reykjavík er 14,97% (2026) — hámark hjá Sambandi íslenskra sveitarfélaga. Flokkar deila um hvort lægri álögur eða sterkari þjónusta sé forgangsmál.',
@@ -2797,8 +2808,8 @@ const SP_QUESTIONS = [
   {id:'q14', stmt:'Almenningssamgöngur eiga að vera gjaldfrjálsar fyrir alla íbúa Reykjavíkur.',
    ctx:'Sósíalistaflokkur og fleiri hafa lagt þetta til. Strætó kostar nú ~550 kr./ferð.',
    stance:{S:0,  D:-1, A:0,  C:0,  M:-1, B:0,  P:0,  J:1,  F:0,  G:0,  R:0}},
-  {id:'q15', stmt:'Þjóðernislegir og íbúalýðræðislegir hópar eiga að fá meiri áhrif á skipulagsmál.',
-   ctx:'Góðan daginn og Okkar borg leggja áherslu á að þétting þurfi samþykki íbúa hverfis.',
+  {id:'q15', stmt:'Íbúar í hverju hverfi eiga að hafa neitunarvald yfir nýjum þéttingarverkefnum.',
+   ctx:'Góðan daginn og Okkar borg leggja áherslu á að þétting þurfi samþykki íbúa hverfis. Aðrir flokkar telja að of sterkt íbúavald geti hægt á húsnæðisuppbyggingu.',
    stance:{S:-1, D:0,  A:-1, C:0,  M:0,  B:0,  P:-1, J:0,  F:0,  G:1,  R:1}},
   {id:'q16', stmt:'Hækka á frístundastyrk barna enn frekar (nú 75.000 kr.).',
    ctx:'Samfylking hækkaði úr 50.000 í 75.000 kr. á kjörtímabilinu. Spurning um hvort eigi að halda áfram.',
@@ -3190,7 +3201,7 @@ let FINANCE_2025_PARTIAL = {
   yr:2025, timabil:'Jan–sept 2025',
   A:{tekjur:null, nidurstada:2.1, EBITDA:10.3, skatttekjur:119.3},
   AB:{tekjur:null, nidurstada:10.7, EBITDA:45.1, eignir:1004.0, skuldir:548.0, eiginfe:456.0},
-  borgarstjori:'Einar Þorsteinsson → Heiða Björg Hilmisdóttir',
+  borgarstjori:'Einar Þorsteinsson → Heiða Björg Hilmisdóttir', bstAf:'S',
   meirihluti:['S','P','VG','J','F'], kjor:'feb 2025–',
   athugasemd:'Einar Þorsteinsson sleit 4-flokka meirihlutanum 7. feb 2025. Í yfirlýsingum nefndi hann húsnæðis- og þéttingarstefnu (vildi brjóta nýtt land í stað þéttingar), leikskólamál, framtíð Reykjavíkurflugvallar, bílastæðamál og skort á hagræðingu. Dóra Björt Guðjónsdóttir (P) sagði hins vegar að raunveruleg ástæða væri lélegt fylgi Framsóknar í könnunum. Nýr 5-flokka meirihluti (S+P+VG+J+F) tók við 21. feb 2025 undir forystu Heiðu Bjargar Hilmisdóttur. Fullur ársreikningur 2025 birtist í lok apríl/byrjun maí 2026 — fyrir kjördag.'
 };
@@ -3455,7 +3466,7 @@ MUNI_DATA.kopv = {
     C: { fullname:'Viðreisn',             ideology:'Frjálslyndi, miðja',    founded:2016 },
     D: { fullname:'Sjálfstæðisflokkurinn',ideology:'Miðju-hægri, frjálslyndir markaðir', founded:1929 },
     J: { fullname:'Sósíalistaflokkur Íslands', ideology:'Vinstri, sósíalismi', founded:2017 },
-    M: { fullname:'Miðflokkurinn',        ideology:'Miðju-hægri, þjóðernisleg áhersla', founded:2017 },
+    M: { fullname:'Miðflokkurinn',        ideology:'Miðju-hægri, áhersla á útlendinga- og fullveldismál', founded:2017 },
     S: { fullname:'Samfylkingin',         ideology:'Miðju-vinstri, jafnaðarstefna', founded:2000 },
     V: { fullname:'Vinstri grænir og óháðir', ideology:'Vinstri, umhverfissinnar', founded:1999 }
   },
@@ -3873,7 +3884,7 @@ MUNI_DATA.mos = {
     C: { fullname:'Viðreisn',              ideology:'Frjálslyndi, miðja',                        founded:2016 },
     D: { fullname:'Sjálfstæðisflokkurinn', ideology:'Miðju-hægri, frjálslyndir markaðir',        founded:1929 },
     L: { fullname:'Vinir Mosfellsbæjar',   ideology:'Staðbundið framboð, óháð flokkum',          founded:2018 },
-    M: { fullname:'Miðflokkurinn',         ideology:'Miðju-hægri, þjóðernisleg áhersla',         founded:2017 },
+    M: { fullname:'Miðflokkurinn',         ideology:'Miðju-hægri, áhersla á útlendinga- og fullveldismál',         founded:2017 },
     S: { fullname:'Samfylkingin',          ideology:'Miðju-vinstri, jafnaðarstefna',             founded:2000 }
   },
   stefnumal: {
@@ -4214,7 +4225,7 @@ MUNI_DATA.hafn = {
     B: { fullname:'Framsóknarflokkurinn',  ideology:'Miðja, búnaðarstefna',               founded:1916 },
     C: { fullname:'Viðreisn',              ideology:'Frjálslyndi, miðja',                 founded:2016 },
     D: { fullname:'Sjálfstæðisflokkurinn', ideology:'Miðju-hægri, frjálslyndir markaðir', founded:1929 },
-    M: { fullname:'Miðflokkurinn',         ideology:'Miðju-hægri, þjóðernisleg áhersla',  founded:2017 },
+    M: { fullname:'Miðflokkurinn',         ideology:'Miðju-hægri, áhersla á útlendinga- og fullveldismál',  founded:2017 },
     S: { fullname:'Samfylkingin',          ideology:'Miðju-vinstri, jafnaðarstefna',      founded:2000 }
   },
   stefnumal: {
@@ -4574,7 +4585,7 @@ MUNI_DATA.gard = {
     C: { fullname:'Viðreisn',              ideology:'Frjálslyndi, miðja',                 founded:2016 },
     D: { fullname:'Sjálfstæðisflokkurinn', ideology:'Miðju-hægri, frjálslyndir markaðir', founded:1929 },
     G: { fullname:'Garðabæjarlistinn',     ideology:'Óháður staðbundinn listi',           founded:2018 },
-    M: { fullname:'Miðflokkurinn',         ideology:'Miðju-hægri, þjóðernisleg áhersla',  founded:2017 },
+    M: { fullname:'Miðflokkurinn',         ideology:'Miðju-hægri, áhersla á útlendinga- og fullveldismál',  founded:2017 },
     S: { fullname:'Samfylkingin',          ideology:'Miðju-vinstri, jafnaðarstefna',      founded:2000 }
   },
   stefnumal: {
@@ -4835,7 +4846,7 @@ MUNI_DATA.selt = {
   },
   partyInfo: {
     D: { fullname:'Sjálfstæðisflokkurinn', ideology:'Miðju-hægri, frjálslyndir markaðir', founded:1929 },
-    M: { fullname:'Miðflokkurinn',         ideology:'Miðju-hægri, þjóðernisleg áhersla',  founded:2017 },
+    M: { fullname:'Miðflokkurinn',         ideology:'Miðju-hægri, áhersla á útlendinga- og fullveldismál',  founded:2017 },
     S: { fullname:'Samfylking, Viðreisn og óháðir', ideology:'Miðju-vinstri, sameiginlegt framboð', founded:2026 }
   },
   stefnumal: {
@@ -6843,9 +6854,12 @@ function goPage(id){ showPage(id); }
 function renderCountdown(){
   var el = document.getElementById('countdown-days');
   if(!el) return;
+  // Reikna heila daga eftir miðnætti — t.d. 22. apríl → 16. maí = 24 dagar
   var now = new Date();
-  var diffMs = KJORDAGUR - now;
-  var days = Math.max(0, Math.ceil(diffMs / (1000*60*60*24)));
+  var todayMid = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  var kjorMid = new Date(KJORDAGUR.getFullYear(), KJORDAGUR.getMonth(), KJORDAGUR.getDate());
+  var diffMs = kjorMid - todayMid;
+  var days = Math.max(0, Math.round(diffMs / (1000*60*60*24)));
   el.textContent = days;
 }
 
@@ -6885,8 +6899,10 @@ const NEWS_SOURCES = [
 ];
 
 // Lykilorð sem benda nær örugglega á borgarstjórnar-/kosningafréttir
-// (tekur ekki með almenna „Reykjavík"-umfjöllun eða landsmálaflokka)
-const NEWS_KW_STRONG = /(borgarstj|borgarfull|sveitarstjórnarkosning|borgarstjórnarkosning|meirihlut.{0,20}(borg|Reykjav)|oddvit|borgarlín|aðalskipulag|úlfarsárdal|kjósa.{0,30}(borg|Reykjav)|kjördag|kjörskrá)/i;
+// (tekur ekki með almenna „Reykjavík"-umfjöllun eða landsmálaflokka).
+// Úlfarsárdalur var fjarlægður úr sterkum lista — kemur oft fyrir í óskyldum
+// landfræðilegum fréttum (t.d. eldgosavá) sem ekki snerta borgarstjórn.
+const NEWS_KW_STRONG = /(borgarstj|borgarfull|sveitarstjórnarkosning|borgarstjórnarkosning|meirihlut.{0,20}(borg|Reykjav)|oddvit|borgarlín|aðalskipulag Reykjav|húsnæðisáætlun Reykjav|kjósa.{0,30}(borg|Reykjav)|kjördag|kjörskrá)/i;
 // Nöfn oddvita 2026 (leiðtogar allra framboða)
 const NEWS_KW_LEADERS = /(Heiða Björg Hilmis|Einar Þorsteinsson|Hildur Björnsd|Sanna Magdalena|Ari Edwald|Björg Magnúsdóttir|Kristinn Jón Ólafs|Silja Sóley|Pétur Hafliði|Ingimar Þór Friðriks|Sigfús Aðalsteins|Guðmundur Ingi Þórodds)/i;
 // Breiðari (stjórnmál almennt) — notað í „Allar stjórnmálafréttir"-flipanum
@@ -7041,8 +7057,9 @@ async function renderForsidaNews(){
     var all = await getCachedNews(10);
     var electionNews = all.filter(isElectionRelated).slice(0, 7);
     if(!electionNews.length) {
-      // Ef engar kosninganfréttir finnast, sýndu almennar innlendar nýlegar
-      electionNews = all.slice(0, 7);
+      // Ef engar strangar kosningafréttir finnast, víkkum við í breiðari
+      // stjórnmálaumfjöllun fremur en að dumpa öllum innlendum fréttum.
+      electionNews = all.filter(isPoliticsRelated).slice(0, 7);
     }
     el.innerHTML = electionNews.map(function(n){ return renderNewsItem(n, true); }).join('')
       + '<div style="font-size:10px;color:var(--ink3);margin-top:.75rem;text-align:right">Uppfært '+new Date().toLocaleTimeString('is-IS', {hour:'2-digit', minute:'2-digit'})+'</div>';
@@ -7214,7 +7231,7 @@ if (document.readyState === 'loading') {
 
     <div class="card card-lg" style="margin-bottom:1rem;">
       <div class="card-title">Ábendingar og leiðréttingar</div>
-      <p style="font-size:13px;color:var(--ink);line-height:1.7;margin-bottom:0;">Fannstu villu, úrelta tölu eða eitthvað sem mætti bæta? Sérstaklega hvetjum við <strong>framboðin sjálf</strong> til að senda leiðréttingar á afstöðumatrix og æviágripum. Sendu póst á <a href="mailto:kosningavaktin@example.is" style="color:var(--gold);text-decoration:none">kosningavaktin@example.is</a> með tilvísun í rétta heimild.</p>
+      <p style="font-size:13px;color:var(--ink);line-height:1.7;margin-bottom:0;">Fannstu villu, úrelta tölu eða eitthvað sem mætti bæta? Sérstaklega hvetjum við <strong>framboðin sjálf</strong> til að senda leiðréttingar á afstöðumatrix og æviágripum. Samskiptaleið er í uppsetningu — netfang og ábendingaform verða birt hér þegar þau eru tilbúin.</p>
     </div>
 
     <div style="text-align:center;margin-top:2rem;padding-top:1.5rem;border-top:0.5px solid var(--bdr);font-size:11px;color:var(--ink3);line-height:1.7;">
