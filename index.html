@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Kosningavaktin — Reykjavík 16. maí 2026</title>
 <meta name="description" content="Hlutlaus upplýsingavefur um borgarstjórnarkosningar Reykjavíkur 16. maí 2026. Framboðin, stefnumálin, kannanir, fjármál borgar — á einum stað.">
-<meta name="author" content="Kosningavaktin">
+<meta name="author" content="Viktor Emil Sigtryggsson">
 <meta name="theme-color" content="#1A1814">
 <!-- Open Graph -->
 <meta property="og:type" content="website">
@@ -509,9 +509,11 @@ header{background:var(--ink);color:var(--white);padding:0 1.5rem;display:flex;al
     </div>
 
     <div class="forsida-footer">
-      <p>Kosningavaktin er hlutlaus, óháður upplýsingavefur um borgarstjórnarkosningar Reykjavíkur laugardaginn 16. maí 2026.</p>
-      <p>Heimildir: reykjavik.is · Hagstofa Íslands · Gallup · Maskína · Baldur Héðinsson (Vísir) · RÚV · Vísir · Mbl · DV · Heimildin</p>
-      <p>Vefurinn er ekki tengdur neinu framboði eða flokki. Athugasemdir og ábendingar eru vel þegnar.</p>
+      <p id="footer-intro">Kosningavaktin er hlutlaus, óháður upplýsingavefur um sveitarstjórnarkosningarnar laugardaginn 16. maí 2026.</p>
+      <p>Höfundur: <strong>Viktor Emil Sigtryggsson</strong>, viðskiptafræðingur. Vefurinn er unninn með aðstoð gervigreindar og er í stöðugri þróun.</p>
+      <p><strong>Fyrirvari:</strong> Þrátt fyrir að vefurinn sé byggður á opnum heimildum og bestu fáanlegu gögnum geta einstaka upplýsingar verið rangar, úreltar eða misvísandi. Ábendingar um villur og leiðréttingar eru vel þegnar — sjá „Um vefinn".</p>
+      <p id="footer-heimildir">Heimildir: reykjavik.is · Hagstofa Íslands · Gallup · Maskína · Baldur Héðinsson (Vísir) · RÚV · Vísir · Mbl · DV · Heimildin</p>
+      <p id="footer-independence">Vefurinn er ekki tengdur neinu framboði eða flokki.</p>
     </div>
   </div>
 </div>
@@ -2120,19 +2122,16 @@ function updateForsidaNavCards(){
 // (reykjavik.is) eru lagaðar miðað við muni.
 function updateForsidaFooter(){
   var m = getMuni();
-  var foot = document.querySelector('.forsida-footer');
-  if(!foot) return;
   var raad = m.councilName.toLowerCase();  // borgarstjórn / bæjarstjórn
   var kosn = raad+'arkosningar';           // borgarstjórnarkosningar / bæjarstjórnarkosningar
-  var ps = foot.querySelectorAll('p');
-  if(ps[0]) ps[0].textContent = 'Kosningavaktin er hlutlaus, óháður upplýsingavefur um '+kosn+' '+m.name+' laugardaginn 16. maí 2026.';
-  if(ps[1]){
-    var site = CURRENT_MUNI === 'rvk' ? 'reykjavik.is' : m.id+'avogur.is'.replace('kopv','kopavogur').replace('hafnavogur.is','hafnarfjordur.is');
-    // Fallback á muni-website
+  var intro = document.getElementById('footer-intro');
+  if(intro) intro.textContent = 'Kosningavaktin er hlutlaus, óháður upplýsingavefur um '+kosn+' '+m.name+' laugardaginn 16. maí 2026.';
+  var heim = document.getElementById('footer-heimildir');
+  if(heim){
     var sites = {rvk:'reykjavik.is', kopv:'kopavogur.is', hafn:'hafnarfjordur.is', gard:'gardabaer.is', mos:'mos.is', selt:'seltjarnarnes.is'};
-    ps[1].textContent = 'Heimildir: '+(sites[CURRENT_MUNI]||'sveitarfélagsvefur')+' · Hagstofa Íslands · Gallup · Maskína · Baldur Héðinsson (Vísir) · RÚV · Vísir · Mbl · DV · Heimildin';
+    heim.textContent = 'Heimildir: '+(sites[CURRENT_MUNI]||'sveitarfélagsvefur')+' · Hagstofa Íslands · Gallup · Maskína · Baldur Héðinsson (Vísir) · RÚV · Vísir · Mbl · DV · Heimildin';
   }
-  if(ps[2]) ps[2].textContent = 'Vefurinn er ekki tengdur neinu framboði eða flokki. Athugasemdir og ábendingar eru vel þegnar.';
+  // Höfundur-lína og fyrirvari eru static (index.html) — ekki yfirskrifuð hér.
 }
 
 // ========================================================================
@@ -7392,12 +7391,18 @@ if (document.readyState === 'loading') {
     <div style="margin-bottom:2rem;">
       <div style="font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);margin-bottom:.5rem">Kosningavaktin · hlutlaus upplýsingavefur</div>
       <h2 style="font-family:'Playfair Display',serif;font-size:32px;line-height:1.2;margin-bottom:.5rem;">Um vefinn</h2>
-      <p style="font-size:15px;color:var(--ink2);line-height:1.65;">Kosningavaktin er óháður upplýsingavefur um borgarstjórnarkosningar Reykjavíkur 16. maí 2026. Markmið hans er að hjálpa kjósendum að bera saman framboðin, skilja stefnumálin, fylgjast með könnunum og fréttum — á einum stað, byggt á opnum heimildum.</p>
+      <p style="font-size:15px;color:var(--ink2);line-height:1.65;">Kosningavaktin er óháður upplýsingavefur um sveitarstjórnarkosningarnar 16. maí 2026. Markmið hans er að hjálpa kjósendum að bera saman framboðin, skilja stefnumálin, fylgjast með könnunum og fréttum — á einum stað, byggt á opnum heimildum.</p>
+    </div>
+
+    <div class="card card-lg" style="margin-bottom:1rem;background:linear-gradient(135deg,var(--gold-l),var(--bg));border-color:var(--gold)">
+      <div class="card-title" style="color:var(--gold);margin-bottom:.5rem">Höfundur og gervigreindarnotkun</div>
+      <p style="font-size:14px;line-height:1.75;color:var(--ink);margin:0 0 .75rem 0"><strong>Viktor Emil Sigtryggsson</strong>, viðskiptafræðingur, er höfundur og útgefandi vefsins. Vefurinn er einkaframtak — ekki tengdur neinu framboði, flokki, fjölmiðli eða hagsmunasamtökum.</p>
+      <p style="font-size:14px;line-height:1.75;color:var(--ink);margin:0">Vefurinn er unninn með aðstoð <strong>gervigreindar</strong> (Claude frá Anthropic) — bæði í kóða­skrifum, gagnasöfnun og textauppbyggingu. Höfundur hefur farið yfir efnið og samþykkt, en tæknin er enn í þróun og einstaka villur geta komið inn. Sjá fyrirvara neðar á síðunni.</p>
     </div>
 
     <div class="card card-lg" style="margin-bottom:1rem;background:linear-gradient(135deg,var(--gold-l),var(--bg));border-color:var(--gold)">
       <div class="card-title" style="color:var(--gold);margin-bottom:.5rem">Hlutleysi</div>
-      <p style="font-size:14px;line-height:1.7;color:var(--ink);margin:0">Vefurinn er ekki í eigu, rekinn af eða í samstarfi við nokkurt framboð, stjórnmálaflokk eða hagsmunasamtök. Við birtum afstöðu allra 11 framboða í Reykjavík hlið við hlið og reynum að gefa hverjum jafn mikið rými. Öll stefnumál og afstöður eru dregin beint úr birtum heimildum, ekki frá okkur.</p>
+      <p style="font-size:14px;line-height:1.7;color:var(--ink);margin:0">Vefurinn er ekki í eigu, rekinn af eða í samstarfi við nokkurt framboð, stjórnmálaflokk eða hagsmunasamtök. Við birtum afstöðu allra framboða hlið við hlið og reynum að gefa hverjum jafn mikið rými. Öll stefnumál og afstöður eru dregin beint úr birtum heimildum, ekki frá höfundi.</p>
     </div>
 
     <div class="card card-lg" style="margin-bottom:1rem;">
@@ -7423,25 +7428,27 @@ if (document.readyState === 'loading') {
     </div>
 
     <div class="card card-lg" style="margin-bottom:1rem;background:#FFF8E1;border-color:#F5D98D">
-      <div class="card-title" style="color:#854F0B;margin-bottom:.5rem">Takmarkanir og fyrirvarar</div>
+      <div class="card-title" style="color:#854F0B;margin-bottom:.5rem">Fyrirvari — upplýsingar geta verið rangar</div>
+      <p style="font-size:13px;line-height:1.75;color:var(--ink);margin:0 0 .75rem 0">Þó vefurinn sé byggður á bestu fáanlegu opinberu heimildum geta upplýsingar verið <strong>rangar, úreltar eða misvísandi</strong>. Kjósendur eiga alltaf að staðfesta tölur og staðreyndir sjálfir áður en þeir byggja ákvörðun á þeim. Höfundur ábyrgist ekki tæmandi nákvæmni og tekur fegins hendi við <strong>öllum ábendingum um villur</strong> sem kunna að vera í efninu.</p>
+      <p style="font-size:13px;color:var(--ink2);font-weight:500;margin:0 0 .5rem 0">Þekktar takmarkanir:</p>
       <ul style="font-size:13px;line-height:1.75;color:var(--ink);padding-left:20px;margin:0;">
-        <li style="margin-bottom:.4rem;"><strong>Stefnuprófunin</strong> byggir á túlkun okkar á birtum stefnum — ekki staðfest af framboðunum sjálfum. 24 æviágrip innihalda „Takmarkaðar upplýsingar" þar sem við fundum ekki staðfestanlegar heimildir.</li>
-        <li style="margin-bottom:.4rem;"><strong>Myndir frambjóðenda</strong>: 105 af 460 eru í safninu núna. Flest framboð SPA-vefa (A, B, R) hafa myndir einungis í JavaScript sem við getum ekki skroppið sjálfkrafa. Við kveljum engan rétthafa — myndir eru teknar úr opinberlega birtum heimildum og fjarlægjast að beiðni.</li>
+        <li style="margin-bottom:.4rem;"><strong>Stefnuprófunin</strong> byggir á túlkun höfundar á birtum stefnum — ekki staðfest af framboðunum sjálfum. Sum æviágrip innihalda „Takmarkaðar upplýsingar" þar sem ekki fundust staðfestanlegar heimildir.</li>
+        <li style="margin-bottom:.4rem;"><strong>Myndir frambjóðenda</strong>: Ekki eru komnar myndir af öllum frambjóðendum. Myndir eru teknar úr opinberlega birtum heimildum og verða fjarlægðar að beiðni rétthafa.</li>
         <li style="margin-bottom:.4rem;"><strong>Fréttavaktin</strong> sýnir RSS-fréttir síðustu 6 mánaði úr 6 miðlum. Síun er byggð á lykilorðalista; einhverjar kosningafréttir geta misst af ef þær nota óvenjulegt orðaval.</li>
-        <li style="margin-bottom:.4rem;"><strong>Kannanir</strong> eru sóttar handvirkt eða með AI-sjálfvirkni (kosningaspa.is, Wikipedia, fjölmiðlar). Við staðfestum hverja tölu áður en hún er birt, en gögnin eru jafn áreiðanleg og heimildir þeirra.</li>
-        <li><strong>Fjármálatölur</strong> borgarinnar eru úr opinberum ársreikningum. Raunvirðisleiðrétting miðast við VNV 2024 sem viðmiðunarár.</li>
+        <li style="margin-bottom:.4rem;"><strong>Kannanir</strong> eru sóttar handvirkt eða með AI-sjálfvirkni. Tölur eru staðfestar áður en þær eru birtar, en gögnin eru jafn áreiðanleg og heimildir þeirra. Kannanir fyrir önnur sveitarfélög en Reykjavík eru mjög takmarkaðar.</li>
+        <li><strong>Fjármálatölur</strong> eru úr opinberum ársreikningum. Raunvirðisleiðrétting miðast við VNV 2024 sem viðmiðunarár.</li>
       </ul>
     </div>
 
     <div class="card card-lg" style="margin-bottom:1rem;">
       <div class="card-title">Ábendingar og leiðréttingar</div>
-      <p style="font-size:13px;color:var(--ink);line-height:1.7;margin-bottom:0;">Fannstu villu, úrelta tölu eða eitthvað sem mætti bæta? Sérstaklega hvetjum við <strong>framboðin sjálf</strong> til að senda leiðréttingar á æviágripum og stefnumálum. Samskiptaleið er í uppsetningu — netfang og ábendingaform verða birt hér þegar þau eru tilbúin.</p>
+      <p style="font-size:13px;color:var(--ink);line-height:1.7;margin:0 0 .5rem 0;">Fannstu villu, úrelta tölu eða eitthvað sem mætti bæta? <strong>Allar ábendingar eru vel þegnar.</strong> Sérstaklega eru <strong>framboðin sjálf</strong> hvött til að senda leiðréttingar á æviágripum og stefnumálum.</p>
+      <p style="font-size:13px;color:var(--ink2);line-height:1.7;margin:0;">Samskiptaleið er í uppsetningu — netfang og ábendingaform verða birt hér þegar þau eru tilbúin.</p>
     </div>
 
     <div style="text-align:center;margin-top:2rem;padding-top:1.5rem;border-top:0.5px solid var(--bdr);font-size:11px;color:var(--ink3);line-height:1.7;">
-      Kosningavaktin · 2026 · óháður upplýsingavefur<br>
-      Vefurinn er opinn hugbúnaður — gagnasöfnin eru rakin í heimildaskrá hverrar síðu.<br>
-      Ekkert tracking. Engar auglýsingar. Engin söfnun persónuupplýsinga.
+      Kosningavaktin · 2026 · einkaframtak Viktors Emils Sigtryggssonar<br>
+      Unnið með aðstoð gervigreindar (Claude). Ekkert tracking. Engar auglýsingar. Engin söfnun persónuupplýsinga.
     </div>
   </div>
 </div>
