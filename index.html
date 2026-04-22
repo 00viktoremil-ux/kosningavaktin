@@ -69,16 +69,19 @@ header{background:var(--ink);color:var(--white);padding:0 1.5rem;display:flex;al
 .content{padding:1.25rem;}
 .rinfo{font-size:12px;color:var(--ink3);margin-bottom:.9rem;}
 .cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(178px,1fr));gap:8px;}
-/* Allir-frambjóðendur: 11 dálkar, smærra snið. Röð: fyrst allir oddvitar, svo allir nr 2, … */
-.cgrid.cgrid-by-num{grid-template-columns:repeat(11,minmax(0,1fr));gap:5px;}
-.cgrid.cgrid-by-num .cc{padding:.5rem .4rem;border-radius:8px;}
-.cgrid.cgrid-by-num .cc .av{width:34px;height:34px;font-size:11px;margin-bottom:5px;}
-.cgrid.cgrid-by-num .cc .cn{font-size:11px;line-height:1.25;margin-bottom:1px;}
-.cgrid.cgrid-by-num .cc .cr-num{font-size:9px;font-weight:500;letter-spacing:.05em;margin-bottom:2px;}
-.cgrid.cgrid-by-num .cc .oddv{font-size:8px;padding:1px 5px;margin-bottom:4px;}
-@media(max-width:1100px){.cgrid.cgrid-by-num{grid-template-columns:repeat(6,minmax(0,1fr));}}
-@media(max-width:720px){.cgrid.cgrid-by-num{grid-template-columns:repeat(4,minmax(0,1fr));}}
-@media(max-width:480px){.cgrid.cgrid-by-num{grid-template-columns:repeat(3,minmax(0,1fr));}}
+/* Allir-frambjóðendur: grouppað eftir framboði með sýnilegum skilum. */
+.cgrid.cgrid-by-party{display:block;}
+.party-section{margin-bottom:1.25rem;background:var(--white);border:0.5px solid var(--bdr);border-radius:12px;overflow:hidden;}
+.party-section-header{display:flex;align-items:center;gap:10px;padding:.75rem 1rem;border-bottom:0.5px solid var(--bdr);background:linear-gradient(to right,var(--party-color,#ccc)08,transparent);}
+.party-section-header .party-section-title{font-family:'Playfair Display',serif;font-size:16px;font-weight:600;color:var(--ink);}
+.party-section-header .party-section-count{font-size:11px;color:var(--ink3);background:var(--bg);border-radius:99px;padding:2px 8px;margin-left:auto;}
+.party-cands-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:6px;padding:.75rem;}
+.party-cands-grid .cc{padding:.55rem .45rem;border-radius:8px;}
+.party-cands-grid .cc .av{width:36px;height:36px;font-size:11px;margin-bottom:5px;}
+.party-cands-grid .cc .cn{font-size:11px;line-height:1.25;margin-bottom:1px;}
+.party-cands-grid .cc .cr-num{font-size:9px;font-weight:500;letter-spacing:.05em;margin-bottom:2px;}
+.party-cands-grid .cc .oddv{font-size:8px;padding:1px 5px;margin-bottom:4px;}
+@media(max-width:720px){.party-cands-grid{grid-template-columns:repeat(auto-fill,minmax(110px,1fr));}}
 .cc{background:var(--white);border:0.5px solid var(--bdr);border-radius:10px;padding:.85rem;cursor:pointer;transition:border-color .15s,transform .1s;}
 .cc:hover{border-color:var(--gold);transform:translateY(-1px);}
 .cc.sel{border:2px solid var(--gold);}
@@ -555,32 +558,32 @@ header{background:var(--ink);color:var(--white);padding:0 1.5rem;display:flex;al
 <!-- KANNANIR -->
 <div id="page-kannanir" class="page">
   <div class="polls-page" style="max-width:960px;">
-    <h2>Kosningakannanir — Reykjavík 2026</h2>
-    <p class="sub">10 staðfestar kannanir frá september 2025 til apríl 2026 (heimild: Wikipedia · kosningaspa.is · Gallup · Maskína). Sæti reiknuð með D'Hondt-aðferð. Smelltu á „Uppfæra með AI" til að sækja nýrri kannanir sjálfvirkt.</p>
+    <h2 id="polls-page-title">Kosningakannanir — Reykjavík 2026</h2>
+    <p class="sub" id="polls-page-sub">10 staðfestar kannanir frá september 2025 til apríl 2026 (heimild: Wikipedia · kosningaspa.is · Gallup · Maskína). Sæti reiknuð með D'Hondt-aðferð. Smelltu á „Uppfæra með AI" til að sækja nýrri kannanir sjálfvirkt.</p>
 
-    <!-- BALDVIN MODEL -->
-    <div class="card" style="margin-bottom:12px;">
+    <!-- BALDVIN MODEL / LATEST POLL -->
+    <div class="card" id="polls-model-card" style="margin-bottom:12px;">
       <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1rem;">
         <div>
-          <div style="font-family:'Playfair Display',serif;font-size:17px;margin-bottom:3px;">Baldur Héðinsson-módel · Apríl 2026</div>
-          <div style="font-size:12px;color:var(--ink2)">Gallup (59% vægi, apríl) + Maskína (41% vægi, mars) · sæti reiknuð með D'Hondt · 23 sæti í borgarstjórn</div>
+          <div id="polls-card-title" style="font-family:'Playfair Display',serif;font-size:17px;margin-bottom:3px;">Baldur Héðinsson-módel · Apríl 2026</div>
+          <div id="polls-card-sub" style="font-size:12px;color:var(--ink2)">Gallup (59% vægi, apríl) + Maskína (41% vægi, mars) · sæti reiknuð með D'Hondt · 23 sæti í borgarstjórn</div>
           <button onclick="aiRefreshPolls()" id="poll-refresh-btn" style="margin-top:8px;font-size:11px;padding:5px 12px;border-radius:8px;border:0.5px solid var(--bdr);background:var(--white);cursor:pointer;color:var(--gold);font-family:inherit">🔄 Uppfæra með AI (vefleit)</button>
           <span id="poll-refresh-status" style="font-size:10px;color:var(--ink3);margin-left:8px"></span>
         </div>
-        <div style="font-size:11px;color:var(--ink3);background:var(--bg);padding:6px 10px;border-radius:8px;line-height:1.6;max-width:260px;">
+        <div id="polls-method-box" style="font-size:11px;color:var(--ink3);background:var(--bg);padding:6px 10px;border-radius:8px;line-height:1.6;max-width:260px;">
           Aðferð: Vegið meðaltal tveggja nýjustu kannana (Gallup apríl 59%, Maskína mars 41%). Sæti reiknuð með D'Hondt-aðferð á 23 sæta borgarstjórn. Uppfærist sjálfvirkt þegar nýjar kannanir eru sóttar með AI.
         </div>
       </div>
       <div id="baldvin-bars"></div>
       <div style="margin-top:1rem;padding-top:1rem;border-top:0.5px solid var(--bdr);">
-        <div style="font-size:12px;font-weight:500;color:var(--ink);margin-bottom:.5rem;">Sætaspá (D'Hondt á kosningaspá)</div>
+        <div style="font-size:12px;font-weight:500;color:var(--ink);margin-bottom:.5rem;">Sætaspá (D'Hondt)</div>
         <div id="seat-forecast" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
       </div>
       <div style="font-size:11px;color:var(--ink3);margin-top:.75rem" id="baldur-summary">Heimildir: Gallup Þjóðarpúls (1.–15. apríl) og Maskína Borgarviti (12.–19. mars) · kosningaspa.is.</div>
     </div>
 
     <!-- FYLGISÞRÓUN — LÍNURIT -->
-    <div class="card" style="margin-bottom:12px;">
+    <div class="card" id="polls-trend-card" style="margin-bottom:12px;">
       <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px;margin-bottom:.75rem;">
         <div>
           <div style="font-family:'Playfair Display',serif;font-size:16px;">Fylgisþróun yfir tíma</div>
@@ -593,7 +596,7 @@ header{background:var(--ink);color:var(--white);padding:0 1.5rem;display:flex;al
     </div>
 
     <!-- KÖNNUNARSAGA -->
-    <div class="card" style="margin-bottom:12px;">
+    <div class="card" id="polls-table-card" style="margin-bottom:12px;">
       <div style="font-family:'Playfair Display',serif;font-size:16px;margin-bottom:.75rem;">Þróun fylgis — tafla</div>
       <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem;" id="poll-filter-btns">
         <button class="nfbtn active" onclick="showPollTable('all',this)">Allar kannanir</button>
@@ -601,6 +604,13 @@ header{background:var(--ink);color:var(--white);padding:0 1.5rem;display:flex;al
         <button class="nfbtn" onclick="showPollTable('maskina',this)">Maskína</button>
       </div>
       <div id="poll-table" style="overflow-x:auto;"></div>
+    </div>
+
+    <!-- 2022 ÚRSLIT -->
+    <div class="card" id="polls-urslit2022-card" style="margin-bottom:12px;">
+      <div style="font-family:'Playfair Display',serif;font-size:16px;margin-bottom:.3rem;">Úrslit sveitarstjórnarkosninganna 2022</div>
+      <div style="font-size:12px;color:var(--ink2);margin-bottom:.75rem;" id="polls-urslit2022-sub">Síðasta kosningaúrslit sem samanburðarviðmið.</div>
+      <div id="polls-urslit2022"></div>
     </div>
 
     <!-- INDIVIDUAL POLLS -->
@@ -1015,30 +1025,55 @@ function partyOrder(){
   return ix;
 }
 
+function renderCandCard(c, compact){
+  const p=gP(c.party);
+  const photo=photoFor(c);
+  const av=photo?`<div class="av" style="background-image:url('${photo}');background-size:cover;background-position:center top"></div>`:`<div class="av" style="background:${p.color}18;color:${p.color}">${ini2(c.name)}</div>`;
+  const nrBadge = compact?`<div class="cr-num" style="color:${p.color}">${p.id}·${c.num}</div>`:'';
+  return `<div class="cc${selCand===c.id?' sel':''}" style="${compact?'border-top:3px solid '+p.color+';':''}" onclick="selC(${c.id})">${c.num===1?'<div class="oddv">Oddviti</div>':''}${nrBadge}${av}<div class="cn">${c.name}</div>${compact?'':`<div class="ct">${c.title}</div><div class="cr">${p.id}-listi · Nr. ${c.num}</div>`}</div>`;
+}
+
 function render(){
   const q=document.getElementById('sq').value.toLowerCase().trim();
   const showAll = selParty==='all' && !q;
   let list=CANDS.filter(c=>(selParty==='all'||c.party===selParty)&&(!q||c.name.toLowerCase().includes(q)||c.title.toLowerCase().includes(q)||gP(c.party).name.toLowerCase().includes(q)));
-  if(showAll){
-    // „Allir" birtingu: raða fyrst eftir númeri (1, 1, 1, …, 2, 2, 2, …), svo eftir flokki
-    const po = partyOrder();
-    list = list.slice().sort(function(a,b){
-      if(a.num !== b.num) return a.num - b.num;
-      var pa = (a.party in po) ? po[a.party] : 99;
-      var pb = (b.party in po) ? po[b.party] : 99;
-      return pa - pb;
-    });
-  }
-  document.getElementById('rinfo').textContent=`${list.length} frambjóðendur${selParty!=='all'?' · '+gP(selParty).name:showAll?' · raðað eftir sæti (nr 1 efst, nr 2 þar næst…)':''}`;
+  document.getElementById('rinfo').textContent=`${list.length} frambjóðendur${selParty!=='all'?' · '+gP(selParty).name:showAll?' · grouppað eftir framboði, raðað eftir sætatölu í spá':''}`;
   const cgrid = document.getElementById('cgrid');
-  cgrid.classList.toggle('cgrid-by-num', showAll);
-  cgrid.innerHTML=list.map(c=>{
-    const p=gP(c.party);
-    const photo=photoFor(c);
-    const av=photo?`<div class="av" style="background-image:url('${photo}');background-size:cover;background-position:center top"></div>`:`<div class="av" style="background:${p.color}18;color:${p.color}">${ini2(c.name)}</div>`;
-    const nrBadge = showAll?`<div class="cr-num" style="color:${p.color}">${p.id}·${c.num}</div>`:'';
-    return `<div class="cc${selCand===c.id?' sel':''}" style="${showAll?'border-top:3px solid '+p.color+';':''}" onclick="selC(${c.id})">${c.num===1?'<div class="oddv">Oddviti</div>':''}${nrBadge}${av}<div class="cn">${c.name}</div>${showAll?'':`<div class="ct">${c.title}</div><div class="cr">${p.id}-listi · Nr. ${c.num}</div>`}</div>`;
-  }).join('')||'<div style="padding:2rem;color:var(--ink3);font-size:14px;">Engar niðurstöður.</div>';
+  // Tveir hættir: section-view fyrir Allir (grouppað eftir flokki), flat grid annars
+  cgrid.classList.toggle('cgrid-by-party', showAll);
+  if(showAll){
+    const po = partyOrder();
+    const byParty = {};
+    PARTIES.forEach(p => byParty[p.id] = []);
+    list.forEach(c => { if(byParty[c.party]) byParty[c.party].push(c); });
+    const sortedParties = PARTIES.slice().sort(function(a,b){
+      var da = (po[a.id] !== undefined ? po[a.id] : 99);
+      var db = (po[b.id] !== undefined ? po[b.id] : 99);
+      return da - db;
+    });
+    const pollSeats = (window._POLLS && window._POLLS[0] ? window._POLLS[0].seats : {}) || {};
+    cgrid.innerHTML = sortedParties.map(function(p){
+      const cands = (byParty[p.id] || []).slice().sort((a,b)=>a.num-b.num);
+      if(!cands.length) return '';
+      const seats = pollSeats[p.id] || 0;
+      const seatLbl = seats>0 ? `<span style="font-size:10px;color:${p.color};font-weight:500;background:${p.color}12;border-radius:99px;padding:2px 8px">${seats} sæti í spá</span>` : '';
+      const oddviti = cands.find(c => c.num===1);
+      const subLbl = oddviti ? ` <span style="font-size:12px;color:var(--ink2);font-weight:400">· oddviti ${oddviti.name}</span>` : '';
+      return `<section class="party-section" style="--party-color:${p.color};border-top:3px solid ${p.color}">
+        <header class="party-section-header">
+          ${renderPartyBadge(p, 32)}
+          <div style="flex:1;min-width:0">
+            <div class="party-section-title">${p.id} · ${p.name}${subLbl}</div>
+          </div>
+          ${seatLbl}
+          <span class="party-section-count">${cands.length} frambj.</span>
+        </header>
+        <div class="party-cands-grid">${cands.map(c=>renderCandCard(c,true)).join('')}</div>
+      </section>`;
+    }).join('') || '<div style="padding:2rem;color:var(--ink3);font-size:14px;">Engar niðurstöður.</div>';
+  } else {
+    cgrid.innerHTML=list.map(c=>renderCandCard(c,false)).join('')||'<div style="padding:2rem;color:var(--ink3);font-size:14px;">Engar niðurstöður.</div>';
+  }
   if(selCand!==null)showD(selCand);
 }
 function selC(id){selCand=id;render();setTimeout(()=>document.getElementById('dpanel').scrollIntoView({behavior:'smooth',block:'nearest'}),50);}
@@ -1223,57 +1258,203 @@ async function doLoadNews(replace){
     document.getElementById('loadMoreNews').style.display='block';
   }catch(e){if(replace)document.getElementById('news-list').innerHTML=`<div class="lmsg">Villa: ${e.message||'Þarf Claude API lykil.'}</div>`;}
 }
+// Kosningakannanir eru per-muni. Aðeins Reykjavík hefur ítarlegt safn og
+// Baldur-módel; fyrir Hafnarfjörð er ein Maskína-könnun staðfest (mars 2026);
+// fyrir önnur sveitarfélög hafa engar kannanir verið birtar enn sem komið er.
+// Sæti eru REIKNUÐ með D'Hondt-aðferð fyrir hverja könnun (ekki geymd fyrirfram).
+// Úrslit sveitarstjórnarkosninganna 14. maí 2022. Prósentur, atkvæði og sæti
+// eftir framboði. Heimildir: Hagstofa PxWeb (KOS03214a), Wikipedia, mbl.is,
+// kosningasaga.wordpress.com. Athugasemdir við null-gildi í render-fallinu.
+const URSLIT_2022 = {
+  rvk: {
+    kjorsokn: 61.1, totalSeats: 23, kjorskra: 100374, atkv: null,
+    note: 'Sjálfstæðisflokkur stærstur með 24,5% og 6 borgarfulltrúa. Fjögurra flokka meirihluti S+B+C+P myndaðist eftir kosningar.',
+    results: [
+      {id:'D', name:'Sjálfstæðisflokkurinn',    pct:24.5, seats:6},
+      {id:'S', name:'Samfylkingin',             pct:20.3, seats:5},
+      {id:'B', name:'Framsóknarflokkurinn',     pct:18.7, seats:4},
+      {id:'P', name:'Píratar',                  pct:11.6, seats:3},
+      {id:'J', name:'Sósíalistaflokkur Íslands',pct: 7.7, seats:2},
+      {id:'C', name:'Viðreisn',                 pct: 5.2, seats:1},
+      {id:'F', name:'Flokkur fólksins',         pct: 4.3, seats:1},
+      {id:'V', name:'Vinstri græn',             pct: 4.0, seats:1},
+      {id:'M', name:'Miðflokkurinn',            pct: 1.7, seats:0}
+    ]
+  },
+  kopv: {
+    kjorsokn: 58.2, totalSeats: 11, kjorskra: 28923, atkv: 16846,
+    note: 'Sjálfstæðisflokkur stærstur (4 sæti) og myndaði meirihluta með Framsókn (2 sæti). Vinir Kópavogs (Y) fengu 2 sæti með 15,3%.',
+    results: [
+      {id:'D', name:'Sjálfstæðisflokkurinn',  pct:33.3, votes:5472, seats:4},
+      {id:'Y', name:'Vinir Kópavogs',         pct:15.3, votes:2509, seats:2},
+      {id:'B', name:'Framsóknarflokkurinn',   pct:15.2, votes:2489, seats:2},
+      {id:'C', name:'Viðreisn',               pct:10.7, votes:1752, seats:1},
+      {id:'P', name:'Píratar',                pct: 9.5, votes:1562, seats:1},
+      {id:'S', name:'Samfylkingin',           pct: 8.2, votes:1343, seats:1},
+      {id:'V', name:'Vinstri græn',           pct: 5.3, votes: 866, seats:0},
+      {id:'M', name:'Miðflokkurinn',          pct: 2.6, votes: 430, seats:0}
+    ]
+  },
+  hafn: {
+    kjorsokn: 60.4, totalSeats: 11, kjorskra: 21744, atkv: 13133,
+    note: 'D og S nær jafnir (30,7% og 29,0%) og mynduðu meirihluta með Framsókn og óháðum (13,7%) — D+B sáttmáli með skipti á bæjarstjórastól.',
+    results: [
+      {id:'D', name:'Sjálfstæðisflokkurinn',  pct:30.7, votes:3924, seats:4},
+      {id:'S', name:'Samfylkingin',           pct:29.0, votes:3710, seats:4},
+      {id:'B', name:'Framsókn og óháðir',     pct:13.7, votes:1750, seats:2},
+      {id:'C', name:'Viðreisn',               pct: 9.1, votes:1170, seats:1},
+      {id:'P', name:'Píratar',                pct: 6.1, votes: 784, seats:0},
+      {id:'V', name:'Vinstri græn',           pct: 4.3, votes: 552, seats:0},
+      {id:'H', name:'Bæjarlistinn',           pct: 4.3, votes: 546, seats:0},
+      {id:'M', name:'Miðflokkurinn',          pct: 2.8, votes: 363, seats:0}
+    ]
+  },
+  gard: {
+    kjorsokn: 64.1, totalSeats: 11, kjorskra: 13622, atkv: 8733,
+    note: 'Sjálfstæðisflokkur með afgerandi meirihluta — 49,1% og 7 sæti af 11. Garðabæjarlistinn (G) næststærstur með 20,9%.',
+    results: [
+      {id:'D', name:'Sjálfstæðisflokkurinn',  pct:49.1, votes:4197, seats:7},
+      {id:'G', name:'Garðabæjarlistinn',      pct:20.9, seats:2},
+      {id:'C', name:'Viðreisn',               pct:13.3, seats:1},
+      {id:'B', name:'Framsóknarflokkurinn',   pct:13.1, seats:1},
+      {id:'M', name:'Miðflokkurinn',          pct: 3.7, seats:0}
+    ]
+  },
+  mos: {
+    kjorsokn: 61.3, totalSeats: 11, kjorskra: 9413, atkv: 5770,
+    note: 'Framsókn með stórsigur — 1811 atkvæði (31,4%) og 4 sæti, jafnmörg og D. L (Vinir Mosfellsbæjar), S og C fengu 1 sæti hvert. Meirihluti D+L mynduðust.',
+    results: [
+      {id:'B', name:'Framsóknarflokkurinn',   pct:31.4, votes:1811, seats:4},
+      {id:'D', name:'Sjálfstæðisflokkurinn',  pct:26.6, votes:1534, seats:4},
+      {id:'L', name:'Vinir Mosfellsbæjar',    pct:12.7, votes: 731, seats:1},
+      {id:'S', name:'Samfylkingin',           pct: 8.8, votes: 505, seats:1},
+      {id:'C', name:'Viðreisn',               pct: 7.7, votes: 444, seats:1},
+      {id:'V', name:'Vinstri græn',           pct: 5.6, votes: 321, seats:0},
+      {id:'M', name:'Miðflokkurinn',          pct: 4.8, votes: 278, seats:0}
+    ]
+  },
+  selt: {
+    kjorsokn: null, totalSeats: 7, kjorskra: null, atkv: null,
+    note: 'Sjálfstæðisflokkur með 50,1% og 4 sæti. Samfylkingin og Viðreisn ásamt óháðum fengu 40,8% og 3 sæti. Framtíðarlistinn fékk 9,07% og ekkert sæti.',
+    results: [
+      {id:'D', name:'Sjálfstæðisflokkurinn',              pct:50.1, votes:1238, seats:4},
+      {id:'S', name:'Samfylking, Viðreisn og óháðir',     pct:40.8, votes:1008, seats:3},
+      {id:'A', name:'Framtíðarlistinn',                   pct: 9.1, seats:0}
+    ]
+  }
+};
+
+// Render 2022 úrslit á kannanir-síðunni. Notar fast flokks-litaspjald (ekki
+// núverandi PARTIES, þar sem 2022 framboð gætu verið önnur — t.d. V-listi).
+function renderUrslit2022(){
+  var el = document.getElementById('polls-urslit2022');
+  var sub = document.getElementById('polls-urslit2022-sub');
+  if(!el) return;
+  var muni = URSLIT_2022[CURRENT_MUNI];
+  if(!muni){
+    el.innerHTML = '<div style="color:var(--ink3);font-size:13px;padding:.5rem 0">Engin skráð gögn fyrir 2022 í '+(getMuni().name)+'.</div>';
+    return;
+  }
+  // Litaspjald fyrir listabókstafi — styrkur lita fyrir framboð sem ekki eru lengur til
+  var COLOR = {
+    D:'#1565C0', S:'#C62828', B:'#1E8A3E', C:'#D84315', M:'#6A1B9A', P:'#283593',
+    V:'#2E7D32', J:'#B71C1C', F:'#FBC02D', A:'#6D4C41',
+    Y:'#00838F', G:'#00695C', H:'#5D4037', L:'#00796B'
+  };
+  if(sub){
+    sub.innerHTML = 'Kjördagur 14. maí 2022 · '+(muni.kjorsokn?muni.kjorsokn+'% kjörsókn · ':'')+muni.totalSeats+' sæti';
+  }
+  var maxPct = Math.max.apply(null, muni.results.map(function(r){return r.pct||0;}));
+  var rows = muni.results.map(function(r){
+    var color = COLOR[r.id] || '#888';
+    var w = maxPct>0 ? Math.round((r.pct||0)/maxPct*100) : 0;
+    var votesLbl = r.votes ? r.votes.toLocaleString('is-IS')+' atkv.' : '';
+    return '<div style="display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:0.5px solid var(--bdr)">'
+      +'<span style="font-size:12px;font-weight:500;color:'+color+';min-width:22px;text-align:center">'+r.id+'</span>'
+      +'<span style="flex:1;min-width:0;font-size:12px;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+r.name+'</span>'
+      +'<div style="flex:0 0 120px;background:var(--bg);height:6px;border-radius:99px;overflow:hidden"><div style="height:100%;width:'+w+'%;background:'+color+'"></div></div>'
+      +'<span style="font-size:12px;color:var(--ink);min-width:40px;text-align:right">'+(r.pct!=null?r.pct.toFixed(1)+'%':'—')+'</span>'
+      +'<span style="font-size:10px;color:var(--ink3);min-width:70px;text-align:right">'+votesLbl+'</span>'
+      +'<span style="font-size:12px;color:'+color+';min-width:26px;text-align:right;font-weight:500">'+r.seats+'</span>'
+      +'</div>';
+  }).join('');
+  el.innerHTML = rows
+    +'<div style="font-size:11px;color:var(--ink2);margin-top:.75rem;line-height:1.6">'+muni.note+'</div>'
+    +'<div style="font-size:10px;color:var(--ink3);margin-top:.3rem">Heimild: Hagstofa (KOS03214a), Wikipedia. Framboð án skráðra atkvæða eiga ekki opinberar atkvæðatölur á aðgengilegum heimildum.</div>';
+}
+
+const POLLS_BY_MUNI = {
+  rvk: [
+    {source:'Baldur Héðinsson / Kosningaspá', method:'Vegið meðaltal Gallup+Maskína (59%/41%)', date:'17. apríl 2026', n:'samsett', tag:'baldur',
+     data:{D:25.0, S:22.6, A:13.1, C:11.1, M:10.7, P:4.3, B:4.4, F:3.8, J:2.6, R:1.8},
+     url:'https://kosningaspa.is',
+     note:'Vegið meðaltal Gallup (1.–15. apríl, 59%) og Maskína (12.–19. mars, 41%). D stærstur; A/C/M við 11–13%. Flókin meirihlutamyndun.'},
+    {source:'Gallup / Þjóðarpúls', method:'Netkönnun', date:'1.–15. apríl 2026', n:'—', tag:'gallup',
+     data:{D:27.6, S:23.2, A:13.5, M:10.7, C:10.0, B:3.9, F:3.8, P:3.5, J:2.5, R:1.5},
+     url:'https://www.gallup.is/frettir/fylgi-flokka-i-reykjavik-ef-kosid-vaeri-i-dag/',
+     note:'D stærstur með 27,6%. Samfylking 23,2%. Vinstrið (A) nær 13,5% í þriðja sæti.'},
+    {source:'Maskína / Borgarviti', method:'Netkönnun', date:'12.–19. mars 2026', n:'—', tag:'maskina',
+     data:{D:21.2, S:21.7, A:12.4, C:12.6, M:10.6, P:5.4, B:5.2, F:3.7, J:2.7, R:2.3},
+     url:'https://www.dv.is/frettir/2026/03/28/fylgid-flugi-nyrri-konnun-borginni-einn-flokkur-lykilstodu/',
+     note:'S og D nær jafnir ~21–22%. Viðreisn (C) mælist 12,6% — Miðflokkur og Vinstrið rétt á eftir.'},
+    {source:'Gallup / Þjóðarpúls', method:'Netkönnun', date:'4. mars 2026', n:'—', tag:'gallup',
+     data:{D:26.4, S:26.4, M:11.3, C:10.7, A:8.7, B:4.6, F:4.0, P:3.7, J:3.1, R:1.2},
+     url:'https://www.ruv.is/frettir/innlent/2026-02-04-meirihlutinn-i-borginni-fallinn-samkvaemt-nyrri-konnun-466084',
+     note:'D og S hnífjafnir með 26,4%. Miðflokkur mælist hærra en Viðreisn.'},
+    {source:'Maskína / Borgarviti', method:'Netkönnun', date:'1.–27. febrúar 2026', n:'1015', tag:'maskina',
+     data:{S:24.0, D:22.7, C:13.5, M:11.0, A:9.1, P:5.5, B:5.1, J:3.7, F:3.4, R:1.2},
+     url:'https://www.mbl.is/frettir/innlent/2026/02/27/ny_konnun_fyrir_kosningar_i_borginni_tveir_turnar/',
+     note:'S stærstur með 24%. Viðreisn (C) yfir 13%. Núverandi meirihluti fallinn.'},
+    {source:'Maskína / Borgarviti', method:'Netkönnun', date:'janúar 2026', n:'—', tag:'maskina',
+     data:{S:26.1, D:24.4, C:14.6, M:10.1, A:8.7, B:4.4, J:3.8, F:3.8, P:3.0},
+     url:'https://is.wikipedia.org/wiki/Borgarstj%C3%B3rnarkosningar_%C3%AD_Reykjav%C3%ADk_2026',
+     note:'S aftur fremstur. Viðreisn (C) 14,6% — sterkasta mæling þeirra.'},
+    {source:'Maskína / Borgarviti', method:'Netkönnun', date:'desember 2025', n:'—', tag:'maskina',
+     data:{S:26.7, D:24.1, C:12.1, M:10.0, P:6.3, J:5.5, F:4.8, B:4.5, A:5.3},
+     url:'https://is.wikipedia.org/wiki/Borgarstj%C3%B3rnarkosningar_%C3%AD_Reykjav%C3%ADk_2026',
+     note:'VG/Vor til vinstri ósameinað í þessari könnun; Sósíalistar (J) yfir 5%.'},
+    {source:'Maskína / Borgarviti', method:'Netkönnun', date:'nóvember 2025', n:'—', tag:'maskina',
+     data:{D:31.0, S:25.5, C:11.9, M:8.5, P:6.4, J:5.0, B:4.2, A:4.2, F:2.9},
+     url:'https://is.wikipedia.org/wiki/Borgarstj%C3%B3rnarkosningar_%C3%AD_Reykjav%C3%ADk_2026',
+     note:'D hámark 31%. Mælt áður en Góðan daginn og Okkar borg tilkynntu.'},
+    {source:'Maskína / Borgarviti', method:'Netkönnun', date:'október 2025', n:'—', tag:'maskina',
+     data:{S:26.0, D:25.4, C:13.3, M:8.5, P:7.1, J:6.1, F:5.2, B:3.9, A:3.8},
+     url:'https://is.wikipedia.org/wiki/Borgarstj%C3%B3rnarkosningar_%C3%AD_Reykjav%C3%ADk_2026',
+     note:'S og D á svipuðu róli. Píratar og Sósíalistar sterkari en síðar.'},
+    {source:'Maskína / Borgarviti', method:'Netkönnun', date:'september 2025', n:'—', tag:'maskina',
+     data:{S:28.1, D:24.8, C:14.9, M:7.1, P:6.7, A:5.5, F:4.6, J:3.9, B:3.4},
+     url:'https://is.wikipedia.org/wiki/Borgarstj%C3%B3rnarkosningar_%C3%AD_Reykjav%C3%ADk_2026',
+     note:'Elsta könnun í safninu. S með 28,1% — hámarksmæling Samfylkingar.'}
+  ],
+  hafn: [
+    {source:'Maskína (fyrir DV)', method:'Netkönnun', date:'12.–19. mars 2026', n:'649', tag:'maskina',
+     data:{S:24.5, D:21.4, C:18.6, B:10.9, M:8.9, V:3.6},
+     url:'https://www.dv.is/frettir/2026/03/29/meirihlutinn-kolfallinn-nyrri-konnun-hafnarfirdi-karolina-lykilstodu/',
+     note:'S stærstur, D og C í stökki (C+8,4%). Meirihluti D+B fallinn. Samtals birt 87,9% — Bæjarlistinn (H) mælist undir 3,5%.'}
+  ],
+  kopv: [],
+  gard: [],
+  mos: [],
+  selt: []
+};
+
 function initPolls(){
-// Aðeins Reykjavík hefur kannanir enn sem komið er. Fyrir önnur sveitarfélög
-// má ekki láta þessa Reykjavíkur-könnun breyta PARTIES (syncParties mutar
-// pct/seats beint á núverandi PARTIES array — annars verða Kópavogs-sætin
-// skrifuð yfir af Reykjavíkur-spá).
-if(CURRENT_MUNI !== 'rvk') return;
-// Kosningakannanir 2025–2026 — öll númer staðfest á Wikipedia (is.wikipedia.org/wiki/Borgarstjórnarkosningar_í_Reykjavík_2026)
-// Kosningaspá Baldurs Héðinssonar (apríl 2026) reiknuð sem vegið meðaltal: 59% Gallup apr + 41% Maskína mar.
-// Sæti eru REIKNUÐ með D'Hondt-aðferð fyrir 23 sæti — ekki geymd fyrirfram.
-let POLLS_RAW=[
-  {source:'Baldur Héðinsson / Kosningaspá', method:'Vegið meðaltal Gallup+Maskína (59%/41%)', date:'17. apríl 2026', n:'samsett', tag:'baldur',
-   data:{D:25.0, S:22.6, A:13.1, C:11.1, M:10.7, P:4.3, B:4.4, F:3.8, J:2.6, R:1.8},
-   url:'https://kosningaspa.is',
-   note:'Vegið meðaltal Gallup (1.–15. apríl, 59%) og Maskína (12.–19. mars, 41%). D stærstur; A/C/M við 11–13%. Flókin meirihlutamyndun.'},
-  {source:'Gallup / Þjóðarpúls', method:'Netkönnun', date:'1.–15. apríl 2026', n:'—', tag:'gallup',
-   data:{D:27.6, S:23.2, A:13.5, M:10.7, C:10.0, B:3.9, F:3.8, P:3.5, J:2.5, R:1.5},
-   url:'https://www.gallup.is/frettir/fylgi-flokka-i-reykjavik-ef-kosid-vaeri-i-dag/',
-   note:'D stærstur með 27,6%. Samfylking 23,2%. Vinstrið (A) nær 13,5% í þriðja sæti.'},
-  {source:'Maskína / Borgarviti', method:'Netkönnun', date:'12.–19. mars 2026', n:'—', tag:'maskina',
-   data:{D:21.2, S:21.7, A:12.4, C:12.6, M:10.6, P:5.4, B:5.2, F:3.7, J:2.7, R:2.3},
-   url:'https://www.dv.is/frettir/2026/03/28/fylgid-flugi-nyrri-konnun-borginni-einn-flokkur-lykilstodu/',
-   note:'S og D nær jafnir ~21–22%. Viðreisn (C) mælist 12,6% — Miðflokkur og Vinstrið rétt á eftir.'},
-  {source:'Gallup / Þjóðarpúls', method:'Netkönnun', date:'4. mars 2026', n:'—', tag:'gallup',
-   data:{D:26.4, S:26.4, M:11.3, C:10.7, A:8.7, B:4.6, F:4.0, P:3.7, J:3.1, R:1.2},
-   url:'https://www.ruv.is/frettir/innlent/2026-02-04-meirihlutinn-i-borginni-fallinn-samkvaemt-nyrri-konnun-466084',
-   note:'D og S hnífjafnir með 26,4%. Miðflokkur mælist hærra en Viðreisn.'},
-  {source:'Maskína / Borgarviti', method:'Netkönnun', date:'1.–27. febrúar 2026', n:'1015', tag:'maskina',
-   data:{S:24.0, D:22.7, C:13.5, M:11.0, A:9.1, P:5.5, B:5.1, J:3.7, F:3.4, R:1.2},
-   url:'https://www.mbl.is/frettir/innlent/2026/02/27/ny_konnun_fyrir_kosningar_i_borginni_tveir_turnar/',
-   note:'S stærstur með 24%. Viðreisn (C) yfir 13%. Núverandi meirihluti fallinn.'},
-  {source:'Maskína / Borgarviti', method:'Netkönnun', date:'janúar 2026', n:'—', tag:'maskina',
-   data:{S:26.1, D:24.4, C:14.6, M:10.1, A:8.7, B:4.4, J:3.8, F:3.8, P:3.0},
-   url:'https://is.wikipedia.org/wiki/Borgarstj%C3%B3rnarkosningar_%C3%AD_Reykjav%C3%ADk_2026',
-   note:'S aftur fremstur. Viðreisn (C) 14,6% — sterkasta mæling þeirra.'},
-  {source:'Maskína / Borgarviti', method:'Netkönnun', date:'desember 2025', n:'—', tag:'maskina',
-   data:{S:26.7, D:24.1, C:12.1, M:10.0, P:6.3, J:5.5, F:4.8, B:4.5, A:5.3},
-   url:'https://is.wikipedia.org/wiki/Borgarstj%C3%B3rnarkosningar_%C3%AD_Reykjav%C3%ADk_2026',
-   note:'VG/Vor til vinstri ósameinað í þessari könnun; Sósíalistar (J) yfir 5%.'},
-  {source:'Maskína / Borgarviti', method:'Netkönnun', date:'nóvember 2025', n:'—', tag:'maskina',
-   data:{D:31.0, S:25.5, C:11.9, M:8.5, P:6.4, J:5.0, B:4.2, A:4.2, F:2.9},
-   url:'https://is.wikipedia.org/wiki/Borgarstj%C3%B3rnarkosningar_%C3%AD_Reykjav%C3%ADk_2026',
-   note:'D hámark 31%. Mælt áður en Góðan daginn og Okkar borg tilkynntu.'},
-  {source:'Maskína / Borgarviti', method:'Netkönnun', date:'október 2025', n:'—', tag:'maskina',
-   data:{S:26.0, D:25.4, C:13.3, M:8.5, P:7.1, J:6.1, F:5.2, B:3.9, A:3.8},
-   url:'https://is.wikipedia.org/wiki/Borgarstj%C3%B3rnarkosningar_%C3%AD_Reykjav%C3%ADk_2026',
-   note:'S og D á svipuðu róli. Píratar og Sósíalistar sterkari en síðar.'},
-  {source:'Maskína / Borgarviti', method:'Netkönnun', date:'september 2025', n:'—', tag:'maskina',
-   data:{S:28.1, D:24.8, C:14.9, M:7.1, P:6.7, A:5.5, F:4.6, J:3.9, B:3.4},
-   url:'https://is.wikipedia.org/wiki/Borgarstj%C3%B3rnarkosningar_%C3%AD_Reykjav%C3%ADk_2026',
-   note:'Elsta könnun í safninu. S með 28,1% — hámarksmæling Samfylkingar.'}
-];
+// Byrja á að sýna aftur allar blokkir (gæti hafa verið falið fyrir muni án kannana)
+['polls-model-card','polls-trend-card','polls-table-card','poll-cards'].forEach(function(id){
+  var el = document.getElementById(id);
+  if(el) el.style.display = '';
+});
+// Sæki kannanir fyrir núverandi sveitarfélag. Ef engar eru skráðar
+// (kopv, gard, mos, selt) rennur kóðinn áfram en birtir placeholder-textann.
+const POLLS_RAW = POLLS_BY_MUNI[CURRENT_MUNI] || [];
+// Render 2022 úrslit burtséð frá kannanafjölda — viðmiðunargögn
+renderUrslit2022();
+if(!POLLS_RAW.length){
+  // Engar kannanir — fela Baldur-módel og birta skýringu.
+  window._POLLS = [];
+  renderNoPolls();
+  return;
+}
 
 // D'Hondt-aðferð. Engir þröskuldar í sveitarstjórnarkosningum. Default-sætafjöldi
 // tekur mið af núverandi sveitarfélagi (Reykjavík:23, Kópavogur:11, o.s.frv.).
@@ -1291,24 +1472,29 @@ function dhondt(data, totalSeats){
   for(var j=0;j<totalSeats && j<divs.length;j++) seats[divs[j].party]++;
   return seats;
 }
-// Reikna sætatölu fyrir hverja könnun
+// Reikna sætatölu fyrir hverja könnun — dýnamískt eftir sveitarfélagi
+var _councilSize = (typeof getMuni === 'function') ? getMuni().councilSize : 23;
 let POLLS = POLLS_RAW.map(function(p){
-  return Object.assign({}, p, {seats: dhondt(p.data, 23)});
+  return Object.assign({}, p, {seats: dhondt(p.data, _councilSize)});
 });
 window._POLLS = POLLS;
 window._dhondt = dhondt;
 
-// Samræma PARTIES.pct og .seats við nýjustu spá (Baldur kosningaspá)
+// Samræma PARTIES.pct og .seats við nýjustu spá/könnun
 (function syncParties(){
-  var baldur = POLLS[0];
+  var latest = POLLS[0];
   PARTIES.forEach(function(p){
-    p.pct = Math.round(baldur.data[p.id]||0);
-    p.seats = baldur.seats[p.id]||0;
+    p.pct = Math.round(latest.data[p.id]||0);
+    p.seats = latest.seats[p.id]||0;
   });
 })();
 
-const baldvin=POLLS[0];
+// Baldur-módel: aðeins Reykjavík. Fyrir aðra birtum við „Nýjasta könnun"
+// yfirlit með sömu gögnum í fyrsta canonical pollinum.
+var _hasBaldur = POLLS[0] && POLLS[0].tag === 'baldur';
+var baldvin=POLLS[0];
 const sorted=PARTIES.filter(p=>baldvin.data[p.id]>0).sort((a,b)=>baldvin.data[b.id]-baldvin.data[a.id]);
+renderPollsHeader(baldvin, _hasBaldur);
 const bbEl=document.getElementById('baldvin-bars');
 if(bbEl) bbEl.innerHTML=sorted.map(p=>`<div class="bar-row" style="display:flex;align-items:center;gap:8px"><span style="display:flex;align-items:center;gap:6px;min-width:180px"><span style="flex-shrink:0">${renderPartyBadge(p, 22)}</span><span class="bar-party" style="font-size:12px">${p.id} · ${p.name}</span></span><div class="bar-wrap" style="flex:1"><div class="bar-fill" style="width:${baldvin.data[p.id]}%;background:${p.color}"><span class="bar-pct">${baldvin.data[p.id]>5?baldvin.data[p.id]+'%':''}</span></div></div><span class="bar-pct-out">${baldvin.data[p.id]}%</span></div>`).join('');
 
@@ -1318,6 +1504,67 @@ if(sfEl) sfEl.innerHTML=sorted.filter(p=>baldvin.seats[p.id]>0).map(p=>`<div sty
 showPollTable_('all',null,POLLS);
 renderPollCards_(POLLS);
 renderPollTrend();
+}
+
+// Dýnamísk fyrirsögn á kannanakortinu eftir muni og hvort Baldur-módel er til
+function renderPollsHeader(latest, hasBaldur){
+  var m = (typeof getMuni === 'function') ? getMuni() : {name:'Reykjavík', councilSize:23};
+  var pageTitle = document.getElementById('polls-page-title');
+  var pageSub = document.getElementById('polls-page-sub');
+  var cardTitle = document.getElementById('polls-card-title');
+  var cardSub = document.getElementById('polls-card-sub');
+  var methodBox = document.getElementById('polls-method-box');
+  var polls = window._POLLS || [];
+  if(pageTitle) pageTitle.textContent = 'Kosningakannanir — '+m.name+' 2026';
+  if(pageSub){
+    if(hasBaldur){
+      pageSub.innerHTML = polls.length+' staðfestar kannanir (sept 2025–apríl 2026). Heimildir: kosningaspa.is · Gallup · Maskína. Sæti reiknuð með D\'Hondt-aðferð.';
+    } else if(polls.length){
+      pageSub.innerHTML = polls.length+' staðfest könnun fyrir '+m.name+' 2026. Smelltu á „Uppfæra með AI" til að sækja nýrri kannanir.';
+    } else {
+      pageSub.innerHTML = 'Engar staðfestar kannanir fyrir '+m.name+' 2026 enn sem komið er. Smelltu á „Uppfæra með AI" neðar á síðunni til að leita að nýjustu tölum.';
+    }
+  }
+  if(cardTitle) cardTitle.textContent = hasBaldur ? ('Baldur Héðinsson-módel · '+(latest.date||'')) : ('Nýjasta könnun · '+(latest.source||''));
+  if(cardSub){
+    if(hasBaldur){
+      cardSub.innerHTML = 'Gallup (59% vægi, apríl) + Maskína (41% vægi, mars) · sæti reiknuð með D\'Hondt · '+m.councilSize+' sæti í '+(m.councilName||'ráði').toLowerCase();
+    } else {
+      cardSub.innerHTML = (latest.method||'')+' · '+(latest.date||'')+' · n='+(latest.n||'—')+' · sæti reiknuð með D\'Hondt · '+m.councilSize+' sæti í '+(m.councilName||'ráði').toLowerCase();
+    }
+  }
+  if(methodBox){
+    if(hasBaldur){
+      methodBox.textContent = 'Aðferð: Vegið meðaltal tveggja nýjustu kannana (Gallup apríl 59%, Maskína mars 41%). Sæti reiknuð með D\'Hondt-aðferð á '+m.councilSize+' sæta '+(m.councilName||'').toLowerCase()+'. Uppfærist sjálfvirkt þegar nýjar kannanir eru sóttar með AI.';
+    } else {
+      methodBox.textContent = 'Baldur-módel (kosningaspa.is) er aðeins með spá fyrir Reykjavík. Fyrir '+m.name+' birtum við einstakar staðfestar kannanir — smelltu á „Uppfæra með AI" til að sækja nýjustu.';
+    }
+  }
+  // Baldur summary line under model bars
+  var summaryEl = document.getElementById('baldur-summary');
+  if(summaryEl){
+    if(hasBaldur){
+      summaryEl.textContent = 'Heimildir: Gallup Þjóðarpúls (1.–15. apríl) og Maskína Borgarviti (12.–19. mars) · kosningaspa.is.';
+    } else {
+      summaryEl.innerHTML = 'Heimild: <a href="'+(latest.url||'#')+'" target="_blank" rel="noopener" style="color:var(--gold)">'+(latest.source||'Könnunin')+'</a>.';
+    }
+  }
+}
+
+// Þegar engar kannanir eru til fyrir núverandi sveitarfélag
+function renderNoPolls(){
+  var m = (typeof getMuni === 'function') ? getMuni() : {name:'Reykjavík'};
+  var pageTitle = document.getElementById('polls-page-title');
+  var pageSub = document.getElementById('polls-page-sub');
+  if(pageTitle) pageTitle.textContent = 'Kosningakannanir — '+m.name+' 2026';
+  if(pageSub) pageSub.textContent = 'Engar staðfestar kannanir fyrir '+m.name+' 2026 enn sem komið er. Smelltu á „Uppfæra með AI" neðar á síðunni til að leita að nýjustu tölum.';
+  // Fela Baldur/spá/line-chart/tafla blokk — ekki merkingarbær án gagna.
+  ['polls-model-card','polls-trend-card','polls-table-card','poll-cards'].forEach(function(id){
+    var el = document.getElementById(id);
+    if(el) el.style.display = 'none';
+  });
+  // Núlla PARTIES fylgi svo „Allir frambjóðendur"-röðun lendi ekki ofan á gamla Reykjavík
+  PARTIES.forEach(function(p){ p.pct = 0; p.seats = 0; });
 }
 
 function showPollTable_(filter,btn,polls){
@@ -1729,26 +1976,26 @@ function rerenderAllForMuni(){
   document.title = 'Kosningavaktin — '+m.name+' 16. maí 2026';
 
   // Kannanir / stefnupróf / borgarstjórnir — sýnum placeholder ef gögn vantar
-  // fyrir núverandi muni. Fyrir rvk endurheimum upphafs-snapshot.
-  var hasPolls = (CURRENT_MUNI === 'rvk'); // POLLS er enn aðeins skráð fyrir rvk
+  // fyrir núverandi muni. Kannanir eru nú studdar per-muni (POLLS_BY_MUNI);
+  // stefnuprófun og borgarstjórnarmyndir eru ennþá Reykjavík-sértækar.
+  var hasPolls = (POLLS_BY_MUNI[CURRENT_MUNI] && POLLS_BY_MUNI[CURRENT_MUNI].length > 0);
   var hasStefnumal = STEFNUMAL && Object.keys(STEFNUMAL).length > 0;
   var hasFinance = FINANCE && FINANCE.length > 0;
+  var isRvk = (CURRENT_MUNI === 'rvk');
 
-  if(!hasPolls){
-    setPagePlaceholder('page-kannanir',
-      'Kannanir í '+m.name+' koma von bráðar',
-      'Engar kannanir hafa enn verið birtar fyrir '+council+'arkosningar í '+m.name+' 2026. Vefurinn sækir kannanir sjálfvirkt þegar þær birtast.');
+  // Kannana-síðan birtist alltaf — initPolls() sér um no-polls ástandið (birtir
+  // 2022 úrslit og skýringu um að engin könnun sé til).
+  restorePageSnapshot('page-kannanir');
+  if(isRvk){
+    restorePageSnapshot('page-stefnuprof');
+    restorePageSnapshot('page-borgar');
+  } else {
     setPagePlaceholder('page-stefnuprof',
       'Stefnuprófun fyrir '+m.name+' kemur von bráðar',
       'Spurningar og stefnugreining eru í smíðum fyrir '+m.name+'. Reykjavíkur-útgáfan er fullbúin og má skoða með sveitarfélags-vali í haus.');
-    // Borgarstjórnir-flipinn er byggður utan um POLLS — birtum placeholder
     setPagePlaceholder('page-borgar',
       m.councilName+'armyndir í '+m.name+' koma von bráðar',
       'Reiknivél fyrir meirihlutamyndir byggir á könnunum. Þegar kannanir birtast fyrir '+m.name+' verður flipinn virkur.');
-  } else {
-    restorePageSnapshot('page-kannanir');
-    restorePageSnapshot('page-stefnuprof');
-    restorePageSnapshot('page-borgar');
   }
 
   if(!hasStefnumal){
@@ -1787,7 +2034,9 @@ function rerenderAllForMuni(){
   try { if(typeof render === 'function') render(); } catch(e){}
   try { if(typeof initPartyCards === 'function') initPartyCards(); } catch(e){}
   try { if(typeof initFinance === 'function') initFinance(); } catch(e){}
-  try { if(hasPolls && typeof initPolls === 'function') initPolls(); } catch(e){}
+  // initPolls keyrist alltaf — sér sjálfur um no-polls ástandið og render 2022 úrslit.
+  try { if(typeof initPolls === 'function') initPolls(); } catch(e){}
+  // Borgarstjórnarmyndir-reiknivél byggir á POLLS — aðeins ef kannanir finnast.
   try { if(hasPolls && typeof initCoalitions === 'function') initCoalitions(); } catch(e){}
   // renderForsidaPollSummary þarf að keyra EFTIR initPolls svo window._POLLS
   // sé til staðar ef notandi skiptir úr non-rvk aftur í rvk.
@@ -2492,8 +2741,6 @@ function initPartyCards() {
       renderComparison('husnaedi');
     }
   }
-  // Afstöðumatrix
-  renderAfstoduMatrix();
   // Flokkaspjöld
   const grid = document.getElementById('party-cards');
   grid.innerHTML = PARTIES.map(p => {
@@ -2652,80 +2899,6 @@ function setTopic(topicId, btn) {
   if(btn) btn.classList.add('active');
   currentTopicId = topicId;
   renderComparison(topicId);
-}
-
-// Afstöðumatrix: 6 lykilspurningar × 11 framboð, með skýrri afstöðu.
-// Byggt á birtum stefnum og ummælum í fjölmiðlum apríl 2026 (sjá STEFNUMAL.heimildir).
-// +1 = skýr stuðningur, 0 = hlutlaust/óljóst/blandað, -1 = skýr andstaða, null = ekki birt
-const AFSTADA_ISSUES = [
-  {id:'borgarlina', label:'Borgarlína',
-   sub:'Áframhald samgöngusáttmála og uppbygging Borgarlínu'},
-  {id:'flugvollur', label:'Flugvöllur í Vatnsmýri',
-   sub:'Halda flugvelli uns annar kostur er kominn'},
-  {id:'thetting',   label:'Þétting byggðar',
-   sub:'Þétting fremur en útþensla á nýju landi'},
-  {id:'ohagnad',    label:'Óhagnaðardr. húsnæði',
-   sub:'Borg byggir/stýrir óhagnaðardrifinni uppbyggingu'},
-  {id:'leikskgjfr', label:'Gjaldfrjálsir leikskólar',
-   sub:'Niðurgreiðsla eða gjaldfríar vistunarstundir'},
-  {id:'utlend',     label:'Samningar v. Útlstofnun',
-   sub:'Áframhald þjónustusamninga við Útlendingastofnun'}
-];
-const AFSTODUR = {
-  // Borgarlína
-  borgarlina: {S:1,  D:-1, A:1,  C:1,  M:-1, B:1,  P:1,  J:1,  F:0,  G:-1, R:-1},
-  // Flugvöllur í Vatnsmýri (1 = halda, -1 = leggja niður)
-  flugvollur: {S:1,  D:1,  A:0,  C:0,  M:1,  B:1,  P:-1, J:0,  F:1,  G:0,  R:1},
-  // Þétting byggðar
-  thetting:   {S:1,  D:0,  A:1,  C:0,  M:-1, B:1,  P:1,  J:0,  F:-1, G:-1, R:-1},
-  // Óhagnaðardrifið húsnæði (borg stýrir)
-  ohagnad:    {S:1,  D:-1, A:1,  C:-1, M:0,  B:0,  P:1,  J:1,  F:1,  G:0,  R:0},
-  // Gjaldfrjálsir/niðurgr. leikskólar
-  leikskgjfr: {S:1,  D:0,  A:1,  C:0,  M:0,  B:0,  P:0,  J:1,  F:0,  G:0,  R:0},
-  // Samningar við Útlendingastofnun (1 = halda, -1 = segja upp)
-  utlend:     {S:1,  D:0,  A:1,  C:0,  M:-1, B:0,  P:1,  J:1,  F:0,  G:0,  R:-1}
-};
-function afstodaGlyph(v){
-  if(v===1)  return {s:'●', color:'#2E7D32', lbl:'Styður'};
-  if(v===-1) return {s:'✕', color:'#C62828', lbl:'Andvígur'};
-  if(v===0)  return {s:'◐', color:'#A8A4A0', lbl:'Hlutlaust / blandað'};
-  return              {s:'–', color:'#D0CFCE', lbl:'Ekki birt'};
-}
-function renderAfstoduMatrix(){
-  var el = document.getElementById('afstodu-matrix');
-  if(!el) return;
-  // Engin afstaða skráð fyrir núverandi sveitarfélag (AFSTODUR er Reykjavík-sértækt
-  // nú sem stendur — bætist per-muni í seinni áfanga). Sýnum placeholder.
-  var hasAfstada = PARTIES.some(function(p){
-    return AFSTADA_ISSUES.some(function(iss){ return AFSTODUR[iss.id] && AFSTODUR[iss.id][p.id] !== undefined; });
-  });
-  if(!hasAfstada){
-    var m = getMuni();
-    el.innerHTML = '<div style="max-width:560px;margin:1rem auto;padding:1.25rem;background:#FFF8E1;border:0.5px solid #854F0B40;border-radius:10px;text-align:center;"><div style="font-size:14px;color:#854F0B;margin-bottom:4px;font-family:\'Playfair Display\',serif;">Afstöðumatrix fyrir '+m.name+' í smíðum</div><div style="font-size:12px;color:var(--ink2);line-height:1.5;">Samanburður á afstöðu flokka til sveitarfélags-mála í '+m.name+' bætist við í næsta áfanga.</div></div>';
-    return;
-  }
-  var pollSeats = (window._POLLS && window._POLLS[0] ? window._POLLS[0].seats : {}) || {};
-  var sorted = PARTIES.slice().sort(function(a,b){return (pollSeats[b.id]||0)-(pollSeats[a.id]||0);});
-  var head = '<tr><th style="text-align:left;padding:8px 10px;font-size:11px;color:var(--ink3);font-weight:500;text-transform:uppercase;letter-spacing:.07em">Málefni</th>'
-    + sorted.map(function(p){return '<th style="padding:6px 2px;text-align:center" title="'+p.name+'"><div style="display:flex;flex-direction:column;align-items:center;gap:3px">'+renderPartyBadge(p, 24)+'<span style="font-size:10px;color:'+p.color+';font-weight:500">'+p.id+'</span></div></th>';}).join('')
-    +'</tr>';
-  var rows = AFSTADA_ISSUES.map(function(iss,i){
-    var bg = i%2 ? 'var(--bg)' : 'var(--white)';
-    var cells = sorted.map(function(p){
-      var v = AFSTODUR[iss.id] ? AFSTODUR[iss.id][p.id] : null;
-      var g = afstodaGlyph(v);
-      return '<td title="'+p.name+': '+g.lbl+'" style="padding:8px 4px;text-align:center;font-size:15px;color:'+g.color+'">'+g.s+'</td>';
-    }).join('');
-    return '<tr style="background:'+bg+';border-top:0.5px solid var(--bdr)">'
-      +'<td style="padding:8px 10px"><div style="font-size:12px;font-weight:500;color:var(--ink)">'+iss.label+'</div><div style="font-size:10px;color:var(--ink3);margin-top:1px">'+iss.sub+'</div></td>'
-      +cells+'</tr>';
-  }).join('');
-  var legend = '<div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:.75rem;font-size:11px;color:var(--ink2)">'
-    + [[1,'Skýr stuðningur'],[-1,'Skýr andstaða'],[0,'Hlutlaust / blandað'],[null,'Ekki birt 2026']]
-      .map(function(pair){var g=afstodaGlyph(pair[0]);return '<span style="display:inline-flex;align-items:center;gap:4px"><span style="color:'+g.color+';font-size:15px">'+g.s+'</span>'+pair[1]+'</span>';}).join('')
-    +'</div>';
-  el.innerHTML = '<table style="width:100%;border-collapse:collapse">'+head+rows+'</table>'+legend
-    +'<div style="font-size:10px;color:var(--ink3);margin-top:.75rem;line-height:1.6">Afstaða byggð á birtum stefnum og ummælum oddvita í fjölmiðlum (sjá heimildir undir „Flokkar og stefnumál"). Þar sem blandaðar skoðanir eru innan framboðs er afstaðan merkt „blandað".</div>';
 }
 
 // Static comparison úr STEFNUMAL gögnum — engin AI-kall, birtist strax
@@ -7215,7 +7388,6 @@ if (document.readyState === 'loading') {
         <div><div style="font-size:13px;font-weight:500;color:var(--ink);margin-bottom:3px">Sætaspá (D'Hondt)</div><div style="font-size:12px;color:var(--ink2);line-height:1.6">Sætatölur eru reiknaðar sjálfvirkt með D'Hondt-aðferð (23 sæti í Reykjavík) úr fylgisprósentum hverrar könnunar. Engir þröskuldar í sveitarstjórnarkosningum. Ekki forgeymd — uppfærist sjálfkrafa þegar tölur breytast.</div></div>
         <div><div style="font-size:13px;font-weight:500;color:var(--ink);margin-bottom:3px">Kosningaspá Baldurs</div><div style="font-size:12px;color:var(--ink2);line-height:1.6">Vegið meðaltal tveggja nýjustu kannana (Gallup 59%, Maskína 41%). Líkja má við kosningaspa.is Baldurs Héðinssonar.</div></div>
         <div><div style="font-size:13px;font-weight:500;color:var(--ink);margin-bottom:3px">Stefnuprófun (Wahl-O-Mat-aðferð)</div><div style="font-size:12px;color:var(--ink2);line-height:1.6">Hver spurning ber 2 stig fyrir fullkomna samsvörun, 1 stig fyrir hlutlausa hlið, 0 stig fyrir andstöðu. Spurningar merktar „mikilvægar" tvöfalda vægi. Endanleg prósenta = fengin stig / hámark mögulegra stiga.</div></div>
-        <div><div style="font-size:13px;font-weight:500;color:var(--ink);margin-bottom:3px">Afstöðumatrix</div><div style="font-size:12px;color:var(--ink2);line-height:1.6">Fyrir 6 lykilmálefni er afstaða hvers flokks merkt +1 (styður), 0 (hlutlaust/blandað), -1 (andstaða), eða „Ekki birt". Afstaða er byggð á birtum stefnum og ummælum oddvita í fjölmiðlum.</div></div>
       </div>
     </div>
 
@@ -7232,7 +7404,7 @@ if (document.readyState === 'loading') {
 
     <div class="card card-lg" style="margin-bottom:1rem;">
       <div class="card-title">Ábendingar og leiðréttingar</div>
-      <p style="font-size:13px;color:var(--ink);line-height:1.7;margin-bottom:0;">Fannstu villu, úrelta tölu eða eitthvað sem mætti bæta? Sérstaklega hvetjum við <strong>framboðin sjálf</strong> til að senda leiðréttingar á afstöðumatrix og æviágripum. Samskiptaleið er í uppsetningu — netfang og ábendingaform verða birt hér þegar þau eru tilbúin.</p>
+      <p style="font-size:13px;color:var(--ink);line-height:1.7;margin-bottom:0;">Fannstu villu, úrelta tölu eða eitthvað sem mætti bæta? Sérstaklega hvetjum við <strong>framboðin sjálf</strong> til að senda leiðréttingar á æviágripum og stefnumálum. Samskiptaleið er í uppsetningu — netfang og ábendingaform verða birt hér þegar þau eru tilbúin.</p>
     </div>
 
     <div style="text-align:center;margin-top:2rem;padding-top:1.5rem;border-top:0.5px solid var(--bdr);font-size:11px;color:var(--ink3);line-height:1.7;">
@@ -7253,13 +7425,6 @@ if (document.readyState === 'loading') {
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;margin-bottom:1.5rem;" id="party-cards"></div>
     <div id="party-detail" style="display:none;"></div>
     <div style="margin-top:1.5rem;background:var(--white);border:0.5px solid var(--bdr);border-radius:12px;padding:1.25rem;">
-      <div style="margin-bottom:1rem;">
-        <div style="font-family:'Playfair Display',serif;font-size:17px;margin-bottom:3px;">Afstöðumatrix — 6 lykilspurningar</div>
-        <div style="font-size:12px;color:var(--ink2);">Skýr afstaða allra 11 framboða í einu yfirliti. Raðað eftir sætatölu í nýjustu spá.</div>
-      </div>
-      <div id="afstodu-matrix" style="overflow-x:auto;"></div>
-    </div>
-    <div style="margin-top:1rem;background:var(--white);border:0.5px solid var(--bdr);border-radius:12px;padding:1.25rem;">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:8px;">
         <div>
           <div style="font-family:'Playfair Display',serif;font-size:17px;margin-bottom:3px;">Samanburður á málaefnum</div>
