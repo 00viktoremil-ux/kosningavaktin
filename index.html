@@ -5867,6 +5867,19 @@ var SAMANB_FAST = {
 
 var SAMANB_MUNI_ORDER = ['rvk','kopv','hafn','gard','mos','selt'];
 
+// Opinbert skuldaviðmið samstæðu (A+B) 2024 skv. sveitarstjórnarlögum 64. gr.
+// Undanþiggur ákveðna liði (lífeyrisskuldbindingar, Orkuveitu-skuldir hjá eigandi
+// o.fl.) — birt í ársreikningum sveitarfélaga. Lögbundið hámark 150%.
+// null = ekki birt í opinberri heimild sem fannst við verifíkeringu apríl 2026.
+var SAMANB_SKULDAVIDMID_OPINBERT = {
+  rvk:  {val: 104,  yr: 2024, src: 'Reykjavíkurborg ársreikningur 2024 (samstæða án OR)'},
+  kopv: {val: 77,   yr: 2024, src: 'Kópavogur ársreikningur 2024 (samstæða)'},
+  hafn: {val: 90,   yr: 2024, src: 'Hafnarfjörður ársreikningur 2024'},
+  gard: {val: 97,   yr: 2024, src: 'Garðabær ársreikningur 2024 — óstaðfest úr frumgögnum'},
+  mos:  {val: 94.5, yr: 2024, src: 'Mosfellsbær ársreikningur 2024'},
+  selt: {val: null, yr: null, src: 'Ekki birt — fjárhagsáætlun 2025 nefnir 108% áætlun'}
+};
+
 // Útgjöld A-hluta eftir málaflokki 2024, ma.kr. Neikvætt = útgjöld, jákvætt =
 // hrein tekja (þegar tekjur málaflokks eru hærri en gjöld — t.d. sund/golf).
 // Heimildir: PDF-ársreikningar á heimasíðum hvers sveitarfélags. Dregið með
@@ -5999,6 +6012,7 @@ function samanbExtractRow(muniId){
   var skulPrIb  = (skul != null && ibuar) ? (skul*1e9 / ibuar / 1000) : null; // þús.kr/íbúa
   var eigfHlut  = (eigf != null && eign != null && eign > 0) ? (eigf/eign*100) : null;
   var skuldavidm = (skul != null && tek != null && tek > 0) ? (skul/tek*100) : null;
+  var skuldavidmOp = (SAMANB_SKULDAVIDMID_OPINBERT[muniId] && SAMANB_SKULDAVIDMID_OPINBERT[muniId].val != null) ? SAMANB_SKULDAVIDMID_OPINBERT[muniId].val : null;
   var skattPrIb = (skatt != null && ibuar) ? (skatt*1e9 / ibuar / 1000) : null;
   var tekPrIb   = (tek != null && ibuar) ? (tek*1e9 / ibuar / 1000) : null;
   var AtekPrIb  = (tekA != null && ibuar) ? (tekA*1e9 / ibuar / 1000) : null;
@@ -6016,7 +6030,7 @@ function samanbExtractRow(muniId){
     rekstrarHlutf: rekPct, rekstrAHlutf: rekAPct,
     skuldirAibua: skulPrIb, skattAibua: skattPrIb, tekjurAibua: tekPrIb,
     AtekjurAibua: AtekPrIb, AgjoldAibua: AgjoldPrIb,
-    eigfHlutfall: eigfHlut, skuldavidmid: skuldavidm,
+    eigfHlutfall: eigfHlut, skuldavidmid: skuldavidm, skuldavidmidOpinbert: skuldavidmOp,
     // Útgjöld eftir málaflokki á íbúa (þús.kr/íbúa) — 2024 A-hluti.
     // null ef gögn vantar fyrir þennan málaflokk hjá þessu sveitarfélagi.
     fradsluAibua:   malaflokkPerIbuar(muniId, 'fradsluMal'),
@@ -6090,7 +6104,8 @@ var SAMANB_METRICS = [
   {id:'ABnidurstada', label:'AB-niðurstaða',           unit:'ma.kr.',      lowerBetter:false, desc:'Samstæða A+B — hagnaður (+) eða tap (−) í nýjasta ársreikningi eða bráðabirgða­uppgjöri. Inniheldur einskiptisliði eins og matsbreytingar Félagsbústaða.', hasTrend:true, group:'ab-hluti'},
   {id:'rekstrarHlutf',label:'Rekstur AB (% af tekjum)',unit:'%',           lowerBetter:false, desc:'AB-niðurstaða sem hlutfall af AB-tekjum. Jákvætt = afgangur, neikvætt = halli.', hasTrend:true, group:'ab-hluti'},
   {id:'skuldirAibua', label:'AB-skuldir á íbúa',       unit:'þús.kr/íbúa', lowerBetter:true,  desc:'Heildarskuldir samstæðu (A+B) deilt með íbúafjölda. Lægra = minni skuldabyrði.', hasTrend:true, group:'ab-hluti'},
-  {id:'skuldavidmid', label:'Skuldir / tekjur AB',     unit:'%',           lowerBetter:true,  desc:'Einfalt hlutfall heildarskulda samstæðu (A+B) af AB-tekjum. ATH: þetta er ekki opinbert „skuldaviðmið" skv. sveitarstjórnarlögum (64. gr.) — það útilokar ákveðna liði (m.a. lífeyrisskuldbindingar, Orkuveitu-skuldir hjá eigandi) og er yfirleitt lægra. Lögbundið hámark opinbers skuldaviðmiðs er 150%.', hasTrend:true, group:'ab-hluti'},
+  {id:'skuldavidmidOpinbert', label:'Skuldaviðmið (opinbert)', unit:'%',   dec:1, lowerBetter:true,  desc:'Opinbert skuldaviðmið samstæðu (A+B) úr ársreikningi 2024, skv. sveitarstjórnarlögum 64. gr. Undanþiggur lífeyrisskuldbindingar, Orkuveitu-skuldir hjá eigandi o.fl. Lögbundið hámark er 150%.', hasTrend:false, group:'ab-hluti'},
+  {id:'skuldavidmid', label:'Skuldir / tekjur AB (einfalt)',     unit:'%',           lowerBetter:true,  desc:'Einfalt hlutfall heildarskulda samstæðu af AB-tekjum. Ekki sama og opinbert skuldaviðmið — yfirleitt hærra því ekkert er undanþegið. Skoðið „Skuldaviðmið (opinbert)" fyrir lögbundna tölu.', hasTrend:true, group:'ab-hluti'},
   {id:'eigfHlutfall', label:'Eiginfjárhlutfall AB',    unit:'%',           lowerBetter:false, desc:'Eigið fé deilt með heildareignum samstæðu. Hærra = fjárhagslega sterkara.', hasTrend:true, group:'ab-hluti'},
   // SKATTAR — álagðir 2026
   {id:'utsvar',       label:'Útsvar',                  unit:'%',           dec:2, lowerBetter:true,  desc:'Álagt útsvar 2026 (persónulegur tekjuskattur sveitarfélags). Lögbundið hámark er 14,97% — Reykjavík og Mosfellsbær eru á hámarki. Lægra = minni byrði á íbúa.', hasTrend:false, group:'skattar'},
