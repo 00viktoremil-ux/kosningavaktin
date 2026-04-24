@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1A1814"/>
+      <stop offset="1" stop-color="#3A2A1E"/>
+    </linearGradient>
+    <radialGradient id="spot" cx="0.5" cy="0.35" r="0.5">
+      <stop offset="0" stop-color="#B8935A" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#B8935A" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1080" height="1920" fill="url(#bg)"/>
+  <rect width="1080" height="1920" fill="url(#spot)"/>
+
+  <text x="540" y="320" text-anchor="middle" font-family="DM Sans, system-ui, sans-serif" font-size="28" font-weight="500" letter-spacing="6" fill="#B8935A">KJÖRDAGUR NÁLGAST</text>
+
+  <!-- Big number -->
+  <text x="540" y="720" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="320" font-weight="700" fill="#B8935A">22</text>
+  <text x="540" y="830" text-anchor="middle" font-family="DM Sans, system-ui, sans-serif" font-size="44" letter-spacing="4" fill="#FDFCFA">DAGAR EFTIR</text>
+
+  <!-- Date -->
+  <line x1="300" y1="960" x2="780" y2="960" stroke="#B8935A" stroke-width="1" opacity="0.4"/>
+  <text x="540" y="1050" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="80" font-weight="700" fill="#FDFCFA">16. maí 2026</text>
+  <text x="540" y="1110" text-anchor="middle" font-family="DM Sans, system-ui, sans-serif" font-size="32" fill="#A8A4A0">laugardagur · sveitarstjórnarkosningar</text>
+
+  <!-- Features list -->
+  <g transform="translate(200,1280)">
+    <text x="0" y="40" font-family="DM Sans, system-ui, sans-serif" font-size="36" fill="#FDFCFA">✓ Taktu stefnuprófið</text>
+    <text x="0" y="110" font-family="DM Sans, system-ui, sans-serif" font-size="36" fill="#FDFCFA">✓ Kynntu þér framboðin</text>
+    <text x="0" y="180" font-family="DM Sans, system-ui, sans-serif" font-size="36" fill="#FDFCFA">✓ Berðu saman stefnur</text>
+    <text x="0" y="250" font-family="DM Sans, system-ui, sans-serif" font-size="36" fill="#FDFCFA">✓ Skoðaðu fjármál bæjarins</text>
+  </g>
+
+  <!-- CTA -->
+  <text x="540" y="1770" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="68" font-weight="700" fill="#FDFCFA">kosningavaktin.app</text>
+</svg>
