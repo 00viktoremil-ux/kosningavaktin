@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <!-- Dark rounded square background -->
+  <rect x="0" y="0" width="512" height="512" rx="96" fill="#1A1814"/>
+
+  <!-- X mark in upper portion — gold -->
+  <g stroke="#B8935A" stroke-width="44" stroke-linecap="round" fill="none">
+    <line x1="172" y1="108" x2="340" y2="276"/>
+    <line x1="340" y1="108" x2="172" y2="276"/>
+  </g>
+
+  <!-- Divider line -->
+  <line x1="186" y1="320" x2="326" y2="320" stroke="#B8935A" stroke-opacity="0.45" stroke-width="2"/>
+
+  <!-- 26 centered below, Playfair serif -->
+  <text x="256" y="430" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="88" font-weight="700" fill="#FDFCFA" letter-spacing="3">26</text>
+</svg>
