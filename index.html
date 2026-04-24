@@ -6305,22 +6305,35 @@ function renderSamanbChart(){
   }
   var maxAbs = withVal.reduce(function(acc,x){ return Math.max(acc, Math.abs(x.val)); }, 0);
   if(maxAbs === 0) maxAbs = 1;
+  var _dec0 = (m.dec != null) ? m.dec : (m.unit === '%' ? 1 : (m.unit === 'ma.kr.' ? 2 : 0));
+  function fmtVal(v){
+    if(v == null) return '—';
+    return (m.unit === '%') ? fmtPct(v, _dec0)
+         : (m.unit === 'ma.kr.') ? fmtNum(v, _dec0)+' ma.kr.'
+         : fmtNum(v, _dec0)+' '+m.unit;
+  }
   var rowsHtml = withVal.map(function(x, idx){
     var r = x.row, v = x.val;
     var widthPct = Math.min(100, Math.abs(v)/maxAbs*100);
     var isNeg = v < 0;
     var barColor = isNeg ? '#C62828' : (idx===0 ? '#1E8A3E' : 'var(--gold)');
-    var _dec = (m.dec != null) ? m.dec : (m.unit === '%' ? 1 : (m.unit === 'ma.kr.' ? 2 : 0));
-    var label = (m.unit === '%' ? fmtPct(v, _dec) : (m.unit==='ma.kr.' ? fmtNum(v, _dec)+' ma.kr.' : fmtNum(v, _dec)+' '+m.unit));
     return '<div style="display:grid;grid-template-columns:110px 1fr 130px;align-items:center;gap:8px;margin-bottom:6px;">'
       +'<div style="font-size:12px;color:var(--ink);font-weight:500;text-align:right;">'+r.name+'</div>'
       +'<div style="background:var(--bg);border-radius:4px;height:26px;position:relative;overflow:hidden;">'
         +'<div style="width:'+widthPct+'%;height:100%;background:'+barColor+';border-radius:4px;"></div>'
       +'</div>'
-      +'<div style="font-size:12px;color:var(--ink2);">'+label+' <span style="color:var(--ink3);font-size:10px;">('+(r.sourceYr||'?')+')</span></div>'
+      +'<div style="font-size:12px;color:var(--ink2);">'+fmtVal(v)+' <span style="color:var(--ink3);font-size:10px;">('+(r.sourceYr||'?')+')</span></div>'
     +'</div>';
   }).join('');
-  document.getElementById('samanb-chart').innerHTML = rowsHtml;
+  // Gögn að baki — sama snið og á Fjármál-síðu
+  var dataRows = withVal.map(function(x){ return {name: x.row.name, val: x.val, yr: x.row.sourceYr, src: x.row.sourceLabel}; });
+  var details = buildDataDetails(dataRows, [
+    {header:'Sveitarfélag', align:'left', fmt:function(r){return r.name;}},
+    {header:m.label+(m.unit?' ('+m.unit+')':''), fmt:function(r){return fmtVal(r.val);}},
+    {header:'Ár', fmt:function(r){return r.yr || '—';}},
+    {header:'Heimild', align:'left', fmt:function(r){return '<span style="color:var(--ink3);font-size:11px">'+(r.src||'—')+'</span>';}}
+  ], m.label);
+  document.getElementById('samanb-chart').innerHTML = rowsHtml + details;
 }
 
 function renderSamanbTable(){
