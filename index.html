@@ -5867,6 +5867,19 @@ var SAMANB_FAST = {
 
 var SAMANB_MUNI_ORDER = ['rvk','kopv','hafn','gard','mos','selt'];
 
+// Opinbert skuldaviðmið samstæðu (A+B) 2024 skv. sveitarstjórnarlögum 64. gr.
+// Undanþiggur ákveðna liði (lífeyrisskuldbindingar, Orkuveitu-skuldir hjá eigandi
+// o.fl.) — birt í ársreikningum sveitarfélaga. Lögbundið hámark 150%.
+// null = ekki birt í opinberri heimild sem fannst við verifíkeringu apríl 2026.
+var SAMANB_SKULDAVIDMID_OPINBERT = {
+  rvk:  {val: 104,  yr: 2024, src: 'Reykjavíkurborg ársreikningur 2024 (samstæða án OR)'},
+  kopv: {val: 77,   yr: 2024, src: 'Kópavogur ársreikningur 2024 (samstæða)'},
+  hafn: {val: 90,   yr: 2024, src: 'Hafnarfjörður ársreikningur 2024'},
+  gard: {val: 97,   yr: 2024, src: 'Garðabær ársreikningur 2024 — óstaðfest úr frumgögnum'},
+  mos:  {val: 94.5, yr: 2024, src: 'Mosfellsbær ársreikningur 2024'},
+  selt: {val: null, yr: null, src: 'Ekki birt — fjárhagsáætlun 2025 nefnir 108% áætlun'}
+};
+
 // Útgjöld A-hluta eftir málaflokki 2024, ma.kr. Neikvætt = útgjöld, jákvætt =
 // hrein tekja (þegar tekjur málaflokks eru hærri en gjöld — t.d. sund/golf).
 // Heimildir: PDF-ársreikningar á heimasíðum hvers sveitarfélags. Dregið með
@@ -5999,6 +6012,7 @@ function samanbExtractRow(muniId){
   var skulPrIb  = (skul != null && ibuar) ? (skul*1e9 / ibuar / 1000) : null; // þús.kr/íbúa
   var eigfHlut  = (eigf != null && eign != null && eign > 0) ? (eigf/eign*100) : null;
   var skuldavidm = (skul != null && tek != null && tek > 0) ? (skul/tek*100) : null;
+  var skuldavidmOp = (SAMANB_SKULDAVIDMID_OPINBERT[muniId] && SAMANB_SKULDAVIDMID_OPINBERT[muniId].val != null) ? SAMANB_SKULDAVIDMID_OPINBERT[muniId].val : null;
   var skattPrIb = (skatt != null && ibuar) ? (skatt*1e9 / ibuar / 1000) : null;
   var tekPrIb   = (tek != null && ibuar) ? (tek*1e9 / ibuar / 1000) : null;
   var AtekPrIb  = (tekA != null && ibuar) ? (tekA*1e9 / ibuar / 1000) : null;
@@ -6016,7 +6030,7 @@ function samanbExtractRow(muniId){
     rekstrarHlutf: rekPct, rekstrAHlutf: rekAPct,
     skuldirAibua: skulPrIb, skattAibua: skattPrIb, tekjurAibua: tekPrIb,
     AtekjurAibua: AtekPrIb, AgjoldAibua: AgjoldPrIb,
-    eigfHlutfall: eigfHlut, skuldavidmid: skuldavidm,
+    eigfHlutfall: eigfHlut, skuldavidmid: skuldavidm, skuldavidmidOpinbert: skuldavidmOp,
     // Útgjöld eftir málaflokki á íbúa (þús.kr/íbúa) — 2024 A-hluti.
     // null ef gögn vantar fyrir þennan málaflokk hjá þessu sveitarfélagi.
     fradsluAibua:   malaflokkPerIbuar(muniId, 'fradsluMal'),
@@ -6090,11 +6104,12 @@ var SAMANB_METRICS = [
   {id:'ABnidurstada', label:'AB-niðurstaða',           unit:'ma.kr.',      lowerBetter:false, desc:'Samstæða A+B — hagnaður (+) eða tap (−) í nýjasta ársreikningi eða bráðabirgða­uppgjöri. Inniheldur einskiptisliði eins og matsbreytingar Félagsbústaða.', hasTrend:true, group:'ab-hluti'},
   {id:'rekstrarHlutf',label:'Rekstur AB (% af tekjum)',unit:'%',           lowerBetter:false, desc:'AB-niðurstaða sem hlutfall af AB-tekjum. Jákvætt = afgangur, neikvætt = halli.', hasTrend:true, group:'ab-hluti'},
   {id:'skuldirAibua', label:'AB-skuldir á íbúa',       unit:'þús.kr/íbúa', lowerBetter:true,  desc:'Heildarskuldir samstæðu (A+B) deilt með íbúafjölda. Lægra = minni skuldabyrði.', hasTrend:true, group:'ab-hluti'},
-  {id:'skuldavidmid', label:'Skuldaviðmið AB',         unit:'%',           lowerBetter:true,  desc:'Skuldir sem hlutfall af reglulegum tekjum (sveitarstjórnarlög setja 150% hámark). Lægra = meira svigrúm.', hasTrend:true, group:'ab-hluti'},
+  {id:'skuldavidmidOpinbert', label:'Skuldaviðmið (opinbert)', unit:'%',   dec:1, lowerBetter:true,  desc:'Opinbert skuldaviðmið samstæðu (A+B) úr ársreikningi 2024, skv. sveitarstjórnarlögum 64. gr. Undanþiggur lífeyrisskuldbindingar, Orkuveitu-skuldir hjá eigandi o.fl. Lögbundið hámark er 150%.', hasTrend:false, group:'ab-hluti'},
+  {id:'skuldavidmid', label:'Skuldir / tekjur AB (einfalt)',     unit:'%',           lowerBetter:true,  desc:'Einfalt hlutfall heildarskulda samstæðu af AB-tekjum. Ekki sama og opinbert skuldaviðmið — yfirleitt hærra því ekkert er undanþegið. Skoðið „Skuldaviðmið (opinbert)" fyrir lögbundna tölu.', hasTrend:true, group:'ab-hluti'},
   {id:'eigfHlutfall', label:'Eiginfjárhlutfall AB',    unit:'%',           lowerBetter:false, desc:'Eigið fé deilt með heildareignum samstæðu. Hærra = fjárhagslega sterkara.', hasTrend:true, group:'ab-hluti'},
   // SKATTAR — álagðir 2026
-  {id:'utsvar',       label:'Útsvar',                  unit:'%',           lowerBetter:true,  desc:'Álagt útsvar 2026 (persónulegur tekjuskattur sveitarfélags). Lægra = minni byrði á íbúa.', hasTrend:false, group:'skattar'},
-  {id:'fasteignaskattur', label:'Fasteignaskattur íbúða', unit:'%',        lowerBetter:true,  desc:'Álagshlutfall fasteignaskatts á íbúðarhúsnæði 2026. Lægra = minni skattur á heimili.',  hasTrend:false, group:'skattar'},
+  {id:'utsvar',       label:'Útsvar',                  unit:'%',           dec:2, lowerBetter:true,  desc:'Álagt útsvar 2026 (persónulegur tekjuskattur sveitarfélags). Lögbundið hámark er 14,97% — Reykjavík og Mosfellsbær eru á hámarki. Lægra = minni byrði á íbúa.', hasTrend:false, group:'skattar'},
+  {id:'fasteignaskattur', label:'Fasteignaskattur íbúða', unit:'%',        dec:3, lowerBetter:true,  desc:'Álagshlutfall fasteignaskatts á íbúðarhúsnæði 2026. Lögbundið hámark er 0,5%. Lægra = minni skattur á heimili.',  hasTrend:false, group:'skattar'},
   // ÞJÓNUSTA — útgjöld eftir málaflokki á hvern íbúa 2024.
   // Hærra = sveitarfélagið eyðir meiru í málaflokkinn (per íbúa). „Lowerbetter"
   // er ekki sett því hér er hærra = meiri þjónusta en líka meira ríkisvald í
@@ -6280,7 +6295,8 @@ function renderSamanbChart(){
     var widthPct = Math.min(100, Math.abs(v)/maxAbs*100);
     var isNeg = v < 0;
     var barColor = isNeg ? '#C62828' : (idx===0 ? '#1E8A3E' : 'var(--gold)');
-    var label = (m.unit === '%' ? fmtPct(v,1) : (m.unit==='ma.kr.' ? fmtNum(v,2)+' ma.kr.' : fmtNum(v,0)+' '+m.unit));
+    var _dec = (m.dec != null) ? m.dec : (m.unit === '%' ? 1 : (m.unit === 'ma.kr.' ? 2 : 0));
+    var label = (m.unit === '%' ? fmtPct(v, _dec) : (m.unit==='ma.kr.' ? fmtNum(v, _dec)+' ma.kr.' : fmtNum(v, _dec)+' '+m.unit));
     return '<div style="display:grid;grid-template-columns:110px 1fr 130px;align-items:center;gap:8px;margin-bottom:6px;">'
       +'<div style="font-size:12px;color:var(--ink);font-weight:500;text-align:right;">'+r.name+'</div>'
       +'<div style="background:var(--bg);border-radius:4px;height:26px;position:relative;overflow:hidden;">'
@@ -6412,14 +6428,15 @@ function renderStuttu(){
   // 6. Skuldir lækkuðu einhvern tíma á síðustu 5 árum
   var skuldirAnyFall= skuldirEverFellLast5;
 
-  var score = (aPos?1:0) + (aAvgPos?1:0) + (abPos?1:0) + (abAvgPos?1:0) + (skuldirLower?1:0) + (skuldirAnyFall?1:0);
-  var health;
-  if(score === 6)      health = {clr:'#2E7D32', bg:'#E8F5E9', lbl:'Gott',   dsc:'Bæði síðasta ár og 5 ára sýn jákvæð, skuldir lækka.'};
-  else if(score === 5) health = {clr:'#7B9000', bg:'#F4F6E8', lbl:'Frekar gott', dsc:'Flest ljós græn, eitt rautt.'};
-  else if(score === 4) health = {clr:'#854F0B', bg:'#FFF8E1', lbl:'Blandað', dsc:'Síðasta ár er skárra en langtímamyndin er veik.'};
-  else if(score === 3) health = {clr:'#B8541B', bg:'#FFE8D6', lbl:'Veikt',   dsc:'Helmingur ljósa er rauður. AB-hagnaður hefur oft verið borinn uppi af bókhaldsaðlögunum.'};
-  else if(score === 2) health = {clr:'#C62828', bg:'#FFEBEE', lbl:'Erfitt',  dsc:'Lítið af grænum ljósum. Kjarna-rekstur hefur verið í tapi og skuldir hækka.'};
-  else                 health = {clr:'#A01515', bg:'#FFD6D6', lbl:'Slæmt',   dsc:'Flestir mælikvarðar rauðir — langtímaþróunin er neikvæð.'};
+  // 6 hlutlausir vísar — enginn samantektarstimpill. Kjósandinn vegur sjálfur.
+  var indicators = [
+    {ok: aPos,          lbl: 'A-hluti jákvæður síðasta ár'},
+    {ok: aAvgPos,       lbl: 'A-hluti jákvæður að meðaltali síðustu 5 ár'},
+    {ok: abPos,         lbl: 'AB-samstæða jákvæð síðasta ár'},
+    {ok: abAvgPos,      lbl: 'AB-samstæða jákvæð að meðaltali síðustu 5 ár'},
+    {ok: skuldirLower,  lbl: 'AB-skuldir lækkuðu síðasta ár'},
+    {ok: skuldirAnyFall,lbl: 'AB-skuldir lækkuðu einhvern tíma á síðustu 5 árum'}
+  ];
 
   // Hjálpartól til að forsníða stórar tölur sem „á hvern íbúa"
   function perIbua(val, yr){
@@ -6456,16 +6473,21 @@ function renderStuttu(){
   // Samanburður milli sveitarfélaga er nú á sérstakri síðu „Samanburður
   // sveitarfélaga" í aðalnav, fjarlægðum kortið hér til að forðast tvítöku.
 
-  // Heilsumerki-kortið
-  html += '<div class="card" style="background:'+health.bg+';border-color:'+health.clr+'40;margin-bottom:1rem;">'
-    +'<div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">'
-      +'<div style="width:56px;height:56px;border-radius:50%;background:'+health.clr+';display:flex;align-items:center;justify-content:center;color:#fff;font-size:26px;font-family:\'Playfair Display\',serif;font-weight:700;flex-shrink:0;">'+(score>=5?'✓':score>=3?'~':'✕')+'</div>'
-      +'<div style="flex:1;min-width:200px;">'
-        +'<div style="font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:'+health.clr+';margin-bottom:2px;">Staða fjárhags · '+last.yr+'</div>'
-        +'<div style="font-family:\'Playfair Display\',serif;font-size:22px;color:var(--ink);margin-bottom:3px;">'+health.lbl+'</div>'
-        +'<div style="font-size:13px;color:var(--ink2);line-height:1.5;">'+health.dsc+'</div>'
-      +'</div>'
-    +'</div></div>';
+  // Hlutlaus 6-vísa kort (engin samantektarmerking eins og „Veikt"/„Gott" —
+  // kjósandinn dregur sínar eigin ályktanir af staðreyndum).
+  var indHtml = indicators.map(function(ind){
+    var sym = ind.ok ? '✓' : '✕';
+    var clr = ind.ok ? '#2E7D32' : '#C62828';
+    return '<div style="display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--white);border:0.5px solid var(--bdr);border-radius:8px;">'
+      +'<span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:'+clr+'22;color:'+clr+';font-weight:700;flex-shrink:0;">'+sym+'</span>'
+      +'<span style="font-size:12px;color:var(--ink);line-height:1.4;">'+ind.lbl+'</span>'
+    +'</div>';
+  }).join('');
+  html += '<div class="card" style="margin-bottom:1rem;">'
+    +'<div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--ink3);margin-bottom:4px;">Lykilvísar fjárhags · '+last.yr+'</div>'
+    +'<div style="font-size:12px;color:var(--ink2);line-height:1.5;margin-bottom:.75rem;">Sex hlutlausir mælikvarðar sem sýna hvort einstakir þættir eru jákvæðir eða neikvæðir. Engin heildarstimplun — kjósandinn metur sjálfur.</div>'
+    +'<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:6px;">'+indHtml+'</div>'
+  +'</div>';
 
   // Þrjú lykilkort
   html += '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin-bottom:1rem;">';
