@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1080" viewBox="0 0 1080 1080">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#B8935A" stop-opacity="0.16"/>
+      <stop offset="1" stop-color="#B8935A" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect width="1080" height="1080" fill="#1A1814"/>
+  <path d="M 1080 0 L 1080 700 L 600 1080 L 1080 1080 Z" fill="url(#g)"/>
+
+  <text x="80" y="180" font-family="DM Sans, system-ui, sans-serif" font-size="22" font-weight="500" letter-spacing="4" fill="#B8935A">KOSNINGAVAKTIN</text>
+  <text x="80" y="220" font-family="DM Sans, system-ui, sans-serif" font-size="18" font-weight="400" letter-spacing="3" fill="#A8A4A0">HLUTLAUS UPPLÝSINGAVEFUR</text>
+
+  <text x="80" y="370" font-family="Playfair Display, Georgia, serif" font-size="92" font-weight="700" fill="#FDFCFA">Sveitarstjórnar-</text>
+  <text x="80" y="470" font-family="Playfair Display, Georgia, serif" font-size="92" font-weight="700" fill="#FDFCFA">kosningar</text>
+  <text x="80" y="570" font-family="Playfair Display, Georgia, serif" font-size="92" font-weight="700" fill="#B8935A">2026</text>
+
+  <text x="80" y="680" font-family="DM Sans, system-ui, sans-serif" font-size="32" fill="#A8A4A0">Framboð · stefnumál · kannanir</text>
+  <text x="80" y="726" font-family="DM Sans, system-ui, sans-serif" font-size="32" fill="#A8A4A0">fjármál · fréttavakt</text>
+  <text x="80" y="786" font-family="DM Sans, system-ui, sans-serif" font-size="22" fill="#A8A4A0">Á einum stað, byggt á opnum heimildum.</text>
+
+  <rect x="80" y="850" width="920" height="140" rx="14" fill="#FDFCFA08" stroke="#B8935A" stroke-width="1" stroke-opacity="0.4"/>
+  <text x="110" y="895" font-family="DM Sans, system-ui, sans-serif" font-size="14" font-weight="500" letter-spacing="3" fill="#B8935A">KJÖRDAGUR</text>
+  <text x="110" y="945" font-family="Playfair Display, Georgia, serif" font-size="44" font-weight="700" fill="#FDFCFA">laugardagur 16. maí 2026</text>
+  <text x="970" y="895" text-anchor="end" font-family="DM Sans, system-ui, sans-serif" font-size="14" font-weight="500" letter-spacing="3" fill="#B8935A">VEFUR</text>
+  <text x="970" y="940" text-anchor="end" font-family="DM Sans, system-ui, sans-serif" font-size="28" font-weight="500" fill="#FDFCFA">kosningavaktin.app</text>
+</svg>

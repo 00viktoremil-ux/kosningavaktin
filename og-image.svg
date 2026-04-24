@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#B8935A" stop-opacity="0.14"/>
+      <stop offset="1" stop-color="#B8935A" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="#1A1814"/>
+  <path d="M 1200 0 L 1200 400 L 800 630 L 1200 630 Z" fill="url(#gold)"/>
+
+  <!-- Eyebrow -->
+  <text x="80" y="130" font-family="DM Sans, system-ui, sans-serif" font-size="20" font-weight="500" letter-spacing="4" fill="#B8935A">KOSNINGAVAKTIN · HLUTLAUS UPPLÝSINGAVEFUR</text>
+
+  <!-- Title -->
+  <text x="80" y="235" font-family="Playfair Display, Georgia, serif" font-size="76" font-weight="700" fill="#FDFCFA">Sveitarstjórnar-</text>
+  <text x="80" y="320" font-family="Playfair Display, Georgia, serif" font-size="76" font-weight="700" fill="#FDFCFA">kosningar <tspan fill="#B8935A">2026</tspan></text>
+
+  <!-- Subtitle -->
+  <text x="80" y="400" font-family="DM Sans, system-ui, sans-serif" font-size="28" fill="#A8A4A0">Framboð · stefnumál · kannanir · fjármál</text>
+  <text x="80" y="440" font-family="DM Sans, system-ui, sans-serif" font-size="28" fill="#A8A4A0">— á einum stað, byggt á opnum heimildum.</text>
+
+  <!-- Date box -->
+  <rect x="850" y="190" width="280" height="220" fill="none" stroke="#B8935A" stroke-width="1" opacity="0.7" rx="10"/>
+  <text x="990" y="245" text-anchor="middle" font-family="DM Sans, system-ui, sans-serif" font-size="14" font-weight="500" letter-spacing="3" fill="#B8935A">KJÖRDAGUR</text>
+  <text x="990" y="335" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="64" font-weight="700" fill="#FDFCFA">16. maí</text>
+  <text x="990" y="385" text-anchor="middle" font-family="DM Sans, system-ui, sans-serif" font-size="24" fill="#FDFCFA">laugardagur · 2026</text>
+
+  <!-- Divider -->
+  <line x1="80" y1="490" x2="1120" y2="490" stroke="#B8935A" stroke-width="0.5" opacity="0.3"/>
+
+  <!-- Footer -->
+  <text x="80" y="540" font-family="DM Sans, system-ui, sans-serif" font-size="26" font-weight="500" fill="#FDFCFA">kosningavaktin.app</text>
+  <text x="1120" y="540" text-anchor="end" font-family="DM Sans, system-ui, sans-serif" font-size="16" fill="#A8A4A0">Viktor Emil Sigtryggsson · óháð · 11 framboð · 460 frambjóðendur</text>
+</svg>
