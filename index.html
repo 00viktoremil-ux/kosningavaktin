@@ -4,22 +4,36 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Kosningavaktin — Reykjavík 16. maí 2026</title>
-<meta name="description" content="Hlutlaus upplýsingavefur um borgarstjórnarkosningar Reykjavíkur 16. maí 2026. Framboðin, stefnumálin, kannanir, fjármál borgar — á einum stað.">
+<meta name="description" content="Hlutlaus upplýsingavefur um sveitarstjórnarkosningarnar 16. maí 2026. Framboðin, stefnumálin, kannanir, fjármál sveitarfélaga — á einum stað, byggt á opnum heimildum.">
 <meta name="author" content="Viktor Emil Sigtryggsson">
 <meta name="theme-color" content="#1A1814">
 <!-- Open Graph -->
 <meta property="og:type" content="website">
-<meta property="og:title" content="Kosningavaktin — Reykjavík 16. maí 2026">
-<meta property="og:description" content="Hlutlaus upplýsingavefur um borgarstjórnarkosningar. Stefnuprófun, kannanir, 460 frambjóðendur, fréttavakt — óháð framboðum.">
+<meta property="og:title" content="Kosningavaktin — sveitarstjórnarkosningar 16. maí 2026">
+<meta property="og:description" content="Framboð · stefnumál · kannanir · fjármál — á einum stað, byggt á opnum heimildum.">
+<meta property="og:url" content="https://kosningavaktin.app/">
+<meta property="og:image" content="https://kosningavaktin.app/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Kosningavaktin — sveitarstjórnarkosningar 16. maí 2026">
 <meta property="og:locale" content="is_IS">
 <meta property="og:site_name" content="Kosningavaktin">
 <!-- Twitter / X -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Kosningavaktin — Reykjavík 16. maí 2026">
-<meta name="twitter:description" content="Hlutlaus upplýsingavefur um borgarstjórnarkosningar 16. maí 2026.">
+<meta name="twitter:title" content="Kosningavaktin — sveitarstjórnarkosningar 16. maí 2026">
+<meta name="twitter:description" content="Framboð · stefnumál · kannanir · fjármál — á einum stað, byggt á opnum heimildum.">
+<meta name="twitter:image" content="https://kosningavaktin.app/og-image.png">
 <!-- Icon (inline emoji-SVG sem dekkur algengustu birtinarmynd) -->
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='75' font-size='70'%3E%E2%98%91%3C/text%3E%3C/svg%3E">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<!-- Google Analytics 4 · nafnlaus heimsóknartölfræði -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-M3YBF70P1D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-M3YBF70P1D');
+</script>
 <style>
 :root{--bg:#F5F2EC;--ink:#1A1814;--ink2:#6B6760;--ink3:#A8A4A0;--gold:#B8935A;--gold-l:#EDE0CB;--white:#FDFCFA;--bdr:rgba(26,24,20,0.1);}
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -365,7 +379,7 @@ header{background:var(--ink);color:var(--white);padding:0 1.5rem;display:flex;al
 </head>
 <body>
 <header>
-  <div class="logo">Kosninga<span>vaktin</span></div>
+  <div class="logo" onclick="goPage('forsida')" style="cursor:pointer" title="Forsíða">Kosninga<span>vaktin</span></div>
   <div style="display:flex;align-items:center;gap:10px">
     <button class="hdr-search" onclick="openSearch()" title="Leita í öllu (⌘K)"><span class="hdr-search-label">Leita í öllu</span><span class="hdr-search-kbd">⌘K</span></button>
     <button id="api-status-chip" onclick="promptApiKey()" title="Stilla Anthropic API-lykil" style="font-size:10px;padding:3px 8px;border-radius:99px;border:none;cursor:pointer;font-family:inherit;font-weight:500;background:#FFF8E1;color:#854F0B">AI óvirkt</button>
@@ -7782,6 +7796,13 @@ if (document.readyState === 'loading') {
     </div>
 
     <div class="card card-lg" style="margin-bottom:1rem;">
+      <div class="card-title">Persónuvernd og tölfræði</div>
+      <p style="font-size:13px;line-height:1.7;color:var(--ink);margin:0 0 .5rem 0">Vefurinn notar <strong>Google Analytics 4</strong> til að telja heimsóknir, sjá hvaða síður eru skoðaðar mest og fylgjast með hvernig hann er notaður. Þetta hjálpar okkur að bæta efnið. Engar persónuupplýsingar, nöfn eða netföng eru geymd — aðeins nafnlaus tölfræði.</p>
+      <p style="font-size:13px;color:var(--ink2);line-height:1.7;margin:0 0 .5rem 0">Engar auglýsingar eru á síðunni og engin gögn eru seld eða deilt með þriðja aðila umfram það sem Google Analytics geymir sjálfkrafa. Þú getur hafnað Analytics með flestum vöfrum (t.d. Safari → Preferences → Privacy → Prevent cross-site tracking, eða viðbætur eins og uBlock Origin).</p>
+      <p style="font-size:13px;color:var(--ink2);line-height:1.7;margin:0">RSS-fréttastraumar (RÚV, Vísir, Mbl o.fl.) og ytri myndaslóðir framboða gera staðlað loggjald hjá viðkomandi vefsíðum — vefurinn stjórnar því ekki.</p>
+    </div>
+
+    <div class="card card-lg" style="margin-bottom:1rem;">
       <div class="card-title">Heimildir</div>
       <p class="card-subtitle">Öll gögn á vefnum eru dregin úr opinberum og staðfestum heimildum:</p>
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;">
@@ -7824,7 +7845,7 @@ if (document.readyState === 'loading') {
 
     <div style="text-align:center;margin-top:2rem;padding-top:1.5rem;border-top:0.5px solid var(--bdr);font-size:11px;color:var(--ink3);line-height:1.7;">
       Kosningavaktin · 2026 · einkaframtak Viktors Emils Sigtryggssonar<br>
-      Unnið með aðstoð gervigreindar (Claude). Ekkert tracking. Engar auglýsingar. Engin söfnun persónuupplýsinga.
+      Unnið með aðstoð gervigreindar (Claude). Engar auglýsingar. Notar Google Analytics fyrir nafnlausa heimsóknartölfræði.
     </div>
   </div>
 </div>

@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1A1814"/>
+      <stop offset="1" stop-color="#2A2420"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="1" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#B8935A" stop-opacity="0.20"/>
+      <stop offset="1" stop-color="#B8935A" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect width="1080" height="1920" fill="url(#g)"/>
+  <path d="M 1080 0 L 1080 1200 L 400 1920 L 1080 1920 Z" fill="url(#gold)"/>
+
+  <!-- Eyebrow centered -->
+  <text x="540" y="320" text-anchor="middle" font-family="DM Sans, system-ui, sans-serif" font-size="26" font-weight="500" letter-spacing="5" fill="#B8935A">KOSNINGAVAKTIN</text>
+  <text x="540" y="360" text-anchor="middle" font-family="DM Sans, system-ui, sans-serif" font-size="20" letter-spacing="3" fill="#A8A4A0">HLUTLAUS UPPLÝSINGAVEFUR</text>
+
+  <!-- Main headline -->
+  <text x="540" y="610" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="104" font-weight="700" fill="#FDFCFA">Sveitarstjórnar-</text>
+  <text x="540" y="720" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="104" font-weight="700" fill="#FDFCFA">kosningar</text>
+  <text x="540" y="830" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="104" font-weight="700" fill="#B8935A">2026</text>
+
+  <!-- Subtitle -->
+  <text x="540" y="950" text-anchor="middle" font-family="DM Sans, system-ui, sans-serif" font-size="34" fill="#A8A4A0">Framboð · stefnumál · kannanir</text>
+  <text x="540" y="1000" text-anchor="middle" font-family="DM Sans, system-ui, sans-serif" font-size="34" fill="#A8A4A0">fjármál · fréttavakt</text>
+
+  <!-- Big date card -->
+  <rect x="140" y="1120" width="800" height="280" rx="20" fill="#FDFCFA0A" stroke="#B8935A" stroke-width="1.5" stroke-opacity="0.6"/>
+  <text x="540" y="1185" text-anchor="middle" font-family="DM Sans, system-ui, sans-serif" font-size="20" font-weight="500" letter-spacing="6" fill="#B8935A">KJÖRDAGUR</text>
+  <text x="540" y="1290" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="88" font-weight="700" fill="#FDFCFA">16. maí</text>
+  <text x="540" y="1360" text-anchor="middle" font-family="DM Sans, system-ui, sans-serif" font-size="34" fill="#FDFCFA">laugardagur · 2026</text>
+
+  <!-- Footer CTA -->
+  <text x="540" y="1640" text-anchor="middle" font-family="DM Sans, system-ui, sans-serif" font-size="28" fill="#A8A4A0">Finndu flokkinn þinn á</text>
+  <text x="540" y="1720" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="62" font-weight="700" fill="#FDFCFA">kosningavaktin.app</text>
+  <line x1="340" y1="1760" x2="740" y2="1760" stroke="#B8935A" stroke-width="0.8" opacity="0.5"/>
+  <text x="540" y="1810" text-anchor="middle" font-family="DM Sans, system-ui, sans-serif" font-size="20" fill="#A8A4A0">Viktor Emil Sigtryggsson · óháð</text>
+</svg>
