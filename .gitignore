@@ -20,5 +20,12 @@ kosningavaktin.html.bak*
 # macOS
 .DS_Store
 
+# Python bytecode
+__pycache__/
+*.pyc
+
+# Local launchd-stillingar (persónulegar slóðir)
+com.viktoremil.*.plist
+
 # Claude Code
 .claude/
