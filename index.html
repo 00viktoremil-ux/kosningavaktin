@@ -1670,9 +1670,11 @@ const NAV_GROUPS = [
     {id:'borgar',   label:'Borgarstjórnir'},
     {id:'frettir',  label:'Fréttavakt'}
   ]},
-  {id:'bakgr',   label:'Bakgrunnur',        icon:'◇', pages:[
-    {id:'fjarmal', label:'Fjármál borgar'},
+  {id:'fjarmal', label:'Fjármál',           icon:'◇', pages:[
     {id:'samanburdur', label:'Samanburður sveitarfélaga'},
+    {id:'fjarmal', label:'Fjármál borgar'}
+  ]},
+  {id:'bakgr',   label:'Um vefinn',         icon:'ⓘ', pages:[
     {id:'umvefinn', label:'Um vefinn'}
   ]}
 ];
@@ -4039,7 +4041,7 @@ MUNI_DATA.kopv = {
     {yr:2022,
       A:{tekjur:43.3, gjold:42.3, nidurstada:-2.05, skatttekjur:33.3, eignir:66.8, skuldir:48.1, eiginfe:18.6},
       AB:{tekjur:45.5, nidurstada:-2.08, eignir:90.3, skuldir:54.4, eiginfe:35.8},
-      ibuar:40570, baejarstjori:'Ármann Kr. Ólafsson → Ásdís Kristjánsdóttir', bstAf:'D',
+      ibuar:39779, baejarstjori:'Ármann Kr. Ólafsson → Ásdís Kristjánsdóttir', bstAf:'D',
       meirihluti:['D','B'], kjor:'2022–2026',
       skipti:'Kjörtímabilaskipti maí 2022. Ármann tilkynnti afsögn og Ásdís Kristjánsdóttir (D) tók við 15. júní 2022 — fyrsta konan í sögu Sjálfstæðisflokks sem bæjarstjóri Kópavogs. Sami meirihluti D+B endurnýjaður. Orri Hlöðversson (B) formaður bæjarráðs.',
       athugasemd:'Verðbólguhögg. Fjármagnsgjöld langt yfir áætlun vegna verðbólgu og vaxtahækkana. Fyrsta taprekstrarár síðan 2015. Skuldahlutfall AB hækkar í 95%.',
@@ -4797,10 +4799,10 @@ MUNI_DATA.hafn = {
     },
     {yr:2023,
       A:{tekjur:null, gjold:null, nidurstada:0.25, eignir:null, skuldir:null, eiginfe:null},
-      AB:{tekjur:47.28, gjold:44.47, nidurstada:0.81, eignir:null, skuldir:null, eiginfe:null},
+      AB:{tekjur:47.28, gjold:44.47, nidurstada:0.81, eignir:93.92, skuldir:61.11, eiginfe:32.81},
       ibuar:30616, baejarstjori:'Rósa Guðbjartsdóttir', bstAf:'D',
       meirihluti:['D','B'], kjor:'2022–2026',
-      athugasemd:'Góður rekstrarárangur. Skuldaviðmið 82% (lítilsháttar hækkun). (2023/2024 PDF á rótuðum skann-síðum, einstakar efnahagstölur ekki dregnar út.)',
+      athugasemd:'Góður rekstrarárangur. Skuldaviðmið 82% (lítilsháttar hækkun). AB-efnahagstölur staðfestar úr ársreikningi 2023: AB-eignir 93,92 ma., AB-skuldir 61,11 ma., AB-eigið fé 32,81 ma.',
       adj:[]
     },
     {yr:2024,
@@ -5988,6 +5990,7 @@ function samanbExtractRow(muniId){
   var eigf  = pick(['AB','eiginfe']);
   var nidA  = pick(['A','nidurstada']);
   var tekA  = pick(['A','tekjur']);
+  var gjoldA= pick(['A','gjold']);
   var skatt = pick(['A','skatttekjur']);
   var uts   = SAMANB_UTSVAR[muniId] ? SAMANB_UTSVAR[muniId].pct : null;
   var fast  = SAMANB_FAST[muniId]   ? SAMANB_FAST[muniId].pct   : null;
@@ -5998,6 +6001,8 @@ function samanbExtractRow(muniId){
   var skuldavidm = (skul != null && tek != null && tek > 0) ? (skul/tek*100) : null;
   var skattPrIb = (skatt != null && ibuar) ? (skatt*1e9 / ibuar / 1000) : null;
   var tekPrIb   = (tek != null && ibuar) ? (tek*1e9 / ibuar / 1000) : null;
+  var AtekPrIb  = (tekA != null && ibuar) ? (tekA*1e9 / ibuar / 1000) : null;
+  var AgjoldPrIb= (gjoldA != null && ibuar) ? (gjoldA*1e9 / ibuar / 1000) : null;
   return {
     id: muniId, name: m.name, shortName: m.shortName,
     ibuar: ibuar,
@@ -6006,10 +6011,11 @@ function samanbExtractRow(muniId){
     meirihluti: pick(['meirihluti']) || null,
     sourceYr: srcYr, sourceLabel: srcLabel,
     ABnidurstada: nid, ABtekjur: tek, ABskuldir: skul, ABeignir: eign, ABeiginfe: eigf,
-    Anidurstada: nidA, Atekjur: tekA, Askatttekjur: skatt,
+    Anidurstada: nidA, Atekjur: tekA, Agjold: gjoldA, Askatttekjur: skatt,
     utsvar: uts, fasteignaskattur: fast,
     rekstrarHlutf: rekPct, rekstrAHlutf: rekAPct,
     skuldirAibua: skulPrIb, skattAibua: skattPrIb, tekjurAibua: tekPrIb,
+    AtekjurAibua: AtekPrIb, AgjoldAibua: AgjoldPrIb,
     eigfHlutfall: eigfHlut, skuldavidmid: skuldavidm,
     // Útgjöld eftir málaflokki á íbúa (þús.kr/íbúa) — 2024 A-hluti.
     // null ef gögn vantar fyrir þennan málaflokk hjá þessu sveitarfélagi.
@@ -6038,14 +6044,22 @@ function samanbTimeSeries(muniId, metric){
       val = (f.AB && f.AB.skuldir != null && ibuar) ? (f.AB.skuldir*1e9 / ibuar / 1000) : null;
     } else if(metric === 'rekstrarHlutf'){
       val = (f.AB && f.AB.nidurstada != null && f.AB.tekjur != null && f.AB.tekjur > 0) ? (f.AB.nidurstada/f.AB.tekjur*100) : null;
+    } else if(metric === 'rekstrAHlutf'){
+      val = (f.A && f.A.nidurstada != null && f.A.tekjur != null && f.A.tekjur > 0) ? (f.A.nidurstada/f.A.tekjur*100) : null;
     } else if(metric === 'ABnidurstada'){
       val = f.AB && f.AB.nidurstada;
+    } else if(metric === 'Anidurstada'){
+      val = f.A && f.A.nidurstada;
     } else if(metric === 'eigfHlutfall'){
       val = (f.AB && f.AB.eiginfe != null && f.AB.eignir != null && f.AB.eignir > 0) ? (f.AB.eiginfe/f.AB.eignir*100) : null;
     } else if(metric === 'skuldavidmid'){
       val = (f.AB && f.AB.skuldir != null && f.AB.tekjur != null && f.AB.tekjur > 0) ? (f.AB.skuldir/f.AB.tekjur*100) : null;
     } else if(metric === 'skattAibua'){
       val = (f.A && f.A.skatttekjur != null && ibuar) ? (f.A.skatttekjur*1e9 / ibuar / 1000) : null;
+    } else if(metric === 'AtekjurAibua'){
+      val = (f.A && f.A.tekjur != null && ibuar) ? (f.A.tekjur*1e9 / ibuar / 1000) : null;
+    } else if(metric === 'AgjoldAibua'){
+      val = (f.A && f.A.gjold != null && ibuar) ? (f.A.gjold*1e9 / ibuar / 1000) : null;
     } else {
       val = null;
     }
@@ -6066,15 +6080,21 @@ function fmtPct(n, dec){
 function fmtIbuar(n){ if(n==null) return '—'; return Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g,'.'); }
 
 var SAMANB_METRICS = [
-  {id:'skuldirAibua', label:'Skuldir á íbúa',          unit:'þús.kr/íbúa', lowerBetter:true,  desc:'Heildarskuldir samstæðu (A+B) deilt með íbúafjölda. Lægra = minni skuldabyrði.',      hasTrend:true, group:'fjarhagur'},
-  {id:'rekstrarHlutf',label:'Rekstur AB (% af tekjum)',unit:'%',           lowerBetter:false, desc:'Rekstrarniðurstaða AB sem hlutfall af tekjum. Jákvætt = afgangur, neikvætt = halli.',  hasTrend:true, group:'fjarhagur'},
-  {id:'rekstrAHlutf', label:'Rekstur A (% af tekjum)', unit:'%',           lowerBetter:false, desc:'Kjarnarekstur A-hluta (án bæjarfyrirtækja) sem hlutfall af tekjum. Hreinni mælikvarði þar sem einskiptis-liðir í B eru ekki teknir með.', hasTrend:false, group:'fjarhagur'},
-  {id:'ABnidurstada', label:'AB-niðurstaða',           unit:'ma.kr.',      lowerBetter:false, desc:'Samstæða A+B — hagnaður (+) eða tap (−) í nýjasta ársreikningi eða bráðabirgða­uppgjöri.', hasTrend:true, group:'fjarhagur'},
-  {id:'eigfHlutfall', label:'Eiginfjárhlutfall AB',    unit:'%',           lowerBetter:false, desc:'Eigið fé deilt með heildareignum samstæðu. Hærra = fjárhagslega sterkara.',             hasTrend:true, group:'fjarhagur'},
-  {id:'skuldavidmid', label:'Skuldaviðmið AB',         unit:'%',           lowerBetter:true,  desc:'Skuldir sem hlutfall af reglulegum tekjum (sveitarstjórnarlög setja 150% hámark). Lægra = meira svigrúm.', hasTrend:true, group:'fjarhagur'},
-  {id:'skattAibua',   label:'Skatttekjur á íbúa',      unit:'þús.kr/íbúa', lowerBetter:false, desc:'Útsvar + fasteignaskattur (A-hluti) á hvern íbúa. Hærra gefur sveitarfélagi meira að vinna með.', hasTrend:true, group:'fjarhagur'},
-  {id:'utsvar',       label:'Útsvar',                  unit:'%',           lowerBetter:true,  desc:'Álagt útsvar 2026 (persónulegur tekjuskattur sveitarfélags). Lægra = minni byrði á íbúa.', hasTrend:false, group:'fjarhagur'},
-  {id:'fasteignaskattur', label:'Fasteignaskattur íbúða', unit:'%',        lowerBetter:true,  desc:'Álagshlutfall fasteignaskatts á íbúðarhúsnæði 2026. Lægra = minni skattur á heimili.',  hasTrend:false, group:'fjarhagur'},
+  // A-HLUTI — aðalsjóður + eignasjóður (kjarnarekstur án bæjarfyrirtækja)
+  {id:'Anidurstada',  label:'A-niðurstaða',            unit:'ma.kr.',      lowerBetter:false, desc:'A-hluti — hagnaður (+) eða tap (−) aðalsjóðs og eignasjóðs í nýjasta ársreikningi. Mælir kjarnarekstur án bæjarfyrirtækja.', hasTrend:true, group:'a-hluti'},
+  {id:'rekstrAHlutf', label:'Rekstur A (% af tekjum)', unit:'%',           lowerBetter:false, desc:'A-niðurstaða sem hlutfall af A-tekjum. Hreinni mælikvarði á kjarnarekstur sveitarfélags — einskiptisliðir í B-hluta (matsbreytingar Félagsbústaða, Orkuveitu o.fl.) hafa ekki áhrif.', hasTrend:true, group:'a-hluti'},
+  {id:'AtekjurAibua', label:'A-tekjur á íbúa',         unit:'þús.kr/íbúa', lowerBetter:false, desc:'Heildartekjur A-hluta (útsvar, fasteignaskattur, jöfnunarsjóður, framlög, þjónustugjöld) á íbúa.', hasTrend:true, group:'a-hluti'},
+  {id:'skattAibua',   label:'Skatttekjur á íbúa (A)',  unit:'þús.kr/íbúa', lowerBetter:false, desc:'Útsvar + fasteignaskattur (A-hluti) á hvern íbúa. Hærra gefur sveitarfélagi meira að vinna með.', hasTrend:true, group:'a-hluti'},
+  {id:'AgjoldAibua',  label:'A-gjöld á íbúa',          unit:'þús.kr/íbúa', lowerBetter:true,  desc:'Rekstrargjöld A-hluta á íbúa. Lægra = lægri rekstrarkostnaður per íbúa; en segir ekki hvort þjónustan er betri eða verri.', hasTrend:true, group:'a-hluti'},
+  // AB-HLUTI — samstæða (inniheldur Orkuveitu, Félagsbústaði, Faxaflóahafnir o.fl.)
+  {id:'ABnidurstada', label:'AB-niðurstaða',           unit:'ma.kr.',      lowerBetter:false, desc:'Samstæða A+B — hagnaður (+) eða tap (−) í nýjasta ársreikningi eða bráðabirgða­uppgjöri. Inniheldur einskiptisliði eins og matsbreytingar Félagsbústaða.', hasTrend:true, group:'ab-hluti'},
+  {id:'rekstrarHlutf',label:'Rekstur AB (% af tekjum)',unit:'%',           lowerBetter:false, desc:'AB-niðurstaða sem hlutfall af AB-tekjum. Jákvætt = afgangur, neikvætt = halli.', hasTrend:true, group:'ab-hluti'},
+  {id:'skuldirAibua', label:'AB-skuldir á íbúa',       unit:'þús.kr/íbúa', lowerBetter:true,  desc:'Heildarskuldir samstæðu (A+B) deilt með íbúafjölda. Lægra = minni skuldabyrði.', hasTrend:true, group:'ab-hluti'},
+  {id:'skuldavidmid', label:'Skuldaviðmið AB',         unit:'%',           lowerBetter:true,  desc:'Skuldir sem hlutfall af reglulegum tekjum (sveitarstjórnarlög setja 150% hámark). Lægra = meira svigrúm.', hasTrend:true, group:'ab-hluti'},
+  {id:'eigfHlutfall', label:'Eiginfjárhlutfall AB',    unit:'%',           lowerBetter:false, desc:'Eigið fé deilt með heildareignum samstæðu. Hærra = fjárhagslega sterkara.', hasTrend:true, group:'ab-hluti'},
+  // SKATTAR — álagðir 2026
+  {id:'utsvar',       label:'Útsvar',                  unit:'%',           lowerBetter:true,  desc:'Álagt útsvar 2026 (persónulegur tekjuskattur sveitarfélags). Lægra = minni byrði á íbúa.', hasTrend:false, group:'skattar'},
+  {id:'fasteignaskattur', label:'Fasteignaskattur íbúða', unit:'%',        lowerBetter:true,  desc:'Álagshlutfall fasteignaskatts á íbúðarhúsnæði 2026. Lægra = minni skattur á heimili.',  hasTrend:false, group:'skattar'},
   // ÞJÓNUSTA — útgjöld eftir málaflokki á hvern íbúa 2024.
   // Hærra = sveitarfélagið eyðir meiru í málaflokkinn (per íbúa). „Lowerbetter"
   // er ekki sett því hér er hærra = meiri þjónusta en líka meira ríkisvald í
@@ -6095,14 +6115,30 @@ var SAMANB_METRICS = [
 ];
 
 var _samanbRows = null;
-var _samanbMetric = 'skuldirAibua';
+var _samanbMetric = 'Anidurstada';
+var _samanbGroup = 'a-hluti';
 var _samanbSortKey = null;
 var _samanbSortDir = 1;
+
+// Hópar fyrir mælikvarða — skýr aðskilnaður milli A-hluta, AB-hluta, skatta,
+// þjónustuútgjalda og nýtingar. Kjósandinn sér ekki blandaða lista.
+var SAMANB_GROUPS = [
+  {id:'a-hluti',   label:'A-hluti (kjarnarekstur)'},
+  {id:'ab-hluti',  label:'A+B samstæða'},
+  {id:'skattar',   label:'Skattar 2026'},
+  {id:'thjonusta', label:'Þjónustuútgjöld'},
+  {id:'nyting',    label:'Nýting (per viðtakanda)'}
+];
 
 function samanbGetRows(){
   if(_samanbRows) return _samanbRows;
   _samanbRows = SAMANB_MUNI_ORDER.map(samanbExtractRow).filter(Boolean);
   return _samanbRows;
+}
+
+function _samanbFirstMetricOfGroup(gid){
+  var m = SAMANB_METRICS.find(function(x){return x.group===gid;});
+  return m ? m.id : SAMANB_METRICS[0].id;
 }
 
 function initSamanburdur(){
@@ -6116,8 +6152,21 @@ function initSamanburdur(){
       ? '<span style="color:#854F0B;">⚠ Fjárhagsgögn fyrir '+missing.join(', ')+' eru enn í vinnslu.</span>'
       : '';
   }
+  // Tryggja að metric tilheyri núverandi hópi (ef notandi var á gömlu metric id)
+  var curM = SAMANB_METRICS.find(function(x){return x.id===_samanbMetric;});
+  if(!curM || curM.group !== _samanbGroup){
+    _samanbMetric = _samanbFirstMetricOfGroup(_samanbGroup);
+  }
+  // Hópavalmynd (fyrsta röð)
+  var groupBtns = document.getElementById('samanb-group-btns');
+  if(groupBtns){
+    groupBtns.innerHTML = SAMANB_GROUPS.map(function(g){
+      return '<button class="subnav-btn'+(g.id===_samanbGroup?' active':'')+'" onclick="setSamanbGroup(\''+g.id+'\')">'+g.label+'</button>';
+    }).join('');
+  }
+  // Mælikvarðar innan valins hóps (önnur röð)
   var btns = document.getElementById('samanb-metric-btns');
-  btns.innerHTML = SAMANB_METRICS.map(function(m){
+  btns.innerHTML = SAMANB_METRICS.filter(function(m){return m.group===_samanbGroup;}).map(function(m){
     return '<button class="subnav-btn'+(m.id===_samanbMetric?' active':'')+'" onclick="setSamanbMetric(\''+m.id+'\')">'+m.label+'</button>';
   }).join('');
   renderSamanbChart();
@@ -6126,10 +6175,16 @@ function initSamanburdur(){
   renderSamanbCards();
 }
 
+function setSamanbGroup(gid){
+  _samanbGroup = gid;
+  _samanbMetric = _samanbFirstMetricOfGroup(gid);
+  initSamanburdur();
+}
+
 function setSamanbMetric(id){
   _samanbMetric = id;
   var btns = document.querySelectorAll('#samanb-metric-btns .subnav-btn');
-  var metrics = SAMANB_METRICS;
+  var metrics = SAMANB_METRICS.filter(function(m){return m.group===_samanbGroup;});
   btns.forEach(function(b,i){ b.classList.toggle('active', metrics[i] && metrics[i].id===id); });
   renderSamanbChart();
   renderSamanbTrend();
@@ -7724,7 +7779,11 @@ if (document.readyState === 'loading') {
     <p style="font-size:13px;color:var(--ink2);margin-bottom:1.5rem;line-height:1.6;max-width:720px;">Lykiltölur allra sex sveitarfélaga höfuðborgarsvæðisins, byggðar á nýjasta opinbera ársreikningi sem aðgengilegur er (eða bráðabirgða­uppgjöri 2025 þar sem það á við). Tölur eru sýndar bæði í heildartölum og á hvern íbúa svo hægt sé að bera saman sveitarfélög af ólíkri stærð.</p>
     <div id="samanb-warnings" style="font-size:11px;color:var(--ink3);line-height:1.6;margin-bottom:1rem;"></div>
 
-    <!-- METRIC SELECTOR -->
+    <!-- HÓPA-VAL (A-hluti / AB / Skattar / Þjónusta / Nýting) -->
+    <div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--ink3);margin-bottom:.4rem;">Flokkur mælikvarða</div>
+    <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:.8rem;" id="samanb-group-btns"></div>
+    <!-- METRIC SELECTOR (innan valins hóps) -->
+    <div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--ink3);margin-bottom:.4rem;">Mælikvarði</div>
     <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:.8rem;" id="samanb-metric-btns"></div>
     <div class="card" style="margin-bottom:1.25rem;">
       <div class="card-title" id="samanb-chart-title">Skuldir á íbúa</div>
