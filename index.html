@@ -586,19 +586,19 @@ header{background:var(--ink);color:var(--white);padding:0 1.5rem;display:flex;al
 <div id="page-kannanir" class="page">
   <div class="polls-page" style="max-width:960px;">
     <h2 id="polls-page-title">Kosningakannanir — Reykjavík 2026</h2>
-    <p class="sub" id="polls-page-sub">10 staðfestar kannanir frá september 2025 til apríl 2026 (heimild: Wikipedia · kosningaspa.is · Gallup · Maskína). Sæti reiknuð með D'Hondt-aðferð. Smelltu á „Uppfæra með AI" til að sækja nýrri kannanir sjálfvirkt.</p>
+    <p class="sub" id="polls-page-sub">Staðfestar kannanir frá september 2025 til apríl 2026 (heimild: Wikipedia · kosningaspa.is · Gallup · Maskína). Sæti reiknuð með D'Hondt-aðferð. Smelltu á „Uppfæra með AI" til að sækja nýrri kannanir sjálfvirkt.</p>
 
     <!-- BALDVIN MODEL / LATEST POLL -->
     <div class="card" id="polls-model-card" style="margin-bottom:12px;">
       <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1rem;">
         <div>
           <div id="polls-card-title" style="font-family:'Playfair Display',serif;font-size:17px;margin-bottom:3px;">Baldur Héðinsson-módel · Apríl 2026</div>
-          <div id="polls-card-sub" style="font-size:12px;color:var(--ink2)">Gallup (59% vægi, apríl) + Maskína (41% vægi, mars) · sæti reiknuð með D'Hondt · 23 sæti í borgarstjórn</div>
+          <div id="polls-card-sub" style="font-size:12px;color:var(--ink2)">Gallup (40% vægi) + Maskína (60% vægi) · sæti reiknuð með D'Hondt · 23 sæti í borgarstjórn</div>
           <button onclick="aiRefreshPolls()" id="poll-refresh-btn" style="margin-top:8px;font-size:11px;padding:5px 12px;border-radius:8px;border:0.5px solid var(--bdr);background:var(--white);cursor:pointer;color:var(--gold);font-family:inherit">🔄 Uppfæra með AI (vefleit)</button>
           <span id="poll-refresh-status" style="font-size:10px;color:var(--ink3);margin-left:8px"></span>
         </div>
         <div id="polls-method-box" style="font-size:11px;color:var(--ink3);background:var(--bg);padding:6px 10px;border-radius:8px;line-height:1.6;max-width:260px;">
-          Aðferð: Vegið meðaltal tveggja nýjustu kannana (Gallup apríl 59%, Maskína mars 41%). Sæti reiknuð með D'Hondt-aðferð á 23 sæta borgarstjórn. Uppfærist sjálfvirkt þegar nýjar kannanir eru sóttar með AI.
+          Aðferð: Vegið meðaltal tveggja nýjustu kannana (Gallup 40%, Maskína 60%). Sæti reiknuð með D'Hondt-aðferð á 23 sæta borgarstjórn. Uppfærist sjálfvirkt þegar nýjar kannanir eru sóttar með AI.
         </div>
       </div>
       <div id="baldvin-bars"></div>
@@ -606,7 +606,7 @@ header{background:var(--ink);color:var(--white);padding:0 1.5rem;display:flex;al
         <div style="font-size:12px;font-weight:500;color:var(--ink);margin-bottom:.5rem;">Sætaspá (D'Hondt)</div>
         <div id="seat-forecast" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
       </div>
-      <div style="font-size:11px;color:var(--ink3);margin-top:.75rem" id="baldur-summary">Heimildir: Gallup Þjóðarpúls (1.–15. apríl) og Maskína Borgarviti (12.–19. mars) · kosningaspa.is.</div>
+      <div style="font-size:11px;color:var(--ink3);margin-top:.75rem" id="baldur-summary">Heimildir: Gallup Þjóðarpúls (1.–15. apríl) og Maskína Borgarviti (17.–24. apríl) · kosningaspa.is.</div>
     </div>
 
     <!-- FYLGISÞRÓUN — LÍNURIT -->
@@ -1412,6 +1412,14 @@ function renderUrslit2022(){
 
 const POLLS_BY_MUNI = {
   rvk: [
+    {source:'Baldur Héðinsson / Kosningaspá', method:'Vegið meðaltal Gallup (40%) + Maskína (60%)', date:'24. apríl 2026', n:'samsett', tag:'baldur',
+     data:{D:26.3, S:21.9, A:11.7, C:11.0, M:10.3, P:4.5, J:4.1, B:3.9, F:3.2, R:2.2},
+     url:'https://kosningaspa.is',
+     note:'Ný spá með nýjustu Maskínu-könnun (17.–24. apríl, 60% vægi) og Gallup (1.–15. apríl, 40%). D bætir við sig frá 17. apríl; S nálgast 22%. Aðrir 0,9%.'},
+    {source:'Maskína / Borgarviti', method:'Netkönnun', date:'17.–24. apríl 2026', n:'973', tag:'maskina',
+     data:{D:25.5, S:21.0, C:12.0, A:11.0, M:10.0, J:5.0, P:5.0, B:3.9, F:2.8, R:2.6, G:1.6},
+     url:'https://www.visir.is/g/20262873819d/bilid-a-milli-turnanna-breikkar',
+     note:'D +4 og S -1 frá Maskínu í mars. Sjálfstæðisflokkur tekur forystu (25,5%); Vinstrið og Viðreisn við 11–12%. Góðan daginn mælist 1,6%.'},
     {source:'Baldur Héðinsson / Kosningaspá', method:'Vegið meðaltal Gallup+Maskína (59%/41%)', date:'17. apríl 2026', n:'samsett', tag:'baldur',
      data:{D:25.0, S:22.6, A:13.1, C:11.1, M:10.7, P:4.3, B:4.4, F:3.8, J:2.6, R:1.8},
      url:'https://kosningaspa.is',
@@ -1555,14 +1563,14 @@ function renderPollsHeader(latest, hasBaldur){
   if(cardTitle) cardTitle.textContent = hasBaldur ? ('Baldur Héðinsson-módel · '+(latest.date||'')) : ('Nýjasta könnun · '+(latest.source||''));
   if(cardSub){
     if(hasBaldur){
-      cardSub.innerHTML = 'Gallup (59% vægi, apríl) + Maskína (41% vægi, mars) · sæti reiknuð með D\'Hondt · '+m.councilSize+' sæti í '+(m.councilName||'ráði').toLowerCase();
+      cardSub.innerHTML = 'Gallup (40% vægi) + Maskína (60% vægi) · sæti reiknuð með D\'Hondt · '+m.councilSize+' sæti í '+(m.councilName||'ráði').toLowerCase();
     } else {
       cardSub.innerHTML = (latest.method||'')+' · '+(latest.date||'')+' · n='+(latest.n||'—')+' · sæti reiknuð með D\'Hondt · '+m.councilSize+' sæti í '+(m.councilName||'ráði').toLowerCase();
     }
   }
   if(methodBox){
     if(hasBaldur){
-      methodBox.textContent = 'Aðferð: Vegið meðaltal tveggja nýjustu kannana (Gallup apríl 59%, Maskína mars 41%). Sæti reiknuð með D\'Hondt-aðferð á '+m.councilSize+' sæta '+(m.councilName||'').toLowerCase()+'. Uppfærist sjálfvirkt þegar nýjar kannanir eru sóttar með AI.';
+      methodBox.textContent = 'Aðferð: Vegið meðaltal tveggja nýjustu kannana (Gallup 40%, Maskína 60%). Sæti reiknuð með D\'Hondt-aðferð á '+m.councilSize+' sæta '+(m.councilName||'').toLowerCase()+'. Uppfærist sjálfvirkt þegar nýjar kannanir eru sóttar með AI.';
     } else {
       methodBox.textContent = 'Baldur-módel (kosningaspa.is) er aðeins með spá fyrir Reykjavík. Fyrir '+m.name+' birtum við einstakar staðfestar kannanir — smelltu á „Uppfæra með AI" til að sækja nýjustu.';
     }
@@ -1571,7 +1579,7 @@ function renderPollsHeader(latest, hasBaldur){
   var summaryEl = document.getElementById('baldur-summary');
   if(summaryEl){
     if(hasBaldur){
-      summaryEl.textContent = 'Heimildir: Gallup Þjóðarpúls (1.–15. apríl) og Maskína Borgarviti (12.–19. mars) · kosningaspa.is.';
+      summaryEl.textContent = 'Heimildir: Gallup Þjóðarpúls (1.–15. apríl) og Maskína Borgarviti (17.–24. apríl) · kosningaspa.is.';
     } else {
       summaryEl.innerHTML = 'Heimild: <a href="'+(latest.url||'#')+'" target="_blank" rel="noopener" style="color:var(--gold)">'+(latest.source||'Könnunin')+'</a>.';
     }
@@ -7836,7 +7844,7 @@ if (document.readyState === 'loading') {
       <div class="card-title">Aðferðafræði</div>
       <div style="display:flex;flex-direction:column;gap:.9rem;">
         <div><div style="font-size:13px;font-weight:500;color:var(--ink);margin-bottom:3px">Sætaspá (D'Hondt)</div><div style="font-size:12px;color:var(--ink2);line-height:1.6">Sætatölur eru reiknaðar sjálfvirkt með D'Hondt-aðferð (23 sæti í Reykjavík) úr fylgisprósentum hverrar könnunar. Engir þröskuldar í sveitarstjórnarkosningum. Ekki forgeymd — uppfærist sjálfkrafa þegar tölur breytast.</div></div>
-        <div><div style="font-size:13px;font-weight:500;color:var(--ink);margin-bottom:3px">Kosningaspá Baldurs</div><div style="font-size:12px;color:var(--ink2);line-height:1.6">Vegið meðaltal tveggja nýjustu kannana (Gallup 59%, Maskína 41%). Líkja má við kosningaspa.is Baldurs Héðinssonar.</div></div>
+        <div><div style="font-size:13px;font-weight:500;color:var(--ink);margin-bottom:3px">Kosningaspá Baldurs</div><div style="font-size:12px;color:var(--ink2);line-height:1.6">Vegið meðaltal tveggja nýjustu kannana (Gallup 40%, Maskína 60%). Líkja má við kosningaspa.is Baldurs Héðinssonar.</div></div>
         <div><div style="font-size:13px;font-weight:500;color:var(--ink);margin-bottom:3px">Stefnuprófun (Wahl-O-Mat-aðferð)</div><div style="font-size:12px;color:var(--ink2);line-height:1.6">Hver spurning ber 2 stig fyrir fullkomna samsvörun, 1 stig fyrir hlutlausa hlið, 0 stig fyrir andstöðu. Spurningar merktar „mikilvægar" tvöfalda vægi. Endanleg prósenta = fengin stig / hámark mögulegra stiga.</div></div>
       </div>
     </div>
