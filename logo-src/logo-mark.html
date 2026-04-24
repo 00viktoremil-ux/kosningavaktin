@@ -1,21 +1,47 @@
 <!DOCTYPE html>
-<html><head><style>html,body{margin:0;padding:0;background:transparent}</style></head>
+<html><head>
+<style>
+  html,body{margin:0;padding:0;background:transparent;font-family:'Playfair Display',Georgia,serif}
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&display=swap');
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&display=swap">
+</head>
 <body>
 <svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" style="display:block">
-  <rect x="0" y="0" width="512" height="512" rx="96" fill="#1A1814"/>
+  <defs>
+    <!-- Subtle gold gradient fyrir X — ljósari efst, dekkri niðri -->
+    <linearGradient id="goldX" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#D4B079"/>
+      <stop offset="1" stop-color="#9E7B47"/>
+    </linearGradient>
+    <!-- Mild inner glow fyrir djúpkenndu -->
+    <radialGradient id="innerGlow" cx="0.35" cy="0.35" r="0.75">
+      <stop offset="0" stop-color="#2A241E"/>
+      <stop offset="1" stop-color="#1A1814"/>
+    </radialGradient>
+  </defs>
 
-  <!-- Stor gylltur X, miðjaður -->
-  <g stroke="#B8935A" stroke-width="52" stroke-linecap="round" fill="none">
-    <line x1="120" y1="108" x2="392" y2="380"/>
-    <line x1="392" y1="108" x2="120" y2="380"/>
+  <!-- Bakgrunnur -->
+  <rect x="0" y="0" width="512" height="512" rx="112" fill="url(#innerGlow)"/>
+
+  <!-- Þunn gyllt rammi til að lyfta merkinu -->
+  <rect x="8" y="8" width="496" height="496" rx="104" fill="none" stroke="#B8935A" stroke-opacity="0.18" stroke-width="1.5"/>
+
+  <!-- Stor X, sem tekur upp miðjuna með gylltri gradient -->
+  <g stroke="url(#goldX)" stroke-width="58" stroke-linecap="round" fill="none">
+    <line x1="118" y1="118" x2="394" y2="394"/>
+    <line x1="394" y1="118" x2="118" y2="394"/>
   </g>
 
-  <!-- „26" ne\u0000f0st vinstra megin, l\u0000edti\u0000f0 yfir X (hv\u0000edtt me\u0000f0 l\u0000edtilli skugga-r\u0000e1 til a\u0000f0 greina fr\u0000e1 X) -->
-  <text x="80" y="445"
+  <!-- „26" hægra megin neðst, skarast lítilega við X neðri-hægri armi.
+       Paint-order stroke-first svo 26 sker sig skýrt frá X. -->
+  <text x="495" y="470"
+        text-anchor="end"
         font-family="'Playfair Display', Georgia, serif"
-        font-size="170" font-weight="700"
-        fill="#FDFCFA" letter-spacing="-4"
+        font-style="italic"
+        font-size="196" font-weight="700"
+        fill="#FDFCFA"
         paint-order="stroke"
-        stroke="#1A1814" stroke-width="10">26</text>
+        stroke="#1A1814" stroke-width="14">26</text>
 </svg>
 </body></html>
