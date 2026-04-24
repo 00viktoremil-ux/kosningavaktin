@@ -1,38 +1,27 @@
 <!DOCTYPE html>
 <html><head>
-<style>html,body{margin:0;padding:0;background:#1A1814;font-family:'Playfair Display',Georgia,serif}</style>
+<style>html,body{margin:0;padding:0;background:#1A1814}</style>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=DM+Sans:wght@400;500&display=swap">
 </head>
 <body>
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="400" viewBox="0 0 1200 400" style="display:block">
-  <defs>
-    <linearGradient id="goldX" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#D4B079"/>
-      <stop offset="1" stop-color="#9E7B47"/>
-    </linearGradient>
-    <radialGradient id="innerGlow" cx="0.35" cy="0.35" r="0.8">
-      <stop offset="0" stop-color="#2A241E"/>
-      <stop offset="1" stop-color="#1A1814"/>
-    </radialGradient>
-  </defs>
-
   <rect x="0" y="0" width="1200" height="400" fill="#1A1814"/>
 
-  <!-- Merki vinstra megin -->
+  <!-- Mark vinstra megin -->
   <g transform="translate(60,60)">
-    <rect x="0" y="0" width="280" height="280" rx="60" fill="url(#innerGlow)"/>
-    <rect x="4" y="4" width="272" height="272" rx="56" fill="none" stroke="#B8935A" stroke-opacity="0.18" stroke-width="1.5"/>
-    <g stroke="url(#goldX)" stroke-width="32" stroke-linecap="round" fill="none">
-      <line x1="66" y1="66" x2="214" y2="214"/>
-      <line x1="214" y1="66" x2="66" y2="214"/>
+    <rect x="0" y="0" width="280" height="280" rx="56" fill="#B8935A"/>
+    <rect x="8" y="8" width="264" height="264" rx="48" fill="#000000"/>
+    <g stroke="#C99B5E" stroke-width="34" stroke-linecap="round" fill="none">
+      <line x1="72" y1="68" x2="208" y2="204"/>
+      <line x1="208" y1="68" x2="72" y2="204"/>
     </g>
-    <text x="272" y="257"
+    <text x="270" y="258"
           text-anchor="end"
           font-family="'Playfair Display', Georgia, serif"
-          font-style="italic" font-size="108" font-weight="700"
-          fill="#FDFCFA"
-          paint-order="stroke"
-          stroke="#1A1814" stroke-width="8">26</text>
+          font-style="italic"
+          font-weight="700"
+          font-size="118"
+          fill="#FFFFFF">26</text>
   </g>
 
   <!-- Wordmark -->
