@@ -1,47 +1,27 @@
 <!DOCTYPE html>
 <html><head>
-<style>
-  html,body{margin:0;padding:0;background:transparent;font-family:'Playfair Display',Georgia,serif}
-  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&display=swap');
-</style>
+<style>html,body{margin:0;padding:0;background:transparent}</style>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&display=swap">
 </head>
 <body>
 <svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" style="display:block">
-  <defs>
-    <!-- Subtle gold gradient fyrir X — ljósari efst, dekkri niðri -->
-    <linearGradient id="goldX" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#D4B079"/>
-      <stop offset="1" stop-color="#9E7B47"/>
-    </linearGradient>
-    <!-- Mild inner glow fyrir djúpkenndu -->
-    <radialGradient id="innerGlow" cx="0.35" cy="0.35" r="0.75">
-      <stop offset="0" stop-color="#2A241E"/>
-      <stop offset="1" stop-color="#1A1814"/>
-    </radialGradient>
-  </defs>
+  <!-- Svartur bakgrunnur með gylltum ramma -->
+  <rect x="0" y="0" width="512" height="512" rx="100" fill="#B8935A"/>
+  <rect x="14" y="14" width="484" height="484" rx="88" fill="#000000"/>
 
-  <!-- Bakgrunnur -->
-  <rect x="0" y="0" width="512" height="512" rx="112" fill="url(#innerGlow)"/>
-
-  <!-- Þunn gyllt rammi til að lyfta merkinu -->
-  <rect x="8" y="8" width="496" height="496" rx="104" fill="none" stroke="#B8935A" stroke-opacity="0.18" stroke-width="1.5"/>
-
-  <!-- Stor X, sem tekur upp miðjuna með gylltri gradient -->
-  <g stroke="url(#goldX)" stroke-width="58" stroke-linecap="round" fill="none">
-    <line x1="118" y1="118" x2="394" y2="394"/>
-    <line x1="394" y1="118" x2="118" y2="394"/>
+  <!-- Solid gold X, miðjaður -->
+  <g stroke="#C99B5E" stroke-width="62" stroke-linecap="round" fill="none">
+    <line x1="130" y1="125" x2="382" y2="377"/>
+    <line x1="382" y1="125" x2="130" y2="377"/>
   </g>
 
-  <!-- „26" hægra megin neðst, skarast lítilega við X neðri-hægri armi.
-       Paint-order stroke-first svo 26 sker sig skýrt frá X. -->
-  <text x="495" y="470"
+  <!-- Stór hvítur „26" í ítölsku serif-i, bottom-right, skarast aðeins við X -->
+  <text x="495" y="472"
         text-anchor="end"
         font-family="'Playfair Display', Georgia, serif"
         font-style="italic"
-        font-size="196" font-weight="700"
-        fill="#FDFCFA"
-        paint-order="stroke"
-        stroke="#1A1814" stroke-width="14">26</text>
+        font-weight="700"
+        font-size="216"
+        fill="#FFFFFF">26</text>
 </svg>
 </body></html>
