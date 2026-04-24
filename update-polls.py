@@ -46,17 +46,20 @@ def load_api_key() -> str:
     sys.exit(1)
 
 
+# Uppfært: POLLS_RAW var fært inn í POLLS_BY_MUNI = { rvk: [...], hafn: [...], ... }
+# Við höldum áfram að uppfæra aðeins Reykjavíkur-blokkina (rvk) — hinir muni
+# hafa enn sem komið er ekki nægilega reglulegar kannanir.
 POLLS_BLOCK_RE = re.compile(
-    r"(var POLLS_RAW=\[)(.*?)(\];\s*\n\s*// D'Hondt)",
+    r"(rvk:\s*\[)(.*?)(\n  \],)",
     re.DOTALL,
 )
 
 
 def read_current_polls(html: str) -> tuple[str, int, int]:
-    """Returns (polls_block_content, start_offset, end_offset)"""
+    """Returns (polls_block_content, start_offset, end_offset) fyrir rvk-blokkina."""
     m = POLLS_BLOCK_RE.search(html)
     if not m:
-        print("VILLA: fann ekki POLLS_RAW blokk í HTML. Hefur sniðið breyst?", file=sys.stderr)
+        print("VILLA: fann ekki POLLS_BY_MUNI.rvk blokk í HTML. Hefur sniðið breyst?", file=sys.stderr)
         sys.exit(1)
     return m.group(2), m.start(2), m.end(2)
 
