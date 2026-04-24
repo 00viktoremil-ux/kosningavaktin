@@ -6599,6 +6599,26 @@ function renderStuttu(){
   el.innerHTML = html;
 }
 
+// Smáhjálpari sem býr til útsláttar-blokk „Sjá gögn að baki →" með töflu
+// af bakgrunnsgögnum fyrir graf. Aðgengisvænt (native <details>) og engin
+// JavaScript-staða þarf. cols = [{header, key, fmt}].
+function buildDataDetails(rows, cols, title){
+  if(!rows || !rows.length) return '';
+  var head = '<tr style="background:var(--bg);">'
+    + cols.map(function(c){return '<th style="padding:6px 10px;text-align:'+(c.align||'right')+';font-size:10px;font-weight:500;color:var(--ink3);text-transform:uppercase;letter-spacing:.05em;border-bottom:0.5px solid var(--bdr);">'+c.header+'</th>';}).join('')
+    + '</tr>';
+  var body = rows.map(function(r){
+    return '<tr>' + cols.map(function(c){
+      var v = c.fmt ? c.fmt(r) : (r[c.key] == null ? '—' : r[c.key]);
+      return '<td style="padding:5px 10px;text-align:'+(c.align||'right')+';font-size:12px;color:var(--ink);border-bottom:0.5px solid var(--bdr);font-variant-numeric:tabular-nums;">'+v+'</td>';
+    }).join('') + '</tr>';
+  }).join('');
+  return '<details style="margin-top:10px;"><summary style="cursor:pointer;font-size:11px;color:var(--gold);font-weight:500;padding:6px 0;user-select:none;list-style:none;">▸ Sjá gögn að baki'+(title?' ('+title+')':'')+'</summary>'
+    + '<div style="margin-top:6px;overflow-x:auto;border:0.5px solid var(--bdr);border-radius:8px;">'
+    + '<table style="width:100%;border-collapse:collapse;min-width:420px;">'+head+body+'</table>'
+    + '</div></details>';
+}
+
 function buildStuttuBarChart(){
   // Einfölduð súlumynd — bara AB-niðurstaða, litakóðuð + ártöl.
   // Síar út ár sem vantar niðurstöðu svo grafið rokki ekki.
@@ -6639,8 +6659,25 @@ function buildStuttuBarChart(){
     // Ár
     labels += '<text x="'+cx+'" y="'+(H-PAD.b+15)+'" text-anchor="middle" font-size="10" fill="#888" font-family="DM Sans">'+d.yr+'</text>';
   });
+  var rows = fin.map(function(d){
+    return {
+      yr: d.yr,
+      ab: d.AB.nidurstada,
+      a: d.A && d.A.nidurstada,
+      tekjur: d.AB.tekjur,
+      timabil: d.timabil || ('Ársreikningur '+d.yr)
+    };
+  });
+  var details = buildDataDetails(rows, [
+    {header:'Ár', key:'yr', align:'left', fmt:function(r){return r.yr;}},
+    {header:'AB-niðurstaða (ma.)', fmt:function(r){return '<span style="color:'+(r.ab>=0?'#2E7D32':'#C62828')+'">'+(r.ab>=0?'+':'')+r.ab.toFixed(2)+'</span>';}},
+    {header:'A-niðurstaða (ma.)', fmt:function(r){return r.a==null?'—':'<span style="color:'+(r.a>=0?'#2E7D32':'#C62828')+'">'+(r.a>=0?'+':'')+r.a.toFixed(2)+'</span>';}},
+    {header:'AB-tekjur (ma.)', fmt:function(r){return r.tekjur==null?'—':r.tekjur.toFixed(1);}},
+    {header:'Tímabil', align:'left', fmt:function(r){return '<span style="color:var(--ink3);font-size:11px">'+r.timabil+'</span>';}}
+  ], 'AB-niðurstaða per ári');
   return '<svg viewBox="0 0 '+W+' '+H+'" width="100%" style="display:block;min-width:560px">'+grid+zero+bars+labels+'</svg>'
-    +'<div style="font-size:11px;color:var(--ink3);margin-top:8px;line-height:1.5">Tölur í milljörðum króna. Jákvæð tala = hagnaður, neikvæð = tap. Þetta er „samstæða A+B" sem inniheldur bæði aðalsjóð og '+cityCompaniesShort()+'.</div>';
+    +'<div style="font-size:11px;color:var(--ink3);margin-top:8px;line-height:1.5">Tölur í milljörðum króna. Jákvæð tala = hagnaður, neikvæð = tap. Þetta er „samstæða A+B" sem inniheldur bæði aðalsjóð og '+cityCompaniesShort()+'.</div>'
+    +details;
 }
 
 // Skuldir-chart: línurit sem sýnir samfellda hækkun samstæðuskulda 2015–2024
@@ -6684,13 +6721,24 @@ function buildStuttuSkuldirChart(){
   var valLabels = '<text x="'+xS(0)+'" y="'+(yS(data[0].skuldir)-8)+'" text-anchor="start" font-size="10" font-weight="500" fill="#C62828" font-family="DM Sans">'+data[0].skuldir.toFixed(0)+'</text>'
     +'<text x="'+xS(data.length-1)+'" y="'+(yS(data[data.length-1].skuldir)-8)+'" text-anchor="end" font-size="10" font-weight="500" fill="#C62828" font-family="DM Sans">'+data[data.length-1].skuldir.toFixed(0)+'</text>';
 
+  var details = buildDataDetails(data.map(function(d){
+    var pib = d.skuldir && (FINANCE.find(function(x){return x.yr===d.yr;}) || {}).ibuar;
+    return {yr:d.yr, skuldir:d.skuldir, tekjur:d.tekjur, partial:d.partial, ibuar:pib};
+  }), [
+    {header:'Ár', key:'yr', align:'left', fmt:function(r){return r.yr + (r.partial?' <span style="color:var(--ink3);font-size:10px">(bráðab.)</span>':'');}},
+    {header:'AB-skuldir (ma.)', fmt:function(r){return r.skuldir==null?'—':r.skuldir.toFixed(1);}},
+    {header:'AB-tekjur (ma.)', fmt:function(r){return r.tekjur==null?'—':r.tekjur.toFixed(1);}},
+    {header:'Skuldir/tekjur %', fmt:function(r){return (r.skuldir==null||!r.tekjur)?'—':(r.skuldir/r.tekjur*100).toFixed(0)+'%';}},
+    {header:'Skuldir/íbúa (þ.kr.)', fmt:function(r){return (r.skuldir==null||!r.ibuar)?'—':Math.round(r.skuldir*1e9/r.ibuar/1000).toLocaleString('is-IS');}}
+  ], 'Skuldir yfir tíma');
   return '<svg viewBox="0 0 '+W+' '+H+'" width="100%" style="display:block;min-width:560px">'
     +grid
     +'<path d="'+skuldFill+'" fill="#C6282815" stroke="none"/>'
     +'<path d="'+skuldPath+'" fill="none" stroke="#C62828" stroke-width="2"/>'
     +dots+valLabels+labels
     +'</svg>'
-    +'<div style="font-size:11px;color:var(--ink3);margin-top:8px;line-height:1.5">Samstæðuskuldir í milljörðum króna. '+(CURRENT_MUNI==='rvk' ? 'Hækkunin á sér að hluta skýringar í fjárfestingum (Orkuveita), verðbólgu­uppfærslu lána og uppbyggingu Félagsbústaða — en þróunin er samfelld og krefst athygli.' : 'Þróun skulda endurspeglar bæði fjárfestingar '+cityN('ef-gr')+' og verðbólguuppfærslur lána.')+'</div>';
+    +'<div style="font-size:11px;color:var(--ink3);margin-top:8px;line-height:1.5">Samstæðuskuldir í milljörðum króna. '+(CURRENT_MUNI==='rvk' ? 'Hækkunin á sér að hluta skýringar í fjárfestingum (Orkuveita), verðbólgu­uppfærslu lána og uppbyggingu Félagsbústaða — en þróunin er samfelld og krefst athygli.' : 'Þróun skulda endurspeglar bæði fjárfestingar '+cityN('ef-gr')+' og verðbólguuppfærslur lána.')+'</div>'
+    +details;
 }
 
 // Bókhaldsaðlaganir sem fegra AB-niðurstöðu — tekið úr adj-reit í FINANCE
@@ -6739,6 +6787,14 @@ function buildStuttuAdjustments(){
   });
   html += '</div>';
   html += '<div style="font-size:11px;color:var(--ink3);margin-top:10px;line-height:1.5">Heimildir: athugasemdir í ársreikningum '+cityN('ef-gr')+' 2015–2024. Þessir liðir eru allir lögformlega réttir og í samræmi við reikningsskilavenjur — en þeir eiga ekki uppruna í daglegum rekstri '+cityN('ef')+' og ber að lesa með því.</div>';
+  // Hrá-adj-tafla: öll adj-færsla listuð per ári með gildi og hluta
+  var adjRows = adjs.map(function(a){ return {yr:a.yr, label:a.label, value:a.value, hluti:a.hluti}; });
+  html += buildDataDetails(adjRows, [
+    {header:'Ár', key:'yr', align:'left', fmt:function(r){return r.yr;}},
+    {header:'Liður', align:'left', fmt:function(r){return '<span style="color:var(--ink)">'+r.label+'</span>';}},
+    {header:'Hluti', fmt:function(r){return r.hluti || 'AB';}},
+    {header:'Gildi (ma.)', fmt:function(r){return '<span style="color:'+(r.value>=0?'#2E7D32':'#C62828')+'">'+(r.value>=0?'+':'')+r.value.toFixed(1)+'</span>';}}
+  ], 'Allar skráðar aðlaganir');
   return html;
 }
 
