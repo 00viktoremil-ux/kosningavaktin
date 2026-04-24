@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1080" viewBox="0 0 1080 1080">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#B8935A" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#B8935A" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect width="1080" height="1080" fill="#1A1814"/>
+  <path d="M 0 0 L 500 0 L 0 500 Z" fill="url(#g)"/>
+
+  <text x="80" y="180" font-family="DM Sans, system-ui, sans-serif" font-size="22" font-weight="500" letter-spacing="5" fill="#B8935A">FRAMBOÐIN 2026</text>
+
+  <text x="80" y="310" font-family="Playfair Display, Georgia, serif" font-size="80" font-weight="700" fill="#FDFCFA">Kynntu þér</text>
+  <text x="80" y="395" font-family="Playfair Display, Georgia, serif" font-size="80" font-weight="700" fill="#FDFCFA">framboðin</text>
+
+  <!-- Stats grid -->
+  <g transform="translate(80,470)">
+    <rect x="0" y="0" width="440" height="200" rx="14" fill="#FDFCFA08" stroke="#B8935A" stroke-width="1" stroke-opacity="0.35"/>
+    <text x="220" y="90" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="96" font-weight="700" fill="#B8935A">11</text>
+    <text x="220" y="140" text-anchor="middle" font-family="DM Sans, system-ui, sans-serif" font-size="22" letter-spacing="3" fill="#A8A4A0">FRAMBOÐ</text>
+    <text x="220" y="172" text-anchor="middle" font-family="DM Sans, system-ui, sans-serif" font-size="16" fill="#A8A4A0">í Reykjavík</text>
+
+    <rect x="480" y="0" width="440" height="200" rx="14" fill="#FDFCFA08" stroke="#B8935A" stroke-width="1" stroke-opacity="0.35"/>
+    <text x="700" y="90" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="96" font-weight="700" fill="#B8935A">460</text>
+    <text x="700" y="140" text-anchor="middle" font-family="DM Sans, system-ui, sans-serif" font-size="22" letter-spacing="3" fill="#A8A4A0">FRAMBJÓÐENDUR</text>
+    <text x="700" y="172" text-anchor="middle" font-family="DM Sans, system-ui, sans-serif" font-size="16" fill="#A8A4A0">á 11 listum</text>
+
+    <rect x="0" y="220" width="920" height="200" rx="14" fill="#FDFCFA08" stroke="#B8935A" stroke-width="1" stroke-opacity="0.35"/>
+    <text x="460" y="320" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="58" font-weight="700" fill="#FDFCFA">Stefnumál · Kannanir · Fjármál</text>
+    <text x="460" y="370" text-anchor="middle" font-family="DM Sans, system-ui, sans-serif" font-size="22" fill="#A8A4A0">Á einum stað. Óháð og hlutlaust.</text>
+  </g>
+
+  <!-- Footer -->
+  <line x1="80" y1="935" x2="1000" y2="935" stroke="#B8935A" stroke-width="0.5" opacity="0.3"/>
+  <text x="80" y="990" font-family="Playfair Display, Georgia, serif" font-size="36" font-weight="700" fill="#FDFCFA">kosningavaktin.app</text>
+  <text x="1000" y="990" text-anchor="end" font-family="DM Sans, system-ui, sans-serif" font-size="18" fill="#A8A4A0">Kjördagur 16. maí 2026</text>
+</svg>

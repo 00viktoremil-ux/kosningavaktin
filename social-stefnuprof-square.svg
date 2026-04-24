@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1080" viewBox="0 0 1080 1080">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#B8935A" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#B8935A" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect width="1080" height="1080" fill="#1A1814"/>
+  <path d="M 1080 0 L 1080 700 L 500 1080 L 1080 1080 Z" fill="url(#g)"/>
+
+  <text x="80" y="180" font-family="DM Sans, system-ui, sans-serif" font-size="22" font-weight="500" letter-spacing="5" fill="#B8935A">STEFNUPRÓFUN</text>
+
+  <text x="80" y="330" font-family="Playfair Display, Georgia, serif" font-size="88" font-weight="700" fill="#FDFCFA">Hvaða flokkur</text>
+  <text x="80" y="420" font-family="Playfair Display, Georgia, serif" font-size="88" font-weight="700" fill="#FDFCFA">passar <tspan fill="#B8935A">þér</tspan>?</text>
+
+  <text x="80" y="520" font-family="DM Sans, system-ui, sans-serif" font-size="28" fill="#A8A4A0">18 spurningar um borgarmál</text>
+  <text x="80" y="558" font-family="DM Sans, system-ui, sans-serif" font-size="28" fill="#A8A4A0">Samsvörun við öll 11 framboð</text>
+  <text x="80" y="596" font-family="DM Sans, system-ui, sans-serif" font-size="28" fill="#A8A4A0">Engin gögn send á netið</text>
+
+  <!-- Mock answer buttons -->
+  <g transform="translate(80,680)">
+    <rect x="0" y="0" width="280" height="80" rx="12" fill="#2E7D32" fill-opacity="0.15" stroke="#2E7D32" stroke-opacity="0.5" stroke-width="1"/>
+    <text x="30" y="52" font-family="DM Sans, system-ui, sans-serif" font-size="32" fill="#FDFCFA">👍 Sammála</text>
+
+    <rect x="300" y="0" width="280" height="80" rx="12" fill="#A8A4A0" fill-opacity="0.10" stroke="#A8A4A0" stroke-opacity="0.4" stroke-width="1"/>
+    <text x="330" y="52" font-family="DM Sans, system-ui, sans-serif" font-size="32" fill="#FDFCFA">😐 Hlutlaus</text>
+
+    <rect x="620" y="0" width="280" height="80" rx="12" fill="#C62828" fill-opacity="0.14" stroke="#C62828" stroke-opacity="0.5" stroke-width="1"/>
+    <text x="650" y="52" font-family="DM Sans, system-ui, sans-serif" font-size="32" fill="#FDFCFA">👎 Ósammála</text>
+  </g>
+
+  <!-- Footer with CTA -->
+  <rect x="80" y="870" width="920" height="120" rx="14" fill="#FDFCFA08" stroke="#B8935A" stroke-width="1" stroke-opacity="0.4"/>
+  <text x="540" y="915" text-anchor="middle" font-family="DM Sans, system-ui, sans-serif" font-size="18" letter-spacing="3" fill="#B8935A">TAKTU PRÓFIÐ</text>
+  <text x="540" y="965" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="44" font-weight="700" fill="#FDFCFA">kosningavaktin.app</text>
+</svg>
