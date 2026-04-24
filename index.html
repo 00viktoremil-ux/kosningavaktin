@@ -2409,7 +2409,7 @@ let PARTY_INFO = {
   'F': {
     fullname: 'Flokkur fólksins',
     founded: '2016',
-    ideology: 'Popúlismi, innflytjendamál, hægri',
+    ideology: 'Popúlismi, innflytjendamál, velferðarmál',
     url: 'https://flokkurfolksins.is',
     history: 'Stofnaður 2016 með Ingu Sæland í forsvari. Leggur áherslu á takmörkun innflytjenda og forgangsröðun þjónustu við íslenska borgara. Guðmundur Ingi Þóroddsson, formaður Afstöðu, leiðir listann 2026.',
     keyTopics: ['Innflytjendamál','Húsnæðismál','Samgöngur','Eldra fólk'],
@@ -6690,7 +6690,7 @@ function buildStuttuBarChart(){
     {header:'AB-tekjur (ma.)', fmt:function(r){return r.tekjur==null?'—':r.tekjur.toFixed(1);}},
     {header:'Tímabil', align:'left', fmt:function(r){return '<span style="color:var(--ink3);font-size:11px">'+r.timabil+'</span>';}}
   ], 'AB-niðurstaða per ári');
-  return '<svg viewBox="0 0 '+W+' '+H+'" width="100%" style="display:block;min-width:560px">'+grid+zero+bars+labels+'</svg>'
+  return '<svg viewBox="0 0 '+W+' '+H+'" width="100%" height="auto" preserveAspectRatio="xMidYMid meet" style="display:block;max-width:100%">'+grid+zero+bars+labels+'</svg>'
     +'<div style="font-size:11px;color:var(--ink3);margin-top:8px;line-height:1.5">Tölur í milljörðum króna. Jákvæð tala = hagnaður, neikvæð = tap. Þetta er „samstæða A+B" sem inniheldur bæði aðalsjóð og '+cityCompaniesShort()+'.</div>'
     +details;
 }
@@ -6746,7 +6746,7 @@ function buildStuttuSkuldirChart(){
     {header:'Skuldir/tekjur %', fmt:function(r){return (r.skuldir==null||!r.tekjur)?'—':(r.skuldir/r.tekjur*100).toFixed(0)+'%';}},
     {header:'Skuldir/íbúa (þ.kr.)', fmt:function(r){return (r.skuldir==null||!r.ibuar)?'—':Math.round(r.skuldir*1e9/r.ibuar/1000).toLocaleString('is-IS');}}
   ], 'Skuldir yfir tíma');
-  return '<svg viewBox="0 0 '+W+' '+H+'" width="100%" style="display:block;min-width:560px">'
+  return '<svg viewBox="0 0 '+W+' '+H+'" width="100%" height="auto" preserveAspectRatio="xMidYMid meet" style="display:block;max-width:100%">'
     +grid
     +'<path d="'+skuldFill+'" fill="#C6282815" stroke="none"/>'
     +'<path d="'+skuldPath+'" fill="none" stroke="#C62828" stroke-width="2"/>'
