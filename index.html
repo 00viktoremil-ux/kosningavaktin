@@ -7818,7 +7818,7 @@ if (document.readyState === 'loading') {
 //      Reiknast EKKI sjálfkrafa inn í heildina því notandi þarf þá að slá inn
 //      lóðarstærð (kr_m2) eða aðskilið lóðarmat (pct). Birtum sem upplýsingu.
 var HEIMILI_RATES = {
-  rvk:  {name:'Reykjavík',    short:'Rvk',  note:'Reykjavík innheimtir EKKI vatns- og fráveitugjald með fasteignagjöldum — það rennur til Veitna ohf. og er ekki innifalið hér.', yrs:{
+  rvk:  {name:'Reykjavík',    short:'Rvk',  note:'Vatns- og fráveitugjöld Reykjavíkur eru innheimt af Veitum ohf. (í eigu Orkuveitu Reykjavíkur). Veitur-kortið hér að neðan sýnir þau nánar — m.a. heitt vatn sem ekki er talið með í heimiliskostn.', yrs:{
     2018:{fast:0.180, fraveita:0,    vatn:0,    sorp:26000, utsvar:14.52, lod:{type:'pct', val:0.20}, est:true},
     2019:{fast:0.180, fraveita:0,    vatn:0,    sorp:27000, utsvar:14.52, lod:{type:'pct', val:0.20}, est:true},
     2020:{fast:0.180, fraveita:0,    vatn:0,    sorp:28000, utsvar:14.52, lod:{type:'pct', val:0.20}, est:true},
@@ -7919,15 +7919,27 @@ function hmFmtPct(v){
 }
 
 // Reiknar árlegan HEIMILISKOSTNAÐ (fasteignagjöld). Útsvar er aðskilið.
-function hmCalc(muniId, year, mat){
+// Fyrir Reykjavík: vatn/fráveita er innheimt af Veitum — bætum Veitur-kostn.
+// (kalt vatn + fráveita, EKKI heitt vatn) við svo samanburður sé sanngjarn.
+function hmCalc(muniId, year, mat, veitM2){
   var row = HEIMILI_RATES[muniId] && HEIMILI_RATES[muniId].yrs[year];
   if(!row) return null;
   var fast      = mat * row.fast      / 100;
   var fraveita  = mat * row.fraveita  / 100;
   var vatn      = mat * row.vatn      / 100;
   var sorp      = row.sorp;
+  // Rvk: bætum við áætluðum Veitur-kalda-vatns- og fráveitugjaldi.
+  // Heitt vatn er ekki innifalið (sambærilegt þjónusta hjá öðrum munum
+  // er á eigin gjaldskrá og ekki sveitarfélagsmál).
+  var rvkVeit = 0;
+  if(muniId === 'rvk'){
+    var v = hmVeitur(year, mat, veitM2 || 100, 0); // 0 m³ heitt vatn — sleppa hitaveitu
+    rvkVeit = v.kalt + v.fraveita;
+    fraveita = v.fraveita;
+    vatn = v.kalt;
+  }
   var total = fast + fraveita + vatn + sorp;
-  return { fast:fast, fraveita:fraveita, vatn:vatn, sorp:sorp, total:total, rate: row, est: row.est };
+  return { fast:fast, fraveita:fraveita, vatn:vatn, sorp:sorp, total:total, rvkVeit:rvkVeit, rate: row, est: row.est };
 }
 
 // Reiknar útsvar á ári út frá mán.launum. Persónuafsláttur 2026 ≈ 68.691 kr./mán.
@@ -8002,7 +8014,7 @@ function hmRender(){
   if(!root) return;
   var _sy = window.scrollY; // varðveita scroll við re-render
   var s = HM_STATE;
-  var calc = hmCalc(s.muni, s.year, s.mat);
+  var calc = hmCalc(s.muni, s.year, s.mat, s.veitM2);
   var meta = HEIMILI_RATES[s.muni];
   var hasUtsvar = s.monthly > 0;
   var utsvarKr = hmUtsvar(s.muni, s.year, s.monthly);
@@ -8041,16 +8053,15 @@ function hmRender(){
 
   // Sundurliðun
   var rate = calc.rate;
-  var noVei = (s.muni === 'rvk');
   var rows = [
     {label:'Fasteignaskattur A', kr:calc.fast, pct:rate.fast, sub:'Álagningarhlutfall × fasteignamat'},
-    {label:'Fráveitugjald',      kr:calc.fraveita, pct:rate.fraveita, sub:noVei?'Sjá Veitur ohf.-kortið hér að neðan':'Hlutfall af fasteignamati'},
-    {label:'Vatnsgjald',         kr:calc.vatn,    pct:rate.vatn,     sub:noVei?'Sjá Veitur ohf.-kortið hér að neðan':'Hlutfall af fasteignamati'},
+    {label:'Fráveitugjald',      kr:calc.fraveita, pct:isRvk?null:rate.fraveita, sub:isRvk?'Innheimt af Veitum ohf. — fastagjald + 519,68 kr./m² × '+s.veitM2+' m²':'Hlutfall af fasteignamati'},
+    {label:'Vatnsgjald',         kr:calc.vatn,    pct:isRvk?null:rate.vatn,     sub:isRvk?'Innheimt af Veitum ohf. — fastagjald + 216,66 kr./m² × '+s.veitM2+' m² (kalt vatn)':'Hlutfall af fasteignamati'},
     {label:'Sorphirðugjald',     kr:calc.sorp,    pct:null,          sub:'Typískt heimili (240L blandaður + lífúrg. + pappír/plast + endurv.) · '+(rate.est?'<span style="color:#854F0B">áætluð tala</span>':'staðfest gjaldskrá')}
   ];
   var rowsHtml = rows.map(function(r){
-    var pctTxt = r.pct == null ? '<span style="color:var(--ink3)">fast gjald</span>'
-                                : (noVei && r.kr===0 ? '<span style="color:var(--ink3)">—</span>' : hmFmtPct(r.pct));
+    var pctTxt = r.pct == null ? '<span style="color:var(--ink3)">'+(r.kr>0&&isRvk?'sjá útreikning':'fast gjald')+'</span>'
+                                : hmFmtPct(r.pct);
     return '<tr>'
       + '<td style="padding:10px 8px 10px 0;vertical-align:top;"><div style="font-weight:500">'+r.label+'</div><div style="font-size:11px;color:var(--ink3);margin-top:2px">'+r.sub+'</div></td>'
       + '<td style="padding:10px 8px;text-align:right;color:var(--ink2);font-size:12px;font-variant-numeric:tabular-nums;">'+pctTxt+'</td>'
@@ -8058,9 +8069,10 @@ function hmRender(){
       + '</tr>';
   }).join('');
 
-  // Comparison: heimiliskostnaður (fasteignagjöld) á sama fasteignamati × 6 muni × valdu ári
+  // Comparison: heimiliskostnaður á sama fasteignamati × 6 muni × valdu ári.
+  // Rvk: bætum Veitur-kalda-vatni og fráveitu við svo samanburður sé sanngjarn.
   var compRows = HEIMILI_MUNI_ORDER.map(function(id){
-    var c = hmCalc(id, s.year, s.mat);
+    var c = hmCalc(id, s.year, s.mat, s.veitM2);
     return { id:id, name:HEIMILI_RATES[id].name, total:c?c.total:0, color:HEIMILI_COLORS[id] };
   }).sort(function(a,b){return a.total - b.total;});
   var maxTotal = Math.max.apply(null, compRows.map(function(r){return r.total;}));
@@ -8081,7 +8093,7 @@ function hmRender(){
   var allTotals = [];
   HEIMILI_MUNI_ORDER.forEach(function(id){
     HEIMILI_YEARS.forEach(function(y){
-      var c = hmCalc(id, y, s.mat);
+      var c = hmCalc(id, y, s.mat, s.veitM2);
       if(c) allTotals.push(c.total);
     });
   });
@@ -8091,14 +8103,14 @@ function hmRender(){
   var yScale = function(v){ return padT + (1 - (v-ymin)/(ymax-ymin)) * (H-padT-padB); };
   var lines = HEIMILI_MUNI_ORDER.map(function(id){
     var pts = HEIMILI_YEARS.map(function(y){
-      var c = hmCalc(id, y, s.mat);
+      var c = hmCalc(id, y, s.mat, s.veitM2);
       return c ? (x(y)+','+yScale(c.total)) : null;
     }).filter(Boolean).join(' ');
     var hl = (id === s.muni);
     return '<polyline points="'+pts+'" fill="none" stroke="'+HEIMILI_COLORS[id]+'" stroke-width="'+(hl?'2.5':'1.2')+'" opacity="'+(hl?'1':'0.45')+'"/>';
   }).join('');
   var dots = HEIMILI_YEARS.map(function(y){
-    var c = hmCalc(s.muni, y, s.mat);
+    var c = hmCalc(s.muni, y, s.mat, s.veitM2);
     if(!c) return '';
     var sel = (y === s.year);
     return '<circle cx="'+x(y)+'" cy="'+yScale(c.total)+'" r="'+(sel?'5':'3')+'" fill="'+HEIMILI_COLORS[s.muni]+'"/>';
@@ -8261,7 +8273,7 @@ function hmRender(){
     +   '<div class="card-title" style="margin-bottom:4px;">Samanburður '+s.year+' · sami fasteignamati</div>'
     +   '<div class="card-subtitle" style="margin-bottom:1rem;">Heildargjöld heimilis (fasteignaskattur + fráveita + vatn + sorp) ef fasteignamatið er '+hmFmtKr(s.mat)+'</div>'
     +   compHtml
-    +   '<div style="font-size:11px;color:var(--ink3);margin-top:.75rem;line-height:1.5;">Athugið: Reykjavík innheimtir ekki vatn/fráveitu með fasteignagjöldum (fer um Veitur ohf.) — því sýnast Rvk-tölurnar lægri en raunin er fyrir heimilið.</div>'
+    +   '<div style="font-size:11px;color:var(--ink3);margin-top:.75rem;line-height:1.5;">Sanngjarn samanburður: Reykjavík telur með Veitur-vatns- og -fráveitugjald (miðað við '+s.veitM2+' m² íbúð) þar sem þau eru hluti af raunkostnaði heimila — bara innheimt af Veitum ohf. fremur en borginni sjálfri. Heitt vatn er ekki innifalið (sambærileg þjónusta er á eigin gjaldskrá hjá öllum munum).</div>'
     + '</div>'
 
     // HISTORY
