@@ -1476,7 +1476,18 @@ const POLLS_BY_MUNI = {
   kopv: [],
   gard: [],
   mos: [],
-  selt: []
+  selt: [],
+  // Akureyri: Maskína fyrir DV (17.–24. apríl 2026, n=629). Núverandi
+  // meirihluti L+D+M missir meirihluta; Samfylking stærst (3 sæti, +2 frá 2022).
+  akur: [
+    {source:'Maskína (fyrir DV)', method:'Netkönnun', date:'17.–24. apríl 2026', n:'629', tag:'maskina',
+     data:{S:18.4, L:17.2, D:16.7, B:11.5, V:11.5, M:10.6, C:8.1, Y:6.0},
+     url:'https://www.dv.is/frettir/2026/4/26/ny-konnun-akureyri-samfylkingin-storsiglingu-en-oljost-hverjir-geta-myndad-meirihluta/',
+     note:'S stærstur (+ 2 sæti frá 2022). Núverandi meirihluti L+D+M (var 6 sæti) missir meirihluta — fer í 5. Akureyrarlistinn (Y) rétt undir kjörmarki. Engin skýr meirihlutamyndun.'}
+  ],
+  rnes: [],
+  isaf: [],
+  mula: []
 };
 
 function initPolls(){
@@ -5611,45 +5622,187 @@ MUNI_DATA.selt = {
 // kosninga-2026, kosningasaga.wordpress.com (úrslit 2022), framboðsvefir
 // flokkanna á Akureyri, Wikipedia (Akureyri).
 var AKUR_RAW = [
-  // B — Framsóknarflokkurinn (Sunna Hlín Jóhannesdóttir, 2 sæti 2022)
+  // B — Framsóknarflokkurinn (Sunna Hlín Jóhannesdóttir, 2 sæti 2022). Heimild: vikubladid.is
   ['B',1,'Sunna Hlín Jóhannesdóttir','framhaldsskólakennari og varabæjarfulltrúi'],
-  ['B',2,'Gunnar Már Gunnarsson','verkefnastjóri og bæjarfulltrúi'],
-  ['B',3,'Sverre Andreas Jakobsson','frambjóðandi'],
-  ['B',4,'Guðbjörg Anna Björnsdóttir','frambjóðandi'],
-  // C — Viðreisn (Lovísa Oktovía Eyvindsdóttir, nýtt framboð 2026)
+  ['B',2,'Gunnar Már Gunnarsson','verkefnisstjóri í brothættum byggðum'],
+  ['B',3,'Alfa Dröfn Jóhannsdóttir','forvarnarfulltrúi'],
+  ['B',4,'Sverre Andreas Jakobsson','þjónustustjóri Arion banka og handboltaþjálfari'],
+  ['B',5,'Thea Rut Jónsdóttir','skurðhjúkrunarfræðingur'],
+  ['B',6,'Óskar Ingi Sigurðsson','iðnfræðingur og framhaldsskólakennari'],
+  ['B',7,'Tanja Hlín Þorgeirsdóttir','sérfræðingur'],
+  ['B',8,'Grétar Ásgeirsson','verkstjóri hjá Vegagerðinni'],
+  ['B',9,'Ólöf Rún Pétursdóttir','nemi'],
+  ['B',10,'Andri Kristjánsson','bakarameistari'],
+  ['B',11,'Guðbjörg Anna Björnsdóttir','leikskólastarfsmaður'],
+  ['B',12,'Jóhannes Gunnar Bjarnason','íþróttafræðingur'],
+  ['B',13,'Halldóra Kristín Hauksdóttir','lögmaður'],
+  ['B',14,'Tryggvi Már Ingvarsson','verkefnastjóri'],
+  ['B',15,'Ragnhildur Hjaltadóttir','fulltrúi'],
+  ['B',16,'Ingimar Eydal','skólastjóri'],
+  ['B',17,'Katrín Ásgrímsdóttir','verkefnastjóri'],
+  ['B',18,'Sigurjón Þórsson','leigubílstjóri og tæknimaður'],
+  ['B',19,'Gunnfríður Elín Hreiðarsdóttir','verkefnastjóri'],
+  ['B',20,'Snæbjörn Sigurðarson','sjálfstætt starfandi og frumkvöðull'],
+  ['B',21,'Ingibjörg Isaksen','alþingismaður'],
+  ['B',22,'Páll H. Jónsson','eldri borgari'],
+  // C — Viðreisn (Lovísa Oktovía Eyvindsdóttir, nýtt framboð 2026). Heimild: akureyri.net, vikubladid.is
   ['C',1,'Lovísa Oktovía Eyvindsdóttir','stjórnmálafræðingur og varaþingmaður'],
   ['C',2,'Elías Gunnar Þorbjörnsson','skólastjóri Giljaskóla'],
-  ['C',3,'Þóroddur Ingvarsson','svæfinga- og gjörgæslulæknir'],
+  ['C',3,'Þóroddur Ingvarsson','svæfingar- og gjörgæslulæknir'],
   ['C',4,'Elísabet Ögn Jóhannsdóttir','verkefnastjóri menningarmála hjá Akureyrarbæ'],
-  // D — Sjálfstæðisflokkurinn (Berglind Ósk Guðmundsdóttir, 2 sæti 2022)
-  ['D',1,'Berglind Ósk Guðmundsdóttir','fyrrverandi alþingismaður'],
-  ['D',2,'Heimir Örn Árnason','bæjarfulltrúi og formaður bæjarráðs'],
+  ['C',5,'Íunn Eir Gunnarsdóttir','sérfræðingur í tómstunda- og félagsmálum'],
+  ['C',6,'Hjálmar Pálsson','sölumaður'],
+  ['C',7,'Unnur Pétursdóttir','sjúkraþjálfari'],
+  ['C',8,'Vilhjálmur Kristjánsson','framhaldsskólakennari'],
+  ['C',9,'Halla Rut Ákadóttir','stuðningsfulltrúi'],
+  ['C',10,'Magnús Hilmar Felixson','deildarstjóri leikskóla'],
+  ['C',11,'Þórey Sif Þórisdóttir','flugmaður'],
+  ['C',12,'Axel Björnsson','forritari'],
+  ['C',13,'Veronika Lalkova Bozhkova','hjúkrunarfræðingur'],
+  ['C',14,'Halldór Jóhannesson','hafnarstarfsmaður og vélstjóri'],
+  ['C',15,'Anna Svava Traustadóttir','fótaaðgerðafræðingur'],
+  ['C',16,'Árni Jón Erlendsson','sérfræðingur í rafrænu eftirliti'],
+  ['C',17,'Arna Garðarsdóttir','náms- og starfsráðgjafi'],
+  ['C',18,'Ólafur Ingimarsson','yfirlæknir á skurðdeild'],
+  ['C',19,'Eydís Arna S. Eiríksdóttir','fyrrv. móttökufulltrúi'],
+  ['C',20,'Kristján Ingimar Ragnarsson','leiðsögumaður'],
+  ['C',21,'Aðalheiður Rósa Jóhannesdóttir','læknir'],
+  ['C',22,'Ingvar Þóroddsson','heimilis- og endurhæfingarlæknir og eftirlaunaþegi'],
+  // D — Sjálfstæðisflokkurinn (Berglind Ósk Guðmundsdóttir, 2 sæti 2022). Heimild: xd.is
+  ['D',1,'Berglind Ósk Guðmundsdóttir','fyrrv. alþingismaður'],
+  ['D',2,'Heimir Örn Árnason','bæjarfulltrúi'],
   ['D',3,'Arna Rut Gunnarsdóttir','framkvæmdastjóri'],
   ['D',4,'Þórhallur Harðarson','fjármála- og rekstrarstjóri'],
-  // L — Bæjarlistinn (Óðinn Svan Óðinsson, 3 sæti 2022 — stærsti flokkurinn)
-  ['L',1,'Óðinn Svan Óðinsson','fjölmiðlamaður og frétta- og dagskrárritstjóri'],
+  ['D',5,'Þorsteinn Kristjánsson','frumkvöðull'],
+  ['D',6,'Kristína Björk Arnórsdóttir','persónuverndarfulltrúi'],
+  ['D',7,'Jóhann Gunnar Kristjánsson','verkefnastjóri'],
+  ['D',8,'Jóhanna Hlín Ragnarsdóttir','hárgreiðslumeistari'],
+  ['D',9,'Freydís Lilja Þormóðsdóttir','nemi'],
+  ['D',10,'Kristinn Frímann Árnason','hafnarstarfsmaður'],
+  ['D',11,'Dagný Reykjalín Ragnarsdóttir','grafískur hönnuður'],
+  ['D',12,'Fannar Gíslason','verkfræðingur'],
+  ['D',13,'Elín Birna Gunnlaugsdóttir','nemi'],
+  ['D',14,'Davíð Þ. Kristjánsson','frumkvöðull'],
+  ['D',15,'Sara Halldórsdóttir','lögmaður'],
+  ['D',16,'Jósavin Heiðmann Arason','múrari'],
+  ['D',17,'Kristín Elva Viðarsdóttir','skólasálfræðingur'],
+  ['D',18,'Ísak Svavarsson','múrari og flugnemi'],
+  ['D',19,'Ólöf Heiða Óskarsdóttir','rekstrarstjóri'],
+  ['D',20,'Þórarinn B. Jónsson','fyrrv. bæjarfulltrúi'],
+  ['D',21,'Njáll Trausti Friðbertsson','alþingismaður og fyrrv. bæjarfulltrúi'],
+  ['D',22,'Lára Halldóra Eiríksdóttir','bæjarfulltrúi'],
+  // L — Bæjarlistinn (Óðinn Svan Óðinsson, 3 sæti 2022). Heimild: l-listinn.is, akureyri.net
+  ['L',1,'Óðinn Svan Óðinsson','fjölmiðlamaður'],
   ['L',2,'Brynja Hlíf Þorsteinsdóttir','bæjarfulltrúi og lífeindafræðingur'],
   ['L',3,'Preben Jón Pétursson','mjólkurtæknifræðingur'],
   ['L',4,'María Pálsdóttir','leikkona og frumkvöðull'],
   ['L',5,'Andri Teitsson','bæjarfulltrúi og verkfræðingur'],
-  // M — Miðflokkurinn (Hlynur Jóhannsson, 1 sæti 2022)
-  ['M',1,'Hlynur Jóhannsson','íþróttakennari, bæjarfulltrúi og rekstrarstjóri'],
-  ['M',2,'Inga Dís Sigurðardóttir','kennari og varabæjarfulltrúi'],
-  ['M',3,'Egill Einarsson','verslunarmaður'],
-  ['M',4,'Katrín Vilhjálmsdóttir','snyrtifræðingur og hjúkrunarfræðinemi'],
-  ['M',5,'Hannes Karlsson','rekstrarstjóri'],
-  // S — Samfylkingin (Sindri S. Kristjánsson, 1 sæti 2022)
-  ['S',1,'Sindri S. Kristjánsson','skrifstofustjóri og varabæjarfulltrúi'],
+  ['L',6,'Heiðbjört Ósk Ófeigsdóttir','kennari og útgefandi'],
+  ['L',7,'Geir Kristinn Aðalsteinsson','mannauðsstjóri'],
+  ['L',8,'Paula Del Olmo','þjálfari og verkefnastjóri'],
+  ['L',9,'Jón Þorvaldur Heiðarsson','háskólakennari'],
+  ['L',10,'Guðríður Sveinsdóttir','kennari'],
+  ['L',11,'Árni Óðinsson','rafvirki og tæknimaður'],
+  ['L',12,'Maríanna Margeirsdóttir','viðskiptafræðingur'],
+  ['L',13,'Kristján Valur Kristjánsson','rafvirki'],
+  ['L',14,'Anna Hildur Guðmundsdóttir','formaður SÁÁ'],
+  ['L',15,'Kristján Sigurólason','atvinnurekandi'],
+  ['L',16,'Guðrún Karitas Garðarsdóttir','viðskiptafræðingur'],
+  ['L',17,'Aðalgeir Axelsson','verslunarmaður'],
+  ['L',18,'Ólöf Inga Andrésdóttir','skólastjóri'],
+  ['L',19,'Arnar Már Bjarnason','deildarstjóri'],
+  ['L',20,'Anna Fanney Stefánsdóttir','hjúkrunarfræðingur'],
+  ['L',21,'Víðir Benediktsson','skipstjóri'],
+  ['L',22,'Oddur Helgi Halldórsson','blikksmíðameistari'],
+  // M — Miðflokkurinn (Hlynur Jóhannsson, 1 sæti 2022). Heimild: akureyri.net
+  ['M',1,'Hlynur Jóhannsson','bæjarfulltrúi, íþróttakennari og rekstrarstjóri'],
+  ['M',2,'Inga Dís Sigurðardóttir','kennari og náms- og starfsráðgjafi'],
+  ['M',3,'Finnur Aðalbjörnsson','framkvæmdastjóri'],
+  ['M',4,'Sigrún Elva Briem','heilbrigðisritari HSN'],
+  ['M',5,'Einar Gunnlaugsson','sjálfstæður atvinnurekandi'],
+  ['M',6,'Karl Liljendal','nemi'],
+  ['M',7,'Sif Hjartardóttir','sjúkraliði'],
+  ['M',8,'Hólmgeir Karlsson','framkvæmdastjóri'],
+  ['M',9,'Margrét Imsland','framkvæmdastjóri'],
+  ['M',10,'Sigurður Pálsson','matsveinn'],
+  ['M',11,'Bjarney Sigurðardóttir','viðskiptafræðingur'],
+  ['M',12,'Helgi Sveinbjörn Jóhannsson','afgreiðslu- og fræðslufulltrúi'],
+  ['M',13,'Regína Helgadóttir','bókari'],
+  ['M',14,'Viðar Valdimarsson','ferðamálafræðingur'],
+  ['M',15,'Helga Kristjánsdóttir','húsmóðir'],
+  ['M',16,'Pétur Jóhannsson','ellilífeyrisþegi'],
+  ['M',17,'Sigríður Valdís Bergvinsdóttir','hársnyrtimeistari'],
+  ['M',18,'Þorvaldur Helgi Sigurpálsson','verkstjóri'],
+  ['M',19,'Úlfhildur Rögnvaldsdóttir','eldri borgari'],
+  ['M',20,'Karl Steingrímsson','fyrrv. sjómaður'],
+  ['M',21,'Guðný Heiðveig Gestsdóttir','fyrrv. bóndi'],
+  ['M',22,'Hannes Karlsson','framkvæmdastjóri'],
+  // S — Samfylkingin (Sindri S. Kristjánsson, 1 sæti 2022). Heimild: xs.is
+  ['S',1,'Sindri S. Kristjánsson','skrifstofustjóri'],
   ['S',2,'Hanna Dóra Markúsdóttir','grunnskólakennari'],
-  ['S',3,'Sigrún Steinarsdóttir','stofnandi Matargjafa Akureyrar og nágrennis'],
+  ['S',3,'Sigrún Steinarsdóttir','stofnandi Matargjafa Akureyri'],
   ['S',4,'Jóhannes Már Pétursson','háskólanemi'],
-  ['S',5,'Zane Brikovska','starfsmaður á meðferðarheimilinu Bjargey'],
-  // V — Vinstrihreyfingin – grænt framboð (Jana Salóme Ingibjargar, 1 sæti 2022)
+  ['S',5,'Zane Brikovska','starfsmaður á Bjargey'],
+  ['S',6,'Baldur Sverrisson','framhaldsskólakennari'],
+  ['S',7,'Elsa María Guðmundsdóttir','myndlistakennari'],
+  ['S',8,'Elvar Björn Ólafsson','nemi'],
+  ['S',9,'Kristín Helga Schiöth','alþjóðafræðingur og blómaskreytir'],
+  ['S',10,'Jóhann Jónsson','innkaupastjóri'],
+  ['S',11,'Aðalheiður Anna Ragnarsdóttir','nemi og íshokkíleikmaður'],
+  ['S',12,'Kristinn Berg Gunnarsson','framhaldsskólakennari'],
+  ['S',13,'Heiðrún Hafdal Björgvinsdóttir','háskólanemi'],
+  ['S',14,'Hallur Gunnarsson','framkvæmdastjóri Saga Travel'],
+  ['S',15,'Anna Sigga Jökuls Ragnheiðardóttir','sálfræðingur'],
+  ['S',16,'Unnar Jónsson','deildarstjóri'],
+  ['S',17,'Kristín Sóley Björnsdóttir','viðburðastjóri'],
+  ['S',18,'Eiður Stefánsson','formaður VR/verslunarmanna'],
+  ['S',19,'Sigríður Huld Jónsdóttir','verkefnastjóri og hjúkrunarfræðingur'],
+  ['S',20,'Þorsteinn Þorsteinsson','fuglaskoðari'],
+  ['S',21,'Guðrún Gunnarsdóttir','eldri borgari'],
+  ['S',22,'Ragnar Sverrisson','kaupmaður'],
+  // V — Vinstrihreyfingin – grænt framboð (Jana Salóme Ingibjargar, 1 sæti 2022). Heimild: vgakureyri.is, vikubladid.is
   ['V',1,'Jana Salóme Ingibjargar Jósepsdóttir','bæjarfulltrúi'],
-  // Y — Akureyrarlistinn (nýtt framboð 2026, Þórhallur Jónsson sagði sig úr D)
-  ['Y',1,'Þórhallur Jónsson','framkvæmdastjóri og fyrrv. varabæjarfulltrúi'],
-  ['Y',2,'Karen Sigurbjörnsdóttir','mannauðsfulltrúi'],
-  ['Y',3,'Helgi Steinar Halldórsson','fasteignasali og ljósamaður']
+  ['V',2,'Stefán Oddur Hrafnsson','meistaranemi í kennslufræðum'],
+  ['V',3,'Ásrún Ýr Gestsdóttir','athafnakona'],
+  ['V',4,'Sigtryggur Ellertsson','vistvænn verslunareigandi'],
+  ['V',5,'Herdís Júlía Júlíusdóttir','iðjuþjálfi'],
+  ['V',6,'Erlendur Steinar Friðriksson','sjávarútvegsfræðingur'],
+  ['V',7,'Sif Jóhannesar Ástudóttir','þjóðfræðingur'],
+  ['V',8,'Jóhannes Árnason','framhaldsskólakennari'],
+  ['V',9,'Harpa Guðbrandsdóttir','verkakona'],
+  ['V',10,'Elvar Freyr Fossdal Sigfússon','nemi og lagerstarfsmaður'],
+  ['V',11,'Anna Sigríður Jónsdóttir','félagsráðgjafi'],
+  ['V',12,'Mikael Snær Gíslason','líftækninemi'],
+  ['V',13,'Hrönn Soffíu Björgvinsdóttir','verkefnastjóri Amtsbókasafnsins'],
+  ['V',14,'Davíð Örvar Hansson','teymisstjóri Náttúruverndarstofnunar'],
+  ['V',15,'Inga Elísabet Vésteinsdóttir','landfræðingur'],
+  ['V',16,'Bragi Guðmundsson','fyrrv. prófessor'],
+  ['V',17,'Arnfríður Kjartansdóttir','sálfræðingur'],
+  ['V',18,'Angantýr Ómar Ásgeirsson','kennaranemi'],
+  ['V',19,'Dýrleif Skjóldal','leikskólakennari og sundþjálfari'],
+  ['V',20,'Guðmundur Ármann Sigurjónsson','myndlistamaður og -kennari'],
+  ['V',21,'Hannes Sigurðsson','lagerstarfsmaður'],
+  ['V',22,'Kristín Sigfúsdóttir','fyrrv. framhaldsskólakennari og bæjarfulltrúi'],
+  // Y — Akureyrarlistinn (nýtt framboð 2026, 19 sæti staðfest). Heimild: akureyrarlistinn.is
+  ['Y',1,'Þórhallur Jónsson','framkvæmdastjóri og varabæjarfulltrúi'],
+  ['Y',2,'Karen Sigurbjörnsdóttir','mannauðssérfræðingur'],
+  ['Y',3,'Helgi Steinar Halldórsson','fasteignasali og lýsingarhönnuður'],
+  ['Y',4,'Kristrún María Björnsdóttir','doktorsnemi'],
+  ['Y',5,'Darri Rafn Hólmarsson','tölvunarfræðingur og DJ'],
+  ['Y',6,'Dana Rán Jónsdóttir','sérfræðingur og líftæknifræðingur'],
+  ['Y',7,'Vilmundur Aðalsteinn Árnason','framkvæmdastjóri og fyrrv. sjómaður'],
+  ['Y',8,'Guðjón Andri Gylfason','framhaldsskólakennari og lífefnafræðingur'],
+  ['Y',9,'Elfa Ágústdóttir','dýralæknir'],
+  ['Y',10,'Pavel Víking Landa','verktaki og smiður'],
+  ['Y',11,'Rannveig Hansen Jónsdóttir','fjármálastjóri'],
+  ['Y',12,'Hilmar Friðjónsson','framhaldsskólakennari'],
+  ['Y',13,'Fríða Kristín Hreiðarsdóttir','grunnskólakennari'],
+  ['Y',14,'Friðbjörn Benediktsson','rekstrarstjóri'],
+  ['Y',15,'Harpa Þórey Sigurðardóttir','þjónustufulltrúi'],
+  ['Y',16,'Elvar Freyr Pálsson','viðskiptafræðingur'],
+  ['Y',17,'Axel Darri Þórhallsson','efnisframleiðandi'],
+  ['Y',18,'Rúnar Þór Björnsson','ljósmyndari'],
+  ['Y',19,'Ingibjörg Margrét Þórhallsdóttir','eldri borgari']
 ];
 
 MUNI_DATA.akur = {
@@ -5737,48 +5890,142 @@ MUNI_DATA.akur = {
 // Núverandi meirihluti B+S+Y (7 sæti) — sá sami og frá 2018. Bæjarstjóri
 // Kjartan Már Kjartansson. 2026-listar ekki staðfestir með beinni heimild,
 // en oddvitar þriggja stóru meirihlutaflokkanna eru þekktir.
+// REYKJANESBÆR 2026 — STÓRBREYTT FRAMBOÐSLANDSLAG:
+// - Y (Bein leið) býður EKKI fram (var 1 sæti 2022)
+// - U (Umbót) sameinaðist D fyrir 2026 (var 1 sæti)
+// - C (Viðreisn) í fyrsta sinn — Arnar Páll Guðmundsson
+// - M (Miðflokkur) kemur til baka — Gunnlaugur Kárason
+// - D (Sjálfstæðisfl.) með Vilhjálm Árnason alþingism. sem oddvita og bæjarstj.efni
+// Heimildir: vf.is, visir.is, xd.is, ruv.is, mbl.is.
 var RNES_RAW = [
-  // B — Framsóknarflokkurinn (Halldóra Fríða Þorvaldsdóttir, 3 sæti 2022)
-  ['B',1,'Halldóra Fríða Þorvaldsdóttir','bæjarfulltrúi og forseti bæjarstjórnar'],
-  // D — Sjálfstæðisflokkurinn (Margrét Þórarinsdóttir, 3 sæti 2022)
-  ['D',1,'Margrét Þórarinsdóttir','bæjarfulltrúi'],
-  // S — Samfylkingin (Friðjón Einarsson, 3 sæti 2022)
-  ['S',1,'Friðjón Einarsson','bæjarfulltrúi og formaður bæjarráðs'],
-  // Y — Bein leið (1 sæti 2022 — oddviti óstaðfestur 2026)
-  ['Y',1,'Oddviti óstaðfestur','frambjóðandi'],
-  // U — Umbót (1 sæti 2022 — oddviti óstaðfestur 2026)
-  ['U',1,'Oddviti óstaðfestur','frambjóðandi']
+  // B — Framsókn (Halldóra Fríða, 3 sæti 2022). Heimild: vf.is
+  ['B',1,'Halldóra Fríða Þorvaldsdóttir','verkefnastjóri og forseti bæjarstjórnar'],
+  ['B',2,'Róbert Jóhann Guðmundsson','málarameistari'],
+  ['B',3,'Díana Hilmarsdóttir','forstöðumaður Bjargarinnar'],
+  ['B',4,'Birgir Már Bragason','framkvæmdastjóri'],
+  ['B',5,'Halla Karen Guðjónsdóttir','sérfræðingur'],
+  ['B',6,'Sighvatur Jónsson','tölvunarfræðingur og fjölmiðlamaður'],
+  ['B',7,'Gunnar Jón Ólafsson','verkefnastjóri eldvarnareftirlits'],
+  ['B',8,'Eva Stefánsdóttir','deildarstjóri hjá Veitum'],
+  ['B',9,'Þórarinn Darri Ólafsson','háskólanemi og leiðbeinandi'],
+  ['B',10,'Hekla Sif Ingvadóttir','framhaldsskólanemi'],
+  ['B',11,'Sigurður Guðjónsson','framkvæmdastjóri og bílasali'],
+  ['B',12,'Ásta María Guðmundsdóttir','forstöðumaður'],
+  ['B',13,'Hrafnkell Freyr Ágústsson','málari'],
+  ['B',14,'Birna Ósk Óskarsdóttir','aðstoðarskólastjóri Stapaskóla'],
+  ['B',15,'Karítas Lára Rafnkelsdóttir','sálfræðingur hjá HSS'],
+  ['B',16,'Hólmfríður Jennýjar Árnadóttir','sviðsstýra fjölskyldusviðs'],
+  ['B',17,'Hreinn Ágúst Kristinsson','deildarstjóri'],
+  ['B',18,'Steinunn Valsdóttir','markaðsfræðingur'],
+  ['B',19,'Yasmin Petra Younesdóttir','framhaldsskólanemi'],
+  ['B',20,'Bjarney Rut Jensdóttir','lögfræðingur'],
+  ['B',21,'Kristinn Þór Jakobsson','fyrrv. bæjarfulltrúi'],
+  ['B',22,'Jóhann Friðrik Friðriksson','varaþingmaður'],
+  // C — Viðreisn (Arnar Páll Guðmundsson, NÝTT framboð 2026). Heimild: visir.is
+  ['C',1,'Arnar Páll Guðmundsson','viðskiptafræðingur og mannauðsráðgjafi'],
+  ['C',2,'Davíð Skarphéðinsson','byggingaverkfræðingur'],
+  ['C',3,'Ásta Kristín Guðmundsdóttir','kennari og verkefnastjóri'],
+  ['C',4,'Aðalheiður Júlírós Óskarsdóttir','gæðastjóri'],
+  ['C',5,'Sveinn Enok Jóhannsson','bóndi í Höfnum'],
+  ['C',6,'Sigrún G. Bates','fótaaðgerðafræðingur'],
+  ['C',7,'Rúnar Þór Guðmundsson','byggingaverkfræðingur'],
+  ['C',8,'Jóhanna Björk Sigurbjörnsdóttir','skaðaminnkunarfulltrúi'],
+  ['C',9,'Daníel Birgir Björgvinsson','pípulagningameistari'],
+  ['C',10,'Brynja Ýr Júlíusdóttir','yfirkennari'],
+  ['C',11,'Jón Garðar Snædal Jónsson','verkefnastjóri'],
+  ['C',12,'Gunnhildur Brynjólfsdóttir','verslunarstjóri'],
+  ['C',13,'Hafsteinn Þórir Haraldsson','verslunarstjóri'],
+  ['C',14,'Helena Björk Rúnarsdóttir','sundlaugarvörður'],
+  ['C',15,'Ingi Eggert Ásbjarnarson','verkefnastjóri'],
+  ['C',16,'Hildigunnur Eir Kristjánsdóttir','nemi'],
+  ['C',17,'Haukur Hilmarsson','kennari og skíðakennari'],
+  ['C',18,'Ingibjörg Ýr Smáradóttir','nemi'],
+  ['C',19,'Fannar Jónsson','sundlaugarvörður'],
+  ['C',20,'Alda Friðný Skagfjörð Áskelsdóttir','ráðgjafi'],
+  ['C',21,'Sigurður Jóhannsson','veðurfræðingur'],
+  ['C',22,'Bjarklind Sigurðardóttir','viðskiptafræðingur og MBA'],
+  // D — Sjálfstæðisflokkur+Umbót sameinað (Vilhjálmur Árnason alþm. — bæjarstj.efni). Heimild: xd.is
+  ['D',1,'Vilhjálmur Árnason','alþingismaður og formaður Sjálfstæðisflokksins í Reykjanesbæ'],
+  ['D',2,'Margrét Þórarinsdóttir','flugfreyja og bæjarfulltrúi (áður Umbót)'],
+  ['D',3,'Kristján Pétur Kristjánsson','framkvæmdastjóri Konvin'],
+  ['D',4,'Alexander Ragnarsson','byggingameistari og bæjarfulltrúi'],
+  ['D',5,'Guðbergur Reynisson','framkvæmdastjóri Cargo og bæjarfulltrúi'],
+  ['D',6,'Sunna Gunnarsdóttir','náms- og starfsráðgjafi við FS'],
+  ['D',7,'Ásdís Ólafsdóttir','sjálfbærnistjóri Alvotech'],
+  ['D',8,'Logi Þór Ágústsson','viðskiptafræðinemi og frístundaleiðbeinandi'],
+  ['D',9,'Ólöf Steinunn Lárusdóttir','vörustjóri Blue'],
+  ['D',10,'Gunnar Felix Rúnarsson','landamæravörður og fyrrv. kaupmaður'],
+  ['D',11,'Hermann Borgar Jakobsson','lögfræðinemi og þjónustufulltrúi'],
+  ['D',12,'Helga Guðrún Sigurðardóttir','iðnaðarmaður'],
+  ['D',13,'Tryggvi Þór Bragason','leiðsögumaður og byggingameistari'],
+  ['D',14,'Alma Guðnadóttir','gæðastjóri og verkfræðingur'],
+  ['D',15,'Guðmundur Steinarsson','vaktstjóri og íþróttafræðingur'],
+  ['D',16,'Axel Ingi Auðunsson','lögfræðinemi'],
+  ['D',17,'Berglind Ragnarsdóttir','rekstrar- og nýsköpunarverkfræðingur'],
+  ['D',18,'Jón Már Sverrisson','vélaverkfræðingur og rafvirki HS Orku'],
+  ['D',19,'Ragnar Már Ragnarsson','flugmaður Icelandair'],
+  ['D',20,'Harpa B. Sævarsdóttir','eigandi Plús ehf.'],
+  ['D',21,'Hjörleifur Stefánsson','framkvæmdastjóri Nesraf'],
+  ['D',22,'Margrét Sanders','bæjarfulltrúi og fyrrv. flokksformaður'],
+  // M — Miðflokkur (Gunnlaugur Kárason, kemur til baka 2026). Heimild: visir.is
+  ['M',1,'Gunnlaugur Kárason','kennari og viðskiptafræðingur'],
+  ['M',2,'Rúnar Fossádal Árnason','rannsóknarlögreglumaður'],
+  ['M',3,'Sigrún Þorsteinsdóttir','þjónustufulltrúi'],
+  ['M',4,'Bjarni Gunnólfsson','dreifingarstjóri'],
+  ['M',5,'Matthildur Júlía Matthíasdóttir','umönnunarstarfsmaður'],
+  ['M',6,'Brynjólfur Sveinn Ívarsson','lögfræðingur'],
+  ['M',7,'Davíð Brár Unnarsson','flugstjóri Icelandair'],
+  ['M',8,'Aðalgeir Jónsson','flugvélavirki Icelandair'],
+  ['M',9,'Guðdís Eiríksdóttir','verslunarstjóri Kaffitárs'],
+  ['M',10,'Bjarni Geir Bjarnason','framkvæmdastjóri'],
+  ['M',11,'Elísa Margrét Johnsen','níu barna móðir'],
+  ['M',12,'Jón Ragnar Reynisson','rafvirkjameistari og eigandi Nesraf'],
+  ['M',13,'Þorsteinn Ingi Hjálmarsson','verkfræðingur og kennari FS'],
+  ['M',14,'Sigurður Jón Sigmundsson','rafvirki HS Veitum'],
+  ['M',15,'Matthías Snorrason','flugstjóri Icelandair'],
+  ['M',16,'Patience A. Karlsson','kennari'],
+  ['M',17,'Bryndís Káradóttir','strætisvagnabílstjóri'],
+  ['M',18,'Andrea Thorarensen','öryrki'],
+  ['M',19,'Elísa Gunnlaugsdóttir','FS-nemi'],
+  ['M',20,'Sandra Trang Bui Geirsdóttir','sjúkraliði HSS'],
+  ['M',21,'Karvel Granz','eftirlaunaþegi'],
+  ['M',22,'Pétur Þórarinsson','heiðursfélagi Miðflokksins'],
+  // S — Samfylkingin og óháðir (Guðný Birna Guðmundsdóttir — Friðjón hættur)
+  ['S',1,'Guðný Birna Guðmundsdóttir','bæjarfulltrúi, hjúkrunarframkvæmdastjóri og forseti bæjarstjórnar']
 ];
 MUNI_DATA.rnes = {
   parties: [
+    // 2022-sæti á D er 4 (3 D + 1 U sem sameinuðust). Y/U eru ekki framboð 2026.
     {id:'B', name:'Framsóknarflokkurinn',  color:'#1E8A3E', pct:0, seats:3},
-    {id:'D', name:'Sjálfstæðisflokkurinn', color:'#1565C0', pct:0, seats:3},
-    {id:'S', name:'Samfylkingin',          color:'#C62828', pct:0, seats:3},
-    {id:'U', name:'Umbót',                 color:'#37474F', pct:0, seats:1},
-    {id:'Y', name:'Bein leið',             color:'#854F0B', pct:0, seats:1}
+    {id:'C', name:'Viðreisn',              color:'#D84315', pct:0, seats:0},
+    {id:'D', name:'Sjálfstæðisflokkurinn', color:'#1565C0', pct:0, seats:4},
+    {id:'M', name:'Miðflokkurinn',         color:'#6A1B9A', pct:0, seats:0},
+    {id:'S', name:'Samfylkingin og óháðir',color:'#C62828', pct:0, seats:3}
   ],
   rawCands: RNES_RAW,
   photos: {},
   bios: {
-    'B-1':'Halldóra Fríða Þorvaldsdóttir er bæjarfulltrúi Framsóknar og forseti bæjarstjórnar Reykjanesbæjar.',
-    'D-1':'Margrét Þórarinsdóttir er bæjarfulltrúi Sjálfstæðisflokksins í Reykjanesbæ.',
-    'S-1':'Friðjón Einarsson er bæjarfulltrúi Samfylkingar og formaður bæjarráðs Reykjanesbæjar.'
+    'B-1':'Halldóra Fríða Þorvaldsdóttir er verkefnastjóri og forseti bæjarstjórnar Reykjanesbæjar. Leiðir lista Framsóknar 2026.',
+    'C-1':'Arnar Páll Guðmundsson er viðskiptafræðingur og mannauðsráðgjafi. Leiðir fyrsta framboð Viðreisnar í Reykjanesbæ.',
+    'D-1':'Vilhjálmur Árnason er alþingismaður og formaður Sjálfstæðisflokksins í Reykjanesbæ. Leiðir sameinað framboð Sjálfstæðisflokks og Umbótar — er bæjarstjóraefni 2026.',
+    'M-1':'Gunnlaugur Kárason er kennari og viðskiptafræðingur. Leiðir endurkomu Miðflokksins í Reykjanesbæ.',
+    'S-1':'Guðný Birna Guðmundsdóttir er bæjarfulltrúi, hjúkrunarframkvæmdastjóri og forseti bæjarstjórnar. Tók við oddvitastól af Friðjóni Einarssyni sem hættir.'
   },
   partyInfo: {
-    B: {fullname:'Framsóknarflokkurinn',  ideology:'Miðjuflokkur, byggðamál og atvinnulíf', founded:1916},
-    D: {fullname:'Sjálfstæðisflokkurinn', ideology:'Miðju-hægri, frjálslyndir markaðir',    founded:1929},
-    S: {fullname:'Samfylkingin',          ideology:'Miðju-vinstri, jafnaðarmenn',           founded:2000},
-    U: {fullname:'Umbót',                 ideology:'Óháður bæjarlisti',                     founded:2014},
-    Y: {fullname:'Bein leið',             ideology:'Óháður bæjarlisti',                     founded:2018}
+    B: {fullname:'Framsóknarflokkurinn',     ideology:'Miðjuflokkur, byggðamál og atvinnulíf', founded:1916},
+    C: {fullname:'Viðreisn',                 ideology:'Frjálslyndur miðjuflokkur',             founded:2016},
+    D: {fullname:'Sjálfstæðisflokkurinn',    ideology:'Miðju-hægri, frjálslyndir markaðir',    founded:1929},
+    M: {fullname:'Miðflokkurinn',            ideology:'Miðju-hægri, áhersla á útlendingamál',  founded:2017},
+    S: {fullname:'Samfylkingin og óháðir',   ideology:'Miðju-vinstri, jafnaðarmenn',           founded:2000}
   },
   stefnumal: {
-    B: ['Skólamál og leikskólapláss', 'Húsnæðisuppbygging', 'Innviðir vegna fólksfjölgunar'],
-    D: ['Lægri álögur og ábyrg fjármálastjórn', 'Atvinnuþróun', 'Skipulagsmál og lóðaframboð'],
-    S: ['Velferð og félagsþjónusta', 'Húsnæðismál', 'Skóla- og frístundamál'],
-    U: ['Þjónusta við íbúa', 'Gagnsæi í stjórnsýslu', 'Skipulag og umhverfi'],
-    Y: ['Beint íbúalýðræði', 'Aðhald í rekstri', 'Umhverfis- og skipulagsmál']
+    B: ['Fléttulisti með jöfnu hlutfalli kvenna og karla (11 hvor)', 'Atvinnuuppbygging á Suðurnesjum', 'Leikskóla- og skólauppbygging', 'Íþrótta- og æskulýðsmál', 'Skipulagsmál vegna fólksfjölgunar'],
+    C: ['Frjálslynd miðjustefna í fyrsta sinn í Reykjanesbæ', 'Ábyrgur rekstur sveitarfélagsins', 'Atvinnufjölbreytni', 'Samgöngubætur (Reykjanesbraut)', 'Menntamál'],
+    D: ['Vilhjálmur Árnason sem bæjarstjóraefni — alþingismaður leiðir', 'Lægri skattar og álögur', 'Skilvirkari rekstur', 'Innviðauppbygging vegna örs vaxtar', 'Samvinna við ríkið um málefni hælisleitenda', 'Öflugir leikskólar'],
+    M: ['Innviðir og leikskólapláss', 'Íþrótta- og menningarstarf', 'Áhrif hælisleitenda á þjónustu', 'Ábyrg fjármálastjórn', 'Skattalækkanir'],
+    S: ['Einföldun daglegs lífs', 'Frítt í strætó fyrir börn og ungmenni', 'Lægri álögur', 'Leikskóla- og grunnskólauppbygging', 'Tvöföldun Reykjanesbrautar', 'Lóðarleigugjöld']
   },
-  sattmali2022:'Þríflokkasamstarf B+S+Y (Framsókn, Samfylking, Bein leið) eftir kosningar 14. maí 2022 — sami meirihluti og frá 2018. 7 sæti af 11. Kjartan Már Kjartansson áfram bæjarstjóri.',
+  sattmali2022:'Þríflokkasamstarf B+S+Y (Framsókn, Samfylking, Bein leið) eftir kosningar 14. maí 2022 — sami meirihluti og frá 2018. 7 sæti af 11. Kjartan Már Kjartansson áfram bæjarstjóri. STÓRBREYTING 2026: Y (Bein leið) býður ekki fram, U (Umbót) sameinaðist D, C (Viðreisn) og M (Miðflokkur) bætast við.',
   finance: [
     {yr:2023, A:{tekjur:25.0, gjold:24.7, nidurstada:0.3, EBITDA:2.5}, AB:{nidurstada:0.5, skuldir:35.0, EBITDA:5.0}, ibuar:21703, borgarstjori:'Kjartan Már Kjartansson', meirihluti:['B','S','Y'], kjor:'2022–2026', est:true,
      athugasemd:'Áætluð gildi — staðfesting vantar úr ársreikningi. Mikil fólksfjölgun á Suðurnesjum þrýstir á innviði.'},
@@ -5795,43 +6042,146 @@ MUNI_DATA.rnes = {
 // ============================================================================
 // === ÍSAFJARÐARBÆR — landsbyggðar-muni #3 ===================================
 // ============================================================================
-// 9 fulltrúa bæjarstjórn. Þrír listar fengu sæti 2022 (Í-listi 5, D 2, B 2).
-// Í-listinn vann stærsta sigur með 46,26% og hreinum meirihluta. Arna Lára
-// Jónsdóttir varð fyrsta konan í bæjarstjórastól Ísafjarðar; síðar tók
-// Sigríður Júlía Brynleifsdóttir við.
+// 9 fulltrúa bæjarstjórn. STÓRBREYTT 2026 frá 2022:
+// - Í-listinn (5 sæti 2022) klofnaði 2025/26 — býður EKKI fram 2026
+// - Viðreisn (C) býður fram í fyrsta sinn (var hluti Í-listans)
+// - Samfylking (S) býður fram sjálfstætt í fyrsta sinn í 24 ár
+// - Miðflokkurinn (M) býður fram í fyrsta sinn
+// - Framsókn (B) og Sjálfstæðisflokkur (D) áfram
+// Meirihluti Í-listans féll maí 2025; Sigríður Júlía Brynleifsdóttir tók við
+// bæjarstjórastól eftir að Arna Lára Jónsdóttir fór á þing.
+// Heimildir: isafjordur.is/kosningar-2026, bb.is fréttir 2026, xs.is.
 var ISAF_RAW = [
-  ['Í',1,'Oddviti Í-listans','frambjóðandi'],
-  ['D',1,'Oddviti D-listans','frambjóðandi'],
-  ['B',1,'Oddviti B-listans','frambjóðandi']
+  // B — Framsókn og óháðir (Kristján Þór Kristjánsson)
+  ['B',1,'Kristján Þór Kristjánsson','hótelstjóri'],
+  ['B',2,'Elísabet Samúelsdóttir','fjármálastjóri'],
+  ['B',3,'Stefán Hannibal Hafberg','sjávarútvegsfræðingur'],
+  ['B',4,'Tinna Rún Snorradóttir','verkfræðingur'],
+  ['B',5,'Elísabet Margrét Jónasdóttir','bóndi'],
+  ['B',6,'Guðni Páll Viktorsson','ferðaþjónn'],
+  ['B',7,'Gerður Ásta Sigmundsdóttir','hjúkrunarfræðingur og bóndi'],
+  ['B',8,'Gauti Geirsson','framkvæmdastjóri'],
+  ['B',9,'Katarzyna Maliszewzka','sjúkraliði'],
+  ['B',10,'Sædís Ólöf Þórsdóttir','verkefnastjóri'],
+  ['B',11,'Guðríður Vala Atladóttir','námsmaður'],
+  ['B',12,'Jóhann Bæring Gunnarsson','verkefnastjóri'],
+  ['B',13,'Halla Signý Kristjánsdóttir','verkefnastjóri'],
+  ['B',14,'Halldór Karl Valsson','matreiðslumeistari og kennari'],
+  ['B',15,'Dýrleif Arna Ómarsdóttir','hjúkrunarfræðingur'],
+  ['B',16,'Anton Helgi Guðjónsson','verkefnastjóri'],
+  ['B',17,'Sigmundur Fríðar Þórðarson','húsasmíðameistari'],
+  ['B',18,'Marzellíus Sveinbjörnsson','smiður'],
+  // C — Viðreisn (Gylfi Ólafsson, nýtt sjálfstætt framboð 2026)
+  ['C',1,'Gylfi Ólafsson','formaður bæjarráðs'],
+  ['C',2,'Sif Huld Albertsdóttir','aðstoðarframkvæmdastjóri'],
+  ['C',3,'Magnús Einar Magnússon','skrifstofustjóri og stálsmíðameistari'],
+  ['C',4,'Arnheiður Steinþórsdóttir','sagnfræðingur og bókavörður'],
+  ['C',5,'Valur Richter','pípari, húsasmiður og meindýraeyðir'],
+  ['C',6,'Halldóra Norðdahl','verslunareigandi'],
+  ['C',7,'Sigþór Snorrason','grunnskólakennari'],
+  ['C',8,'Hanna Gerður Jónsdóttir','hópstjóri á leikskóla'],
+  ['C',9,'Marcel Knop','stuðningsfulltrúi og kennaranemi'],
+  ['C',10,'Monika Maria Wielgosz','lögfræðingur'],
+  ['C',11,'Einar Geir Jónsson','námsmaður'],
+  ['C',12,'Júlía Ósk Bjarnadóttir','leikskólakennari'],
+  ['C',13,'Hörður Christian Newman','þjónustufulltrúi'],
+  ['C',14,'Guðrún Helga Sigurðardóttir','námsmaður'],
+  ['C',15,'Haukur Harðarson','næturvaktstjóri'],
+  ['C',16,'Auður Helga Ólafsdóttir','hjúkrunarfræðingur'],
+  ['C',17,'Guðmundur M. Kristjánsson','fyrrv. hafnarstjóri'],
+  ['C',18,'Sigrún Camilla Halldórsdóttir','formaður eldri borgara'],
+  // D — Sjálfstæðisflokkurinn (Jónas Þór Birgisson)
+  ['D',1,'Jónas Þór Birgisson','lyfsali'],
+  ['D',2,'Þóra Marý Arnórsdóttir','deildarstjóri velferðarsviðs'],
+  ['D',3,'Martha Kristín Pálmadóttir','áfanga- og fjarnámsstjóri'],
+  ['D',4,'Grétar Örn Eiríksson','verkefnastjóri'],
+  ['D',5,'Þorvaldur Óli Ragnarsson','sérfræðingur á endurskoðunarsviði'],
+  ['D',6,'Ásgerður Þorleifsdóttir','sérfræðingur á fjármálasviði'],
+  ['D',7,'Snorri Karl Birgisson','yfirverkstjóri'],
+  ['D',8,'Jón Gunnar Shiransson','stuðningsfulltrúi'],
+  ['D',9,'Baldur Smári Ólafsson','sölumaður (Olís)'],
+  ['D',10,'Gyða Björg Jónsdóttir','verslunarstjóri'],
+  ['D',11,'Samúel Sigurjón Sigurjónsson','stöðvarstjóri'],
+  ['D',12,'Guðrún Oddný Schmidt','yfirverkstjóri'],
+  ['D',13,'Torfi Tímoteus Gunnarsson','sérfræðingur á fjármálasviði'],
+  ['D',14,'Kristján Kristjánsson','verkfræðingur'],
+  ['D',15,'Magdalena Tatala','rekstrarstjóri fóðurstöðvar'],
+  ['D',16,'Gísli Jón Hjaltason','verkefnastjóri'],
+  ['D',17,'Kristín Karlsdóttir','fyrrv. móttökuritari'],
+  ['D',18,'Jóhann Birkir Helgason','byggingatæknifræðingur'],
+  // M — Miðflokkurinn (Sævar Óli Hjörvarsson, nýtt framboð 2026)
+  ['M',1,'Sævar Óli Hjörvarsson','smiður'],
+  ['M',2,'Jón Auðun Auðunarson','framkvæmdastjóri'],
+  ['M',3,'Þorbjörn Halldór Jóhannesson','bóndi'],
+  ['M',4,'Karlotta Dúfa Markan','verkefnastjóri'],
+  ['M',5,'Hákon Sturla Unnsteinsson','bóndi'],
+  ['M',6,'Sigríður Laufey Sigurðardóttir','bókari'],
+  ['M',7,'Albert Guðmundur Haraldsson','framkvæmdastjóri'],
+  ['M',8,'Júlíana Aðalheiður Ernisdóttir','verslunarkona'],
+  ['M',9,'Hákon Hermannsson','framkvæmdastjóri'],
+  ['M',10,'Sigurveig Gunnarsdóttir','fyrrv. sjúkraþjálfari'],
+  // S — Samfylkingin (Svanfríður Guðrún Bergvinsdóttir, nýtt sjálfstætt 2026)
+  ['S',1,'Svanfríður Guðrún Bergvinsdóttir','viðskiptafræðinemi og formaður ASÍ-UNG'],
+  ['S',2,'Helgi Karl Guðmundsson','rafmagnstæknifræðingur'],
+  ['S',3,'Finney Rakel Árnadóttir','aðstoðarskólastjóri'],
+  ['S',4,'Sigurður Jón Hreinsson','véliðnfræðingur'],
+  ['S',5,'Hrafnhildur Hrönn Óðinsdóttir','stjórnmálafræðingur'],
+  ['S',6,'Gísli Már Guðjónsson','rafvirki'],
+  ['S',7,'Jónía Eyja Þórðardóttir','umsjónarmaður'],
+  ['S',8,'Úlfar Logason','ljósmyndari og verkefnastjóri'],
+  ['S',9,'Iwona Maria Samson','sérkennari'],
+  ['S',10,'Sveinberg Þór Birgisson','húsvörður'],
+  ['S',11,'Sigurrós Elddís Huldudóttir','lýðheilsufræðingur'],
+  ['S',12,'Rúnar Helgi Haraldsson','ráðgjafi'],
+  ['S',13,'Ingibjörg Andrea Hallgrímsdóttir','kynjafræðingur'],
+  ['S',14,'Guðmundur Ólafsson','gæðastjóri'],
+  ['S',15,'Þórunn Sunnefa Elfarsdóttir','fatahönnuður'],
+  ['S',16,'Kári Jóhannsson','fisksali'],
+  ['S',17,'Inga María Guðmundsdóttir','frumkvöðull'],
+  ['S',18,'Bryndís G. Friðgeirsdóttir','fyrrv. bæjarfulltrúi']
 ];
 MUNI_DATA.isaf = {
   parties: [
-    {id:'B', name:'Framsóknarflokkurinn',  color:'#1E8A3E', pct:0, seats:2},
-    {id:'D', name:'Sjálfstæðisflokkurinn', color:'#1565C0', pct:0, seats:2},
-    {id:'Í', name:'Í-listinn',             color:'#A33B5E', pct:0, seats:5}
+    // 2022 sæti: B 2, D 2, Í-listi 5 (Í-listi býður EKKI fram 2026 — klofnaði).
+    // C, M, S eru ný sjálfstæð framboð 2026 — sæti = 0 á 2022 grunni.
+    {id:'B', name:'Framsókn og óháðir',     color:'#1E8A3E', pct:0, seats:2},
+    {id:'C', name:'Viðreisn',               color:'#D84315', pct:0, seats:0},
+    {id:'D', name:'Sjálfstæðisflokkurinn',  color:'#1565C0', pct:0, seats:2},
+    {id:'M', name:'Miðflokkurinn',          color:'#6A1B9A', pct:0, seats:0},
+    {id:'S', name:'Samfylkingin',           color:'#C62828', pct:0, seats:0}
   ],
   rawCands: ISAF_RAW,
-  photos: {}, bios: {},
+  photos: {},
+  bios: {
+    'B-1':'Kristján Þór Kristjánsson er hótelstjóri og oddviti Framsóknar og óháðra á Ísafirði 2026.',
+    'C-1':'Gylfi Ólafsson er formaður bæjarráðs og leiðir nýtt sjálfstætt framboð Viðreisnar á Ísafirði 2026 — Viðreisn var áður hluti af Í-listanum.',
+    'D-1':'Jónas Þór Birgisson er lyfsali og oddviti Sjálfstæðisflokksins á Ísafirði 2026.',
+    'M-1':'Sævar Óli Hjörvarsson er smiður og leiðir fyrsta framboð Miðflokksins á Ísafirði.',
+    'S-1':'Svanfríður Guðrún Bergvinsdóttir er viðskiptafræðinemi og formaður ASÍ-UNG. Tók við oddvitastól Samfylkingar í apríl 2026 eftir að Gylfi Þór Gíslason var tekinn af lista. Þetta er fyrsta sjálfstæða framboð Samfylkingar á Ísafirði í 24 ár.'
+  },
   partyInfo: {
     B: {fullname:'Framsóknarflokkurinn',  ideology:'Miðjuflokkur, byggðamál', founded:1916},
-    D: {fullname:'Sjálfstæðisflokkurinn', ideology:'Miðju-hægri',             founded:1929},
-    'Í': {fullname:'Í-listinn',           ideology:'Óháður bæjarlisti — sögulega sterkur á Ísafirði', founded:1990}
+    C: {fullname:'Viðreisn',              ideology:'Frjálslyndur miðjuflokkur', founded:2016},
+    D: {fullname:'Sjálfstæðisflokkurinn', ideology:'Miðju-hægri',              founded:1929},
+    M: {fullname:'Miðflokkurinn',         ideology:'Miðju-hægri',              founded:2017},
+    S: {fullname:'Samfylkingin',          ideology:'Miðju-vinstri, jafnaðarmenn', founded:2000}
   },
   stefnumal: {
-    B: ['Innviðir og samgöngur (Súðavíkurhlíð, Dýrafjarðargöng)', 'Þjónusta við barnafjölskyldur', 'Stuðningur við sjávarútveg'],
-    D: ['Ábyrg fjármálastjórn', 'Atvinnufrelsi og einkaframtak', 'Skólamál'],
-    'Í': ['Atvinnuþróun og fjölbreytni á Vestfjörðum', 'Samgöngur og innviðir', 'Húsnæðis- og uppbyggingarmál']
+    B: ['Efla grunnskóla — markviss styrking, jöfn tækifæri, stuðningsþjónusta', 'Símalaus skóli', 'Innviðir og atvinnumál', 'Þjónusta við íbúa, fjölskyldur og fyrirtæki', 'Þverpólitísk samvinna'],
+    C: ['Skólamál — skýr fókus á öll skólastig', 'Skipulagsmál og frumkvæði', 'Húsnæðisuppbygging', 'Áframhaldandi traustur fjárhagur', 'Atvinnu- og íþróttamannvirki'],
+    D: ['Atvinnumál og fyrirtækjarekstur', 'Aðhald í rekstri sveitarfélagsins', 'Skólamál og þjónusta við barnafjölskyldur', 'Innviðir og samgöngur', 'Velferðarþjónusta'],
+    M: ['Nýr Tangaleikskóli og útikennsla á öllum leikskólum', 'Sterkari grunnskóli og samvinna heima og skóla', 'Auknir tómstundastyrkir', 'Stórframkvæmdir: sundlaug og/eða íþróttahús', 'Smáir innviðir: göngu- og hjólastígar', 'Aðhald í rekstri', 'Þjónusta við eldri borgara'],
+    S: ['Skýr stefna og stöðugleiki', 'Velferðarmál og þjónusta við íbúa', 'Samgöngumál á Vestfjörðum (skorað á ríkið)', 'Jafnaðarmál og íbúalýðræði', 'Húsnæðismál']
   },
-  sattmali2022:'Í-listinn fékk hreinan meirihluta 5 sæti af 9 (46,26%) eftir kosningar 14. maí 2022. Arna Lára Jónsdóttir varð bæjarstjóri og fyrsta konan til að gegna því embætti á Ísafirði. Sigríður Júlía Brynleifsdóttir tók síðar við bæjarstjórastólnum á kjörtímabilinu.',
+  sattmali2022:'Í-listinn fékk hreinan meirihluta 5 sæti af 9 (46,26%) 2022. Arna Lára Jónsdóttir varð bæjarstjóri (fyrsta konan í embættinu á Ísafirði). Meirihlutinn FÉLL maí 2025 og Sigríður Júlía Brynleifsdóttir tók við bæjarstjórastólnum eftir að Arna Lára fór á þing.',
   finance: [
-    {yr:2023, A:{tekjur:6.0, gjold:6.1, nidurstada:-0.1, EBITDA:0.5}, AB:{nidurstada:-0.2, skuldir:8.0, EBITDA:1.0}, ibuar:3893, borgarstjori:'Arna Lára → Sigríður Júlía', meirihluti:['Í'], kjor:'2022–2026', est:true,
-     athugasemd:'Áætluð gildi — staðfesting vantar.'},
+    {yr:2023, A:{tekjur:6.0, gjold:6.1, nidurstada:-0.1, EBITDA:0.5}, AB:{nidurstada:-0.2, skuldir:8.0, EBITDA:1.0}, ibuar:3893, borgarstjori:'Arna Lára Jónsdóttir', meirihluti:['Í'], kjor:'2022–2026', est:true},
     {yr:2024, A:{tekjur:6.5, gjold:6.5, nidurstada:0.0, EBITDA:0.6}, AB:{nidurstada:-0.1, skuldir:8.2, EBITDA:1.1}, ibuar:3850, borgarstjori:'Sigríður Júlía Brynleifsdóttir', meirihluti:['Í'], kjor:'2022–2026', est:true}
   ],
   budgets: {}, finance2025Partial: null,
   kjortimabil: [
     {titill:'2022–2026', bst:'Arna Lára Jónsdóttir → Sigríður Júlía Brynleifsdóttir', meirihluti:['Í'], ar:[2022,2023,2024,2025],
-     lykilmal:['Í-listinn vann hreinan meirihluta með 46,26% — fyrsta konan í bæjarstjórastól','Lækkun fasteignaskatts 0,540% → 0,48% á kjörtímabilinu','Bæjarstjóraskipti á kjörtímabilinu']}
+     lykilmal:['Í-listinn vann hreinan meirihluta með 46,26% — Arna Lára fyrsta konan í bæjarstjórastól','Meirihluti Í-listans féll maí 2025; Sigríður Júlía tók við','Lækkun fasteignaskatts 0,540% → 0,48% á kjörtímabilinu','Í-listinn klofnaði 2026: Viðreisn, Samfylking og Miðflokkur með sjálfstæð framboð']}
   ]
 };
 
@@ -5843,36 +6193,102 @@ MUNI_DATA.isaf = {
 // Sveitarstjóri Dagmar Ýr Stefánsdóttir.
 // 2022-úrslit: B 32% (4 sæti), D 22% (3 sæti), L (Austurlistinn) ~16% (2 sæti),
 // V 9% (1 sæti), M 6% (1 sæti).
+// MÚLAÞING 2026 — STÓR BREYTING: Austurlistinn og Viðreisn sameinuðust í L-lista
+// (1. apríl 2026, oddviti Hólmfríður Rut Einarsdóttir). Helstu deiluefni:
+// Fjarðarheiðargöng (innviðaráðherra tók af forgangslista) og sjókvíaeldi á
+// Seyðisfirði. Heimildir: mulathing.is, austurfrett.is, framsokn.is, xd.is,
+// kosningasaga.wordpress.com, RÚV.
 var MULA_RAW = [
-  ['B',1,'Oddviti B-listans','frambjóðandi'],
-  ['D',1,'Oddviti D-listans','frambjóðandi'],
-  ['L',1,'Oddviti Austurlistans','frambjóðandi'],
-  ['V',1,'Oddviti V-listans','frambjóðandi'],
-  ['M',1,'Oddviti M-listans','frambjóðandi']
+  // B — Framsókn (Jónína Brynjólfsdóttir, 4 sæti 2022). Heimild: austurfrett.is
+  ['B',1,'Jónína Brynjólfsdóttir','safnstjóri og forseti sveitarstjórnar'],
+  ['B',2,'Eiður Ragnarsson','ferðaþjónustubóndi (Hamarsfirði)'],
+  ['B',3,'Þórey Birna Jónsdóttir','sauðfjárbóndi (Jökulsárhlíð)'],
+  ['B',4,'Björg Eyþórsdóttir','hjúkrunarfræðingur og sveitarstjórnarfulltrúi'],
+  ['B',5,'Guðmundur Bj. Hafþórsson','eldvarnareftirlitsmaður'],
+  ['B',6,'Brynjar Pálmi Ásgeirsson','menntaskólanemi'],
+  ['B',7,'Eygló Björg Jóhannsdóttir','viðskiptalögfræðingur og formaður Framsóknarfélags'],
+  ['B',8,'Guðgeir Einarsson','lögreglumaður'],
+  ['B',9,'Erla Gunnlaugsdóttir','starfsmaður íþróttahéraða'],
+  ['B',10,'Kári Snær Valtingojer','rafiðnfræðingur'],
+  ['B',11,'Lilja Sigurðardóttir','hótelstjóri og skógarbóndi'],
+  ['B',12,'Þorgeir Arason','sóknarprestur'],
+  ['B',13,'Íris Randversdóttir','eldri frú'],
+  ['B',14,'Jóhann Guttormur Gunnarsson','smábóndi'],
+  ['B',15,'Jelena Marinković','enskukennari og snyrtifræðingur'],
+  ['B',16,'Þorsteinn Kristjánsson','eldri borgari og fyrrv. bóndi'],
+  ['B',17,'Einar Tómas Björnsson','leiðtogi hjá Alcoa Fjarðaáli'],
+  ['B',18,'Aðalheiður Björt Unnarsdóttir','ritari og búfræðingur'],
+  ['B',19,'Alda Ósk Harðardóttir','snyrtifræðimeistari'],
+  ['B',20,'Vilhjálmur Jónsson','bóndi og sveitarstjórnarfulltrúi'],
+  ['B',21,'Vigdís Sveinbjörnsdóttir','eldri borgari og fyrrv. kennari'],
+  ['B',22,'Þorvaldur P. Hjarðar','skógarbóndi'],
+  // D — Sjálfstæðisflokkur (Berglind Harpa Svavarsdóttir, 3 sæti 2022). Heimild: xd.is, austurfrett.is
+  ['D',1,'Berglind Harpa Svavarsdóttir','hjúkrunarfræðingur, sveitarstjórnarfulltrúi og formaður byggðaráðs'],
+  ['D',2,'Þórhildur Katrín Stefánsdóttir','lögfræðingur og varaformaður Landssambands hrossabænda'],
+  ['D',3,'Ívar Karl Hafliðason','framkvæmdastjóri og sveitarstjórnarfulltrúi'],
+  ['D',4,'Einar Freyr Guðmundsson','lögfræðinemi og sveitarstjórnarfulltrúi'],
+  // L — Austurlistinn + Viðreisn sameinað (Hólmfríður Rut Einarsdóttir, 2 sæti 2022)
+  ['L',1,'Hólmfríður Rut Einarsdóttir','markaðs- og samskiptafræðingur (Egilsstöðum)'],
+  ['L',2,'Eyþór Stefánsson','frambjóðandi'],
+  ['L',3,'Urður Arna Ómarsdóttir','frambjóðandi'],
+  // M — Miðflokkur (Lárus Bjarnason, 1 sæti 2022). Heimild: austurfrett.is
+  ['M',1,'Lárus Bjarnason','lögfræðingur og fyrrv. sýslumaður'],
+  ['M',2,'Hannes Karl Hilmarsson','afgreiðslustjóri'],
+  ['M',3,'Stefán Bragi Birgisson','bóndi og götumálari'],
+  ['M',4,'Jóhann Halldór Harðarson','ráðgjafi'],
+  ['M',5,'Guðmunda Vala Jónasdóttir','leikskólastjóri'],
+  ['M',6,'Viðar Gunnlaugur Hauksson','framkvæmdastjóri'],
+  ['M',7,'Ingibjörg Lárusdóttir','kennari'],
+  ['M',8,'Gestur Bergmann Gestsson','bóndi'],
+  ['M',9,'Berglind Sveinsdóttir','vaktstjóri'],
+  ['M',10,'Erlingur Hjörvar Guðjónsson','rafmagnsiðnfræðingur'],
+  ['M',11,'Regína Margrét Friðfinnsdóttir','eldri borgari'],
+  ['M',12,'Ingunn Anna Þráinsdóttir','grafískur hönnuður'],
+  ['M',13,'Óli Stefánsson','ýtustjóri'],
+  ['M',14,'Guðjón Sigmundsson','vélvirkjameistari'],
+  ['M',15,'Benedikt V. Warén','rafeindavirkjameistari'],
+  ['M',16,'Sigurður Alex Sigurgeirsson','meistari'],
+  ['M',17,'Harpa Hlín Jónasdóttir','skólaliði'],
+  ['M',18,'Stefán Scheving Einarsson','verkamaður'],
+  ['M',19,'Grétar Heimir Helgason','rafvirkjameistari'],
+  ['M',20,'Sigurður Ragnarsson','framkvæmdastjóri'],
+  ['M',21,'Björn Ármann Ólafsson','skógarbóndi'],
+  ['M',22,'Gunnar Þór Sigbjörnsson','þjónusturáðgjafi'],
+  // V — VG og óháðir (Helgi Hlynur Ásgrímsson, 1 sæti 2022)
+  ['V',1,'Helgi Hlynur Ásgrímsson','bóndi og sveitarstjórnarfulltrúi (Borgarfirði)'],
+  ['V',2,'Ásrún Mjöll Stefánsdóttir','trésmiður og mannfræðingur (Seyðisfirði)'],
+  ['V',3,'Pétur Heimisson','læknir (Fljótsdalshéraði)']
 ];
 MUNI_DATA.mula = {
   parties: [
-    {id:'B', name:'Framsóknarflokkurinn',  color:'#1E8A3E', pct:0, seats:4},
-    {id:'D', name:'Sjálfstæðisflokkurinn', color:'#1565C0', pct:0, seats:3},
-    {id:'L', name:'Austurlistinn',         color:'#C5832D', pct:0, seats:2},
-    {id:'M', name:'Miðflokkurinn',         color:'#6A1B9A', pct:0, seats:1},
-    {id:'V', name:'Vinstri græn',          color:'#2E7D32', pct:0, seats:1}
+    {id:'B', name:'Framsóknarflokkurinn',     color:'#1E8A3E', pct:0, seats:4},
+    {id:'D', name:'Sjálfstæðisflokkurinn',    color:'#1565C0', pct:0, seats:3},
+    {id:'L', name:'Austurlistinn og Viðreisn',color:'#C5832D', pct:0, seats:2},
+    {id:'M', name:'Miðflokkurinn',            color:'#6A1B9A', pct:0, seats:1},
+    {id:'V', name:'Vinstri græn og óháðir',   color:'#2E7D32', pct:0, seats:1}
   ],
   rawCands: MULA_RAW,
-  photos: {}, bios: {},
+  photos: {},
+  bios: {
+    'B-1':'Jónína Brynjólfsdóttir er safnstjóri og forseti sveitarstjórnar Múlaþings. Leiðir lista Framsóknar 2026.',
+    'D-1':'Berglind Harpa Svavarsdóttir er hjúkrunarfræðingur, sveitarstjórnarfulltrúi og formaður byggðaráðs. Áfram oddviti Sjálfstæðisflokksins eftir prófkjör 28. feb 2026.',
+    'L-1':'Hólmfríður Rut Einarsdóttir er markaðs- og samskiptafræðingur. Leiðir sameinaðan lista Austurlistans og Viðreisnar 2026 (sameining 1. apríl 2026).',
+    'M-1':'Lárus Bjarnason er lögfræðingur og fyrrv. sýslumaður. Nýr oddviti Miðflokksins í Múlaþingi.',
+    'V-1':'Helgi Hlynur Ásgrímsson er bóndi á Borgarfirði eystri og sveitarstjórnarfulltrúi VG. Áfram oddviti.'
+  },
   partyInfo: {
-    B: {fullname:'Framsóknarflokkurinn',  ideology:'Miðjuflokkur, byggðamál', founded:1916},
-    D: {fullname:'Sjálfstæðisflokkurinn', ideology:'Miðju-hægri',             founded:1929},
-    L: {fullname:'Austurlistinn',         ideology:'Óháður sveitarlisti — áhersla á jafnræði byggðakjarna', founded:2022},
-    M: {fullname:'Miðflokkurinn',         ideology:'Miðju-hægri',             founded:2017},
-    V: {fullname:'Vinstri græn',          ideology:'Vinstri-grænn, umhverfisvernd', founded:1999}
+    B: {fullname:'Framsóknarflokkurinn',     ideology:'Miðjuflokkur, byggðamál og landbúnaður', founded:1916},
+    D: {fullname:'Sjálfstæðisflokkurinn',    ideology:'Miðju-hægri',                            founded:1929},
+    L: {fullname:'Austurlistinn og Viðreisn',ideology:'Sameinað sveitarlistans (sameining 2026)', founded:2026},
+    M: {fullname:'Miðflokkurinn',            ideology:'Miðju-hægri',                            founded:2017},
+    V: {fullname:'Vinstri græn og óháðir',   ideology:'Vinstri-grænn, umhverfisvernd',          founded:1999}
   },
   stefnumal: {
-    B: ['Atvinnuuppbygging á Austurlandi', 'Fjarðarheiðargöng og samgöngur', 'Þjónusta við barnafjölskyldur'],
-    D: ['Ábyrg fjármálastjórn og lækkun skulda', 'Atvinnufrelsi', 'Húsnæðisuppbygging'],
-    L: ['Jafnræði milli byggðakjarna eftir sameiningu', 'Lýðræði og íbúasamráð', 'Umhverfis- og náttúruvernd (sjókvíaeldi)'],
-    M: ['Lægri álögur', 'Innviðir og samgöngur', 'Aðhald í rekstri'],
-    V: ['Andstaða við sjókvíaeldi í fjörðum', 'Velferð og jöfnuður', 'Menning og skapandi greinar']
+    B: ['Fjarðarheiðargöng — krefst að þau fari aftur efst á samgönguáætlun', 'Atvinnuuppbygging á Austurlandi', 'Þjónusta við barnafjölskyldur', 'Stuðningur við landbúnað', 'Strandveiðar'],
+    D: ['Ábyrg fjármálastjórn og lækkun skulda', 'Atvinnufrelsi', 'Húsnæðisuppbygging', 'Innviðir og samgöngur', 'Þjónusta við íbúa'],
+    L: ['Jafnræði milli byggðakjarna eftir sameiningu (Egilsstaðir, Seyðisfjörður, Borgarfjörður, Djúpivogur)', 'Lýðræði og íbúasamráð í heimastjórnum', 'Sjókvíaeldi á Seyðisfirði — andstaða', 'Umhverfis- og náttúruvernd', 'Sameinaður frjálslyndur miðjulisti'],
+    M: ['Aðhald í rekstri og lækkun álagna', 'Samgöngu- og skipulagsmál', 'Þjónusta við íbúa', 'Innviðir', 'Lögfræðiréttindi (Lárus oddviti)'],
+    V: ['Andstaða við sjókvíaeldi á Seyðisfirði og í fjörðum', 'Loftslags- og umhverfismál', 'Velferð og jöfnuður', 'Menning og skapandi greinar', 'Byggðajafnvægi']
   },
   sattmali2022:'Eftir fyrstu reglulegu kosningar Múlaþings 14. maí 2022 (sveitarfélagið stofnað 2020) var myndaður meirihluti með Framsókn (4 sæti), Sjálfstæðisflokki (3) og Vinstri grænum (1) — 8 sæti af 11. Björn Ingimarsson sat áfram sveitarstjóri (ráðinn 2021), Dagmar Ýr Stefánsdóttir tók síðar við.',
   finance: [
