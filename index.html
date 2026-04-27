@@ -1473,7 +1473,12 @@ const POLLS_BY_MUNI = {
      url:'https://www.dv.is/frettir/2026/03/29/meirihlutinn-kolfallinn-nyrri-konnun-hafnarfirdi-karolina-lykilstodu/',
      note:'S stærstur, D og C í stökki (C+8,4%). Meirihluti D+B fallinn. Samtals birt 87,9% — Bæjarlistinn (H) mælist undir 3,5%.'}
   ],
-  kopv: [],
+  kopv: [
+    {source:'Maskína (fyrir DV)', method:'Netkönnun', date:'17.–24. apríl 2026', n:'644', tag:'maskina',
+     data:{D:31.7, S:24.5, C:14.9, M:11.0, B:8.7, V:5.0, J:4.1},
+     url:'https://www.dv.is/frettir/2026/4/25/ny-konnun-kopavogi-miklar-sviptingar-og-margir-moguleikar-stodunni/',
+     note:'D stærstur (31,7% / 4 sæti). Mögulegir meirihlutar: D+C (6 sæti), D+M+B (6), S+C+B (6). S+D fræðilega stærstur (7) en talinn ósennilegur.'}
+  ],
   gard: [],
   mos: [],
   selt: [],
@@ -5840,14 +5845,14 @@ MUNI_DATA.akur = {
     Y: {fullname:'Akureyrarlistinn',              ideology:'Nýr listi 2026 — Þórhallur Jónsson sagði sig úr D', founded:2026}
   },
   stefnumal: {
-    B: ['Velferð barna og fjölskyldna', 'Þjónusta við eldra fólk', 'Verðmætasköpun og atvinnuþróun á Norðurlandi'],
-    C: ['Þjónusta við íbúa með áherslu á börn og skólamál', 'Skóla- og leikskólastarf', 'Ábyrgur rekstur sveitarfélagsins'],
-    D: ['Lækkun álagna og ábyrgur rekstur', 'Atvinnumál og uppbygging', 'Skóla- og fjölskyldumál'],
-    L: ['Heildstæð uppbygging Akureyrar (skipulag og húsnæði)', 'Skóla- og íþróttamál — m.a. Hlíðarfjall sem hjarta vetraríþrótta', 'Menning og fjölbreytt atvinnulíf'],
-    M: ['Aðhald í rekstri og lækkun álagna', 'Samgöngu- og skipulagsmál', 'Bætt þjónusta við íbúa'],
-    S: ['Húsnæðis- og skipulagsmál', 'Velferð, jöfnuður og skólamál', 'Loftslags- og umhverfismál'],
-    V: ['Umhverfis- og loftslagsmál', 'Velferð og jöfnuður', 'Skóla- og leikskólamál'],
-    Y: ['Atvinnulíf, uppbygging og skipulag', 'Skólar, eldri borgarar, menning og íþróttir', 'Lækkun álagna og aukið samtal við ríkið']
+    B: ['Velferð barna með snemmtækri íhlutun og styttri biðlistum eftir greiningum', 'Heilsugæsla og lýðheilsa — skoða aukna aðkomu einkaaðila', 'Húsnæðismál og atvinnutækifæri fyrir ungt fólk', 'Akureyri sem útivistar- og íþróttabær fyrir alla aldurshópa', 'Bætt þjónusta og skipulag fyrir eldri borgara', 'Jöfn réttindi allra barna til opinberrar þjónustu'],
+    C: ['Akureyri sem svæðisborg og miðstöð á Norðurlandi', 'Efla tómstundastarf barna', 'Framúrskarandi skólabær', 'Hröð uppbygging húsnæðis', 'Leiðandi kraftur í nýsköpun og atvinnulífi'],
+    D: ['Lækka skatta og bæta samkeppnishæfni fyrirtækja', 'Auka framboð atvinnulóða og hraða leyfisveitingaferlum', 'Tryggja leikskólapláss strax eftir fæðingarorlof', 'Verja Sjúkrahúsið á Akureyri og styrkja Háskólann á Akureyri', 'Réttlát dreifing opinberra starfa um landið', 'Stafræn þjónusta — sameining í einum afgreiðslustað'],
+    L: ['Lífsgæði íbúa í forgangi', 'Ungt fólk og barnafjölskyldur', 'Skipulags- og umhverfismál', 'Hjóla- og göngustígar — bættar samgöngur', 'Atvinnumál og fjármál sveitarfélagsins'],
+    M: ['Atvinnu- og ferðaþjónustumál', 'Heilbrigðis- og félagsmál', 'Húsnæðis- og samgöngumál', 'Umhverfis- og loftslagsmál', 'Mennta- og íþróttamál'],
+    S: ['Sumarstarf fyrir yngri grunnskólabörn', 'Þak á leikskólagjöld', 'Bæta almenningssamgöngur — nýjar leiðir og aukin tíðni', 'Krefjast 35% óhagnaðardrifins húsnæðis í nýjum hverfum', 'Frítt í sund fyrir 70 ára og eldri', 'Stytta biðlista eftir þjónustu fyrir börn', 'Færa sérfræðinga inn í skólana'],
+    V: ['Aukið íbúalýðræði og samráð', 'Velferðarþjónusta og jafnrétti', 'Umhverfis- og loftslagsmál', 'Bættar samgöngur og breyttar ferðavenjur', 'Skóla- og menningarmál'],
+    Y: ['Lækka skatta á íbúa', 'Fjölga íbúðum með markvissara langtímaskipulagi', 'Þróa alþjóðlegan flugvöll og fjölbreytt atvinnulíf', 'Sporna gegn einangrun eldri borgara með lífsgæðakjarna', 'Efla samtal við ríkið — Akureyri sem mótvægi við höfuðborgarsvæðið', 'Opið samtal við kennara, foreldra og nemendur um endurbætur í skólastarfi']
   },
   sattmali2022: 'Þríflokkasamstarf L+D+M (6 sæti af 11) eftir kosningar 14. maí 2022. Bæjarlistinn (L) með 3 sæti, Sjálfstæðisflokkurinn (D) með 2 og Miðflokkurinn (M) með 1. Ásthildur Sturludóttir, sem hafði verið ráðin bæjarstjóri 2018, hélt áfram með endurnýjuðum samningi.',
   // Fjármál: ársreikningar Akureyrarbæjar 2023-2024 (verður fylld nákvæmar
@@ -6019,11 +6024,11 @@ MUNI_DATA.rnes = {
     S: {fullname:'Samfylkingin og óháðir',   ideology:'Miðju-vinstri, jafnaðarmenn',           founded:2000}
   },
   stefnumal: {
-    B: ['Fléttulisti með jöfnu hlutfalli kvenna og karla (11 hvor)', 'Atvinnuuppbygging á Suðurnesjum', 'Leikskóla- og skólauppbygging', 'Íþrótta- og æskulýðsmál', 'Skipulagsmál vegna fólksfjölgunar'],
-    C: ['Frjálslynd miðjustefna í fyrsta sinn í Reykjanesbæ', 'Ábyrgur rekstur sveitarfélagsins', 'Atvinnufjölbreytni', 'Samgöngubætur (Reykjanesbraut)', 'Menntamál'],
-    D: ['Vilhjálmur Árnason sem bæjarstjóraefni — alþingismaður leiðir', 'Lægri skattar og álögur', 'Skilvirkari rekstur', 'Innviðauppbygging vegna örs vaxtar', 'Samvinna við ríkið um málefni hælisleitenda', 'Öflugir leikskólar'],
-    M: ['Innviðir og leikskólapláss', 'Íþrótta- og menningarstarf', 'Áhrif hælisleitenda á þjónustu', 'Ábyrg fjármálastjórn', 'Skattalækkanir'],
-    S: ['Einföldun daglegs lífs', 'Frítt í strætó fyrir börn og ungmenni', 'Lægri álögur', 'Leikskóla- og grunnskólauppbygging', 'Tvöföldun Reykjanesbrautar', 'Lóðarleigugjöld']
+    B: ['Halda áfram uppbyggingu leikskólaplássa (yfir 200 ný pláss á yfirstandandi kjörtímabili)', 'Styrkja grunnskólana — „Byggjum framtíðina í skólunum"', 'Fjárfesting í virkni og vellíðan eldri borgara', 'Áhersla á miðjustefnu og samvinnu („Framtíðin ræðst á miðjunni")', 'Stuðningur við fjölbreytt atvinnulíf á Suðurnesjum', 'Fléttulisti með jöfnu hlutfalli kvenna og karla'],
+    C: ['Setja menntun í forgang sem grundvöll framtíðaruppbyggingar', 'Vernda menningararf bæjarins (m.a. Bítlabærinn)', 'Skipulag sem miðast við fólk frekar en sérhagsmuni', 'Styðja fjölbreytt og sterkt atvinnulíf', 'Sjálfbærni sem leiðarljós í öllum málaflokkum'],
+    D: ['Stytta biðlista eftir leikskólaplássum', 'Lækka íþróttagjöld fyrir fjölskyldur — öll börn geti tekið þátt', 'Lækka fasteignaskatta á heimili og fyrirtæki', 'Endurskoða stefnu um 95% fjölbýli — tryggja fjölbreytni í húsnæði', 'Vilhjálmur Árnason alþm. sem bæjarstjóraefni', 'Strangari stefna í málefnum hælisleitenda'],
+    M: ['Gagnsæi og heiðarleiki í fjármálum sveitarfélagsins', 'Minnka skrifræði og flýta ferlum fyrir atvinnulífið', 'Hætta að taka á móti fleiri hælisleitendum en kerfið ræður við', 'Krefjast fulls fjármagns frá ríkinu vegna hælisleitenda', 'Hætta hugmyndafræði „skóla án aðgreiningar"', 'Bætt aðgengi að leikskólaplássum'],
+    S: ['Halda áfram uppbyggingu félagsmiðstöðva í skólum (3 nýjar á kjörtímabilinu, 44% aukning aðsóknar)', 'Aukin fjárframlög til íþróttamála', 'Forgangsraða tvöföldun Reykjanesbrautar og endurgerð Nesvegar', 'Endurskoða lóðaleigugjöld — uppræta kerfisbundna mismunun', 'Frítt í strætó fyrir börn og ungmenni', 'Áfram örugg umgjörð fyrir börn og ungmenni eftir skóla']
   },
   sattmali2022:'Þríflokkasamstarf B+S+Y (Framsókn, Samfylking, Bein leið) eftir kosningar 14. maí 2022 — sami meirihluti og frá 2018. 7 sæti af 11. Kjartan Már Kjartansson áfram bæjarstjóri. STÓRBREYTING 2026: Y (Bein leið) býður ekki fram, U (Umbót) sameinaðist D, C (Viðreisn) og M (Miðflokkur) bætast við.',
   finance: [
@@ -6167,11 +6172,11 @@ MUNI_DATA.isaf = {
     S: {fullname:'Samfylkingin',          ideology:'Miðju-vinstri, jafnaðarmenn', founded:2000}
   },
   stefnumal: {
-    B: ['Efla grunnskóla — markviss styrking, jöfn tækifæri, stuðningsþjónusta', 'Símalaus skóli', 'Innviðir og atvinnumál', 'Þjónusta við íbúa, fjölskyldur og fyrirtæki', 'Þverpólitísk samvinna'],
-    C: ['Skólamál — skýr fókus á öll skólastig', 'Skipulagsmál og frumkvæði', 'Húsnæðisuppbygging', 'Áframhaldandi traustur fjárhagur', 'Atvinnu- og íþróttamannvirki'],
-    D: ['Atvinnumál og fyrirtækjarekstur', 'Aðhald í rekstri sveitarfélagsins', 'Skólamál og þjónusta við barnafjölskyldur', 'Innviðir og samgöngur', 'Velferðarþjónusta'],
-    M: ['Nýr Tangaleikskóli og útikennsla á öllum leikskólum', 'Sterkari grunnskóli og samvinna heima og skóla', 'Auknir tómstundastyrkir', 'Stórframkvæmdir: sundlaug og/eða íþróttahús', 'Smáir innviðir: göngu- og hjólastígar', 'Aðhald í rekstri', 'Þjónusta við eldri borgara'],
-    S: ['Skýr stefna og stöðugleiki', 'Velferðarmál og þjónusta við íbúa', 'Samgöngumál á Vestfjörðum (skorað á ríkið)', 'Jafnaðarmál og íbúalýðræði', 'Húsnæðismál']
+    B: ['„Góð samvinna skilar árangri" — áframhaldandi þverpólitísk samvinna', 'Símalausir grunnskólar — vísa í rannsóknir um neikvæð áhrif símanotkunar á einbeitingu', 'Kerfisbundin efling grunnskólans og jafnt aðgengi allra barna', 'Aukin stoðþjónusta og kennsluráðgjafi', 'Sterkari innviðir — fjölskyldur og fyrirtæki vilji setjast að', 'Stuðningur við frumkvöðla og atvinnulíf'],
+    C: ['Fiskeldisgjöldin renni beint til sveitarfélaganna á Vestfjörðum', 'Endurskoðun fiskeldisgjalda — gerð hagnaðartengd', 'Endurnýjun Flateyrarhafnar 2027', 'Þróun ferðaþjónustu samhliða fiskeldi („Fiskur, ferðamenn og framtíðin")', 'Bæjar- og hverfagöngur sem samtalsform við íbúa', 'Stuðningur við Vestfjarðastofu og 25-ára svæðisskipulag'],
+    D: ['„Mótum framtíðina saman" — opnir málefnafundir í öllum byggðakjörnum (Ísafirði, Hnífsdal, Suðureyri, Flateyri, Þingeyri)', 'Áframhaldandi efling atvinnulífs — íbúafjöldi byrjað að vaxa aftur', 'Sjávarútvegur og fiskeldi sem grunnatvinnugreinar', 'Hlusta á íbúa og taka ákvarðanir með fólkinu', 'Hagkvæm meðferð sameiginlegra eigna'],
+    M: ['Hækka frístundastyrk Ísafjarðarbæjar', 'Sérstök áhersla á þjónustu við eldri borgara', 'Stórframkvæmdir: ný sundlaug og/eða íþróttahús', 'Smærri framkvæmdir: göngu-/hjólastígar, leikvellir, græn svæði', 'Hagkvæmur rekstur og „meiri athafnir í stað orða"', 'Hafna fordómum á öllum forsendum'],
+    S: ['Skýr stefna og stöðugleiki — afgerandi áhersla eftir innri umrót á listanum', 'Eflt grunnskólastarf — fjölbreytni, nýsköpun og samfélagstengsl', 'Skorað á ríkisstjórnina að bæta samgöngur (Súðavíkurhlíð, jarðgöng Súðavík–Ísafjörður 12-14 ma.kr.)', 'Sterkari lagarammi um fiskeldi — geldlaxaeldi og lokuð kerfi', 'Húsnæðismál: aðgerðir til að hægja á hækkun fasteigna- og leiguverðs', 'Stuðningur við Vestfjarðaleiðina sem Hringveg númer tvö']
   },
   sattmali2022:'Í-listinn fékk hreinan meirihluta 5 sæti af 9 (46,26%) 2022. Arna Lára Jónsdóttir varð bæjarstjóri (fyrsta konan í embættinu á Ísafirði). Meirihlutinn FÉLL maí 2025 og Sigríður Júlía Brynleifsdóttir tók við bæjarstjórastólnum eftir að Arna Lára fór á þing.',
   finance: [
@@ -6341,11 +6346,11 @@ MUNI_DATA.mula = {
     V: {fullname:'Vinstri græn og óháðir',   ideology:'Vinstri-grænn, umhverfisvernd',          founded:1999}
   },
   stefnumal: {
-    B: ['Fjarðarheiðargöng — krefst að þau fari aftur efst á samgönguáætlun', 'Atvinnuuppbygging á Austurlandi', 'Þjónusta við barnafjölskyldur', 'Stuðningur við landbúnað', 'Strandveiðar'],
-    D: ['Ábyrg fjármálastjórn og lækkun skulda', 'Atvinnufrelsi', 'Húsnæðisuppbygging', 'Innviðir og samgöngur', 'Þjónusta við íbúa'],
-    L: ['Jafnræði milli byggðakjarna eftir sameiningu (Egilsstaðir, Seyðisfjörður, Borgarfjörður, Djúpivogur)', 'Lýðræði og íbúasamráð í heimastjórnum', 'Sjókvíaeldi á Seyðisfirði — andstaða', 'Umhverfis- og náttúruvernd', 'Sameinaður frjálslyndur miðjulisti'],
-    M: ['Aðhald í rekstri og lækkun álagna', 'Samgöngu- og skipulagsmál', 'Þjónusta við íbúa', 'Innviðir', 'Lögfræðiréttindi (Lárus oddviti)'],
-    V: ['Andstaða við sjókvíaeldi á Seyðisfirði og í fjörðum', 'Loftslags- og umhverfismál', 'Velferð og jöfnuður', 'Menning og skapandi greinar', 'Byggðajafnvægi']
+    B: ['Klára Fjarðarheiðargöng — verkefni samþykkt á samgönguáætlun ítrekað frá 2011', 'Bæta Axarveg, Borgarfjarðarveg og innansveitarsamgöngur', 'Auka nýtingu Egilsstaðaflugvallar og þróa hafnir Múlaþings', 'Standa vörð um heilbrigðiseftirlit á Austurlandi gegn miðlægri niðurlagningu', 'Verja línuívilnun og byggðakvóta gegn skerðingum', 'Andstaða við hækkun VSK á baðlón („aðför að ferðaþjónustu")', 'Krafa um jafnræði í byggðamálum (Austurland 22% landsins með 3% íbúa)'],
+    D: ['Fjarðarheiðargöng skilgreind sem þjóðaröryggismál — tengja höfn (FARICE-strengur) og flugvöll allt árið', 'Lenging flugbrautar á Egilsstöðum — varaflugvöllur sem þjóðaröryggismál', 'Tengja saman byggðakjarna — íbúar geti búið, unnið og sótt þjónustu hvar sem er', 'Halda Múlaþingi sameinuðu sem einu atvinnu- og þjónustusvæði', 'Beita áhrifum oddvita (formaður SSA, varaþingm. NA-kjördæmis)'],
+    L: ['Efla íþrótta-, tómstunda- og frístundastarf í öllum byggðakjörnum', 'Aðgengilegir sálfræðingar og geðheilbrigðisþjónusta fyrir börn og unglinga', 'Aukinn stuðningur við kennara og skólastarfsfólk', 'Bættar samgöngur sem forsenda jafnra tækifæra fyrir börn í dreifbýli', 'Krefja ríkið um sanngjarna fjármögnun til Austurlands', 'Styðja við Fjarðarheiðargöng sem hagsmunamál allra byggðarlaga'],
+    M: ['Fjarðarheiðargöng strax — Lárus talsmaður undirskriftasöfnunar fjardarheidargong.is', 'Hafnar Fjarðagöngum sem raunhæfum valkosti — leið um Mjóafjörð og Fagradal sé snjóþung', 'Stuðningur við fjölbreytt atvinnulíf og nýsköpun á landsbyggðinni', 'Listinn skipaður fólki með „víðtæka reynslu og þekkingu"'],
+    V: ['Sterk andstaða gegn sjókvíaeldi í Seyðisfirði og Mjóafirði — heimastjórn klofnað í málinu', 'Styrkja heimastjórnir í öllum fjórum kjörnum (Borgarfjörður, Djúpivogur, Fljótsdalshérað, Seyðisfjörður)', 'Áhersla á jafnræði byggðakjarna eftir 2020-sameininguna', 'Stuðningur við Fjarðarheiðargöng sem byggðamál', 'Standa vörð um almannaþjónustu, leikskóla og grunnskóla í dreifbýli']
   },
   sattmali2022:'Eftir fyrstu reglulegu kosningar Múlaþings 14. maí 2022 (sveitarfélagið stofnað 2020) var myndaður meirihluti með Framsókn (4 sæti), Sjálfstæðisflokki (3) og Vinstri grænum (1) — 8 sæti af 11. Björn Ingimarsson sat áfram sveitarstjóri (ráðinn 2021), Dagmar Ýr Stefánsdóttir tók síðar við.',
   finance: [
