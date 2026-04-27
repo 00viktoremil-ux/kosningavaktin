@@ -7827,7 +7827,8 @@ var HEIMILI_RATES = {
     2023:{fast:0.180, fraveita:0,    vatn:0,    sorp:50000, utsvar:14.52, lod:{type:'pct', val:0.20}, est:true},
     2024:{fast:0.180, fraveita:0,    vatn:0,    sorp:70000, utsvar:14.93, lod:{type:'pct', val:0.20}, est:false},
     2025:{fast:0.180, fraveita:0,    vatn:0,    sorp:93000, utsvar:14.93, lod:{type:'pct', val:0.20}, est:false},
-    2026:{fast:0.180, fraveita:0,    vatn:0,    sorp:95000, utsvar:14.93, lod:{type:'pct', val:0.20}, est:true}}},
+    // 2026 sorp: typískt heimili = 240L blandaður (70.200) + lífúrgangur (~22.000) + pappír/plast (~17.700) + endurv. (6.300) ≈ 116.200. Hlutfallsbreyting +3,5% vegna gildiskröfu úr gjaldskrá 1374/2025 + viðbótarkostnaður — staðfest að 70.200 er rétt 240L blandaður gjaldið.
+    2026:{fast:0.180, fraveita:0,    vatn:0,    sorp:116200,utsvar:14.93, lod:{type:'pct', val:0.20}, est:true}}},
   kop:  {name:'Kópavogur',    short:'Kóp',  note:'Kópavogur hefur lækkað fasteignaskatt árlega: 0,225% (2018) → 0,162% (2025) → 0,151% (2026). Lóðarleiga er föst krónutala á m² (23,62 kr./m² 2026), ekki prósenta. Heildargreiðsla í krónum hefur samt hækkað vegna hækkunar fasteignamats.', yrs:{
     2018:{fast:0.225, fraveita:0.075, vatn:0.059, sorp:32000, utsvar:14.48, lod:{type:'kr_m2', val:14.5}, est:true},
     2019:{fast:0.220, fraveita:0.075, vatn:0.059, sorp:35000, utsvar:14.48, lod:{type:'kr_m2', val:15.0}, est:true},
@@ -7848,7 +7849,8 @@ var HEIMILI_RATES = {
     2023:{fast:0.2231,fraveita:0.105, vatn:0.045, sorp:45000, utsvar:14.7,  lod:{type:'pct', val:0.330}, est:false},
     2024:{fast:0.217, fraveita:0.095, vatn:0.040, sorp:50000, utsvar:14.7,  lod:{type:'pct', val:0.330}, est:false},
     2025:{fast:0.217, fraveita:0.093, vatn:0.035, sorp:55000, utsvar:14.7,  lod:{type:'pct', val:0.330}, est:false},
-    2026:{fast:0.1999,fraveita:0.093, vatn:0.035, sorp:60000, utsvar:14.7,  lod:{type:'pct', val:0.330}, est:true}}},
+    // 2026 sorp staðfest af hafnarfjordur.is/stjornsysla/gjaldskrar — 240L blandaður 41.241 + lífúrg. 27.992 + pappír 8.494 + plast 8.494 + grunngjald 22.684 = 108.905 kr.
+    2026:{fast:0.1999,fraveita:0.093, vatn:0.035, sorp:108905,utsvar:14.7,  lod:{type:'pct', val:0.330}, est:false}}},
   gard: {name:'Garðabær',     short:'Gbr',  note:'Garðabær hefur lækkað fasteignaskatt árlega: 0,200% (2018) → 0,161% (2025). Útsvar 14,71% — næstlægst á höfuðborgarsvæðinu.', yrs:{
     2018:{fast:0.200, fraveita:0.150, vatn:0.110, sorp:28000, utsvar:13.7,  lod:{type:'pct', val:0.500}, est:true},
     2019:{fast:0.195, fraveita:0.150, vatn:0.100, sorp:30000, utsvar:13.7,  lod:{type:'pct', val:0.500}, est:true},
@@ -7858,7 +7860,8 @@ var HEIMILI_RATES = {
     2023:{fast:0.166, fraveita:0.150, vatn:0.078, sorp:42000, utsvar:14.71, lod:{type:'pct', val:0.500}, est:false},
     2024:{fast:0.163, fraveita:0.150, vatn:0.078, sorp:45000, utsvar:14.71, lod:{type:'pct', val:0.500}, est:false},
     2025:{fast:0.161, fraveita:0.150, vatn:0.078, sorp:50000, utsvar:14.71, lod:{type:'pct', val:0.500}, est:false},
-    2026:{fast:0.158, fraveita:0.150, vatn:0.078, sorp:52000, utsvar:14.71, lod:{type:'pct', val:0.500}, est:true}}},
+    // 2026 sorp staðfest af gardabaer.is/fjarmal/gjaldskrar/gjaldskra-medhondlun-urgangs — 240L blandaður 51.285 + lífúrg. 12.881 + pappír 8.428 + plast 9.389 + endurv. 23.147 = 105.130 kr.
+    2026:{fast:0.158, fraveita:0.150, vatn:0.078, sorp:105130,utsvar:14.71, lod:{type:'pct', val:0.500}, est:false}}},
   mos:  {name:'Mosfellsbær',  short:'Mos',  note:'Mosfellsbær var ÞAÐ EINA á höfuðborgarsvæðinu sem hækkaði fasteignaskatt 2025 — úr 0,19% í 0,20%. ASÍ-úttekt fyrir 2026 nefnir lækkun aftur niður í 0,19%. Útsvar 14,97% — það hæsta á höfuðborgarsvæðinu.', yrs:{
     2018:{fast:0.225, fraveita:0.105, vatn:0.085, sorp:28000, utsvar:14.48, lod:{type:'pct', val:0.316}, est:true},
     2019:{fast:0.225, fraveita:0.105, vatn:0.085, sorp:30000, utsvar:14.48, lod:{type:'pct', val:0.316}, est:true},
@@ -7868,7 +7871,8 @@ var HEIMILI_RATES = {
     2023:{fast:0.195, fraveita:0.090, vatn:0.072, sorp:42000, utsvar:14.97, lod:{type:'pct', val:0.310}, est:true},
     2024:{fast:0.190, fraveita:0.089, vatn:0.070, sorp:50000, utsvar:14.97, lod:{type:'pct', val:0.310}, est:false},
     2025:{fast:0.200, fraveita:0.089, vatn:0.070, sorp:55000, utsvar:14.97, lod:{type:'pct', val:0.310}, est:false},
-    2026:{fast:0.190, fraveita:0.089, vatn:0.070, sorp:58000, utsvar:14.97, lod:{type:'pct', val:0.310}, est:true}}},
+    // 2026: fastagjald 28.153 staðfest úr mos.is — tunnu-verð ekki opinbert. Áætlað typískt 4-manna heimili.
+    2026:{fast:0.190, fraveita:0.089, vatn:0.070, sorp:78000, utsvar:14.97, lod:{type:'pct', val:0.310}, est:true}}},
   selt: {name:'Seltjarnarnes',short:'Selt', note:'Seltjarnarnes er með lægsta útsvar á landinu (14,54%) og lágan fasteignaskatt (0,166%) — en hátt sorpgjald (≈75.000 kr./ári).', yrs:{
     2018:{fast:0.175, fraveita:0.150,  vatn:0.090, sorp:35000, utsvar:13.7,  lod:{type:'pct', val:0.400}, est:true},
     2019:{fast:0.175, fraveita:0.150,  vatn:0.090, sorp:38000, utsvar:13.7,  lod:{type:'pct', val:0.400}, est:true},
@@ -7878,14 +7882,21 @@ var HEIMILI_RATES = {
     2023:{fast:0.166, fraveita:0.1425, vatn:0.0855,sorp:65000, utsvar:14.54, lod:{type:'pct', val:0.400}, est:false},
     2024:{fast:0.166, fraveita:0.1425, vatn:0.0855,sorp:75000, utsvar:14.54, lod:{type:'pct', val:0.400}, est:false},
     2025:{fast:0.166, fraveita:0.1425, vatn:0.0855,sorp:75000, utsvar:14.54, lod:{type:'pct', val:0.400}, est:false},
-    2026:{fast:0.166, fraveita:0.1425, vatn:0.0855,sorp:78000, utsvar:14.54, lod:{type:'pct', val:0.400}, est:true}}}
+    // 2026 sorp: blandaður 51.400 + lífúrg. 12.800 (140L) + pappír/plast 20.100 + grunngjald 25.000 ≈ 109.300 kr (úr seltjarnarnes.is/sorphirdadagatal — flag: ekki staðfest með PDF).
+    2026:{fast:0.166, fraveita:0.1425, vatn:0.0855,sorp:109300,utsvar:14.54, lod:{type:'pct', val:0.400}, est:true}}}
 };
 var HEIMILI_MUNI_ORDER = ['rvk','kop','hafn','gard','mos','selt'];
 var HEIMILI_YEARS = [2018,2019,2020,2021,2022,2023,2024,2025,2026];
 var HEIMILI_COLORS = {rvk:'#1B3F5E', kop:'#2E7D32', hafn:'#854F0B', gard:'#6A4C93', mos:'#C5832D', selt:'#A33B5E'};
 
 // State (sjálfgefið nýjasta ár, lod-stærð 100m² fyrir Kópavogur-reikning)
-var HM_STATE = { mat: 80000000, muni: 'rvk', year: 2026, lodM2: 100, lodMat: 15000000 };
+// monthly: mánaðarlaun fyrir skatt — 0 þýðir „útsvar ekki innifalið"
+var HM_STATE = {
+  mat: 80000000, muni: 'rvk', year: 2026,
+  lodM2: 100, lodMat: 15000000,
+  monthly: 0,                          // mán.laun fyrir skatt — 0 = sleppa útsvari
+  veitM2: 100, veitHeit: 250           // m² íbúðar + heitt vatn m³/ár (Veitur, Rvk)
+};
 
 function hmFmtKr(v){
   if(v == null) return '—';
@@ -7903,7 +7914,7 @@ function hmFmtPct(v){
   return str.replace('.', ',') + '%';
 }
 
-// Reiknar árlegan kostnað fyrir tiltekið muni × ár × fasteignamat.
+// Reiknar árlegan HEIMILISKOSTNAÐ (fasteignagjöld). Útsvar er aðskilið.
 function hmCalc(muniId, year, mat){
   var row = HEIMILI_RATES[muniId] && HEIMILI_RATES[muniId].yrs[year];
   if(!row) return null;
@@ -7911,10 +7922,45 @@ function hmCalc(muniId, year, mat){
   var fraveita  = mat * row.fraveita  / 100;
   var vatn      = mat * row.vatn      / 100;
   var sorp      = row.sorp;
+  var total = fast + fraveita + vatn + sorp;
+  return { fast:fast, fraveita:fraveita, vatn:vatn, sorp:sorp, total:total, rate: row, est: row.est };
+}
+
+// Reiknar útsvar á ári út frá mán.launum. Persónuafsláttur 2026 ≈ 68.691 kr./mán.
+function hmUtsvar(muniId, year, monthly){
+  var row = HEIMILI_RATES[muniId] && HEIMILI_RATES[muniId].yrs[year];
+  if(!row || !monthly || monthly <= 0) return 0;
+  var personuafsl = 68691;
+  var stofn = Math.max(0, monthly - personuafsl);
+  return stofn * 12 * row.utsvar / 100;
+}
+
+// Veitur ohf. (Rvk-specific) reiknivél fyrir kalt vatn, fráveitu og heitt vatn.
+// Heimild: Stjórnartíðindi 2024 (1631, 1629) + Veitur 2026 verðskrá (+4,46%).
+function hmVeitur(year, mat, m2, heitVatnM3){
+  // Verðskrá 2025 (gildandi); 2026 hækkun +4,46% miðað við Veitur-tilkynningu.
+  var infl = (year >= 2026) ? 1.0446 : 1.0;
+  var kvFast    = 5582  * infl;     // kr/matseiningu/ár
+  var kvPerM2   = 216.66 * infl;    // kr/m²/ár
+  var kvCapPct  = 0.5;              // % af fasteignamati (þak)
+  var frFast    = 13464 * infl;
+  var frPerM2   = 519.68 * infl;
+  var hvKrM3    = 227.56;           // m. vsk (óbreytt 2026)
+  var hvDayFast = 101.90;           // kr/dag m. vsk (15-20 mm mælir)
+
+  var kaltRaw = kvFast + kvPerM2 * m2;
+  var kaltCap = mat * kvCapPct / 100;
+  var kalt = Math.min(kaltRaw, kaltCap);
+  var fraveita = frFast + frPerM2 * m2;
+  var heittBase = hvDayFast * 365;
+  var heittNotk = hvKrM3 * (heitVatnM3||0);
+  var heitt = heittBase + heittNotk;
   return {
-    fast:fast, fraveita:fraveita, vatn:vatn, sorp:sorp,
-    total: fast + fraveita + vatn + sorp,
-    rate: row, est: row.est
+    kalt:kalt, fraveita:fraveita, heitt:heitt,
+    heittBase:heittBase, heittNotk:heittNotk,
+    kaltCapped: kaltRaw > kaltCap,
+    total: kalt + fraveita + heitt,
+    infl: infl
   };
 }
 
@@ -7931,6 +7977,21 @@ function hmSetMat(v){
 }
 function hmSetMuni(id){ HM_STATE.muni = id; hmRender(); }
 function hmSetYear(y){ HM_STATE.year = parseInt(y,10); hmRender(); }
+function hmSetMonthly(v){
+  v = Math.max(0, Math.min(5000000, parseInt(v,10)||0));
+  HM_STATE.monthly = v;
+  hmRender();
+}
+function hmSetVeitM2(v){
+  v = Math.max(20, Math.min(500, parseInt(v,10)||100));
+  HM_STATE.veitM2 = v;
+  hmRender();
+}
+function hmSetVeitHeit(v){
+  v = Math.max(0, Math.min(2000, parseInt(v,10)||0));
+  HM_STATE.veitHeit = v;
+  hmRender();
+}
 
 function hmRender(){
   var root = document.getElementById('page-heimili');
@@ -7939,6 +8000,10 @@ function hmRender(){
   var s = HM_STATE;
   var calc = hmCalc(s.muni, s.year, s.mat);
   var meta = HEIMILI_RATES[s.muni];
+  var hasUtsvar = s.monthly > 0;
+  var utsvarKr = hmUtsvar(s.muni, s.year, s.monthly);
+  var isRvk = (s.muni === 'rvk');
+  var veit = isRvk ? hmVeitur(s.year, s.mat, s.veitM2, s.veitHeit) : null;
 
   // Inputs section
   var muniBtns = HEIMILI_MUNI_ORDER.map(function(id){
@@ -7987,9 +8052,9 @@ function hmRender(){
   }
   var rows = [
     {label:'Fasteignaskattur A', kr:calc.fast, pct:rate.fast, sub:'Álagningarhlutfall × fasteignamat'},
-    {label:'Fráveitugjald',      kr:calc.fraveita, pct:rate.fraveita, sub:noVei?'Greiðist til Veitna ohf., ekki Reykjavíkurborgar':'Hlutfall af fasteignamati'},
-    {label:'Vatnsgjald',         kr:calc.vatn,    pct:rate.vatn,     sub:noVei?'Greiðist til Veitna ohf., ekki Reykjavíkurborgar':'Hlutfall af fasteignamati'},
-    {label:'Sorphirðugjald',     kr:calc.sorp,    pct:null,          sub:'Fast árlegt gjald á íbúð'}
+    {label:'Fráveitugjald',      kr:calc.fraveita, pct:rate.fraveita, sub:noVei?'Sjá Veitur ohf.-kortið hér að neðan':'Hlutfall af fasteignamati'},
+    {label:'Vatnsgjald',         kr:calc.vatn,    pct:rate.vatn,     sub:noVei?'Sjá Veitur ohf.-kortið hér að neðan':'Hlutfall af fasteignamati'},
+    {label:'Sorphirðugjald',     kr:calc.sorp,    pct:null,          sub:'Typískt heimili (240L blandaður + lífúrg. + pappír/plast + endurv.) · '+(rate.est?'<span style="color:#854F0B">áætluð tala</span>':'staðfest gjaldskrá')}
   ];
   var rowsHtml = rows.map(function(r){
     var pctTxt = r.pct == null ? '<span style="color:var(--ink3)">fast gjald</span>'
@@ -8001,7 +8066,7 @@ function hmRender(){
       + '</tr>';
   }).join('');
 
-  // Comparison: total kostnaður á sama fasteignamati × öllum sveitarfélögum × valdu ári
+  // Comparison: heimiliskostnaður (fasteignagjöld) á sama fasteignamati × 6 muni × valdu ári
   var compRows = HEIMILI_MUNI_ORDER.map(function(id){
     var c = hmCalc(id, s.year, s.mat);
     return { id:id, name:HEIMILI_RATES[id].name, total:c?c.total:0, color:HEIMILI_COLORS[id] };
@@ -8090,6 +8155,25 @@ function hmRender(){
     +       '<div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--ink3);margin-bottom:.4rem;">Ár</div>'
     +       '<div style="display:flex;gap:5px;flex-wrap:wrap;">'+yearBtns+'</div>'
     +     '</div>'
+    +     '<div>'
+    +       '<div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--ink3);margin-bottom:.4rem;">Mánaðarlaun fyrir skatt <span style="text-transform:none;letter-spacing:0;color:var(--ink3);font-weight:400;">(0 kr. = sleppa útsvari)</span></div>'
+    +       '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">'
+    +         '<input type="number" id="hm-monthly-input" min="0" max="5000000" step="10000" value="'+s.monthly+'" '
+    +           'onchange="hmSetMonthly(this.value)" '
+    +           'style="font-size:18px;font-weight:600;padding:8px 10px;border:1px solid #0002;border-radius:6px;width:170px;font-variant-numeric:tabular-nums;">'
+    +         '<span style="font-size:13px;color:var(--ink2);">kr./mán.</span>'
+    +       '</div>'
+    +       '<div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:8px;">'
+    +         [0, 500000, 700000, 900000, 1100000, 1500000].map(function(v){
+        var active = Math.abs(v - s.monthly) < 5000;
+        return '<button onclick="hmSetMonthly('+v+')" '
+          + 'style="padding:5px 9px;border-radius:5px;border:1px solid '
+          + (active?'var(--gold)':'#0001')+';background:'+(active?'var(--gold)15':'#fff')
+          + ';font-size:11px;cursor:pointer;color:'+(active?'var(--ink)':'var(--ink2)')+';">'
+          + (v===0 ? 'Slepptu' : (v/1000)+' þ.')+'</button>';
+      }).join('')
+    +       '</div>'
+    +     '</div>'
     +   '</div>'
     + '</div>'
 
@@ -8097,7 +8181,7 @@ function hmRender(){
     + '<div class="card" style="margin-bottom:1rem;padding:1.25rem;background:linear-gradient(135deg,'+HEIMILI_COLORS[s.muni]+'08 0%,#fff 60%);border-left:3px solid '+HEIMILI_COLORS[s.muni]+';">'
     +   '<div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:1rem;margin-bottom:1rem;">'
     +     '<div>'
-    +       '<div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--ink3);margin-bottom:.3rem;">Heildargjöld á ári · '+meta.name+' '+s.year+'</div>'
+    +       '<div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--ink3);margin-bottom:.3rem;">Heimiliskostnaður (fasteignagjöld) · '+meta.name+' '+s.year+'</div>'
     +       '<div style="font-family:\'Playfair Display\',serif;font-size:38px;font-weight:700;color:'+HEIMILI_COLORS[s.muni]+';line-height:1;">'+hmFmtKr(calc.total)+'</div>'
     +       '<div style="font-size:13px;color:var(--ink2);margin-top:6px;">≈ '+hmFmtKr(calc.total/12)+' á mánuði</div>'
     +     '</div>'
@@ -8110,6 +8194,75 @@ function hmRender(){
     +   '</table>'
     +   (meta.note?'<div style="font-size:11px;color:var(--ink2);margin-top:1rem;padding:10px 12px;background:#FFF8E1;border-radius:6px;line-height:1.55;"><strong>'+meta.name+':</strong> '+meta.note+'</div>':'')
     + '</div>'
+
+    // VEITUR ohf. (Rvk) — kalt vatn, fráveita, heitt vatn (aðskilið frá fasteignagjöldum borgarinnar)
+    + (isRvk ? (
+        '<div class="card" style="margin-bottom:1rem;padding:1.25rem;border-left:3px solid #4A7BA6;">'
+        +   '<div class="card-title" style="margin-bottom:4px;">Veitur ohf. — kalt vatn, fráveita, heitt vatn '+s.year+'</div>'
+        +   '<div class="card-subtitle" style="margin-bottom:1rem;">Reykjavík innheimtir þetta í gegnum Veitur ohf., aðskilið frá fasteignagjöldum borgarinnar. Önnur sveitarfélög á höfuðborgarsvæðinu innheimta vatn og fráveitu sem hluta af fasteignagjöldunum (sjá kortið að ofan).</div>'
+        // Inputs (m² + heitt vatn m³)
+        +   '<div style="display:flex;gap:1.5rem;flex-wrap:wrap;margin-bottom:1rem;padding-bottom:1rem;border-bottom:1px solid #0001;">'
+        +     '<div>'
+        +       '<div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--ink3);margin-bottom:.3rem;">Stærð íbúðar</div>'
+        +       '<input type="number" min="20" max="500" step="5" value="'+s.veitM2+'" onchange="hmSetVeitM2(this.value)" style="font-size:15px;font-weight:600;padding:6px 10px;border:1px solid #0002;border-radius:6px;width:80px;font-variant-numeric:tabular-nums;"> <span style="font-size:13px;color:var(--ink2);">m²</span>'
+        +     '</div>'
+        +     '<div>'
+        +       '<div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--ink3);margin-bottom:.3rem;">Heitt vatn á ári</div>'
+        +       '<input type="number" min="0" max="2000" step="10" value="'+s.veitHeit+'" onchange="hmSetVeitHeit(this.value)" style="font-size:15px;font-weight:600;padding:6px 10px;border:1px solid #0002;border-radius:6px;width:80px;font-variant-numeric:tabular-nums;"> <span style="font-size:13px;color:var(--ink2);">m³ (4-manna heimili ≈ 250 m³)</span>'
+        +     '</div>'
+        +   '</div>'
+        // Big number
+        +   '<div style="display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;margin-bottom:1rem;">'
+        +     '<div>'
+        +       '<div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--ink3);margin-bottom:.3rem;">Veitur — heild</div>'
+        +       '<div style="font-family:\'Playfair Display\',serif;font-size:32px;font-weight:700;color:#4A7BA6;line-height:1;">'+hmFmtKr(veit.total)+'</div>'
+        +       '<div style="font-size:13px;color:var(--ink2);margin-top:4px;">≈ '+hmFmtKr(veit.total/12)+' á mánuði</div>'
+        +     '</div>'
+        +   '</div>'
+        // Breakdown
+        +   '<table style="width:100%;font-size:13px;border-collapse:collapse;">'
+        +     '<thead><tr style="font-size:11px;color:var(--ink3);text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid #0001;"><th style="text-align:left;padding:6px 0;font-weight:500;">Liður</th><th style="text-align:right;padding:6px 0;font-weight:500;">Útreikningur</th><th style="text-align:right;padding:6px 0;font-weight:500;">Kr./ári</th></tr></thead>'
+        +     '<tbody>'
+        +       '<tr><td style="padding:10px 8px 10px 0;vertical-align:top;"><div style="font-weight:500">Kalt vatn (vatnsveita)</div><div style="font-size:11px;color:var(--ink3);margin-top:2px">Fastagjald + fermetragjald, þak 0,5% af fasteignamati</div></td>'
+        +         '<td style="padding:10px 8px;text-align:right;color:var(--ink2);font-size:11px;">'+(veit.kaltCapped?'þak virkjað':'5.582 + 216,66×'+s.veitM2+' m²')+'</td>'
+        +         '<td style="padding:10px 0;text-align:right;font-weight:600;font-variant-numeric:tabular-nums;">'+hmFmtKr(veit.kalt)+'</td></tr>'
+        +       '<tr><td style="padding:10px 8px 10px 0;vertical-align:top;"><div style="font-weight:500">Fráveita</div><div style="font-size:11px;color:var(--ink3);margin-top:2px">Fastagjald + fermetragjald</div></td>'
+        +         '<td style="padding:10px 8px;text-align:right;color:var(--ink2);font-size:11px;">13.464 + 519,68×'+s.veitM2+' m²</td>'
+        +         '<td style="padding:10px 0;text-align:right;font-weight:600;font-variant-numeric:tabular-nums;">'+hmFmtKr(veit.fraveita)+'</td></tr>'
+        +       '<tr><td style="padding:10px 8px 10px 0;vertical-align:top;"><div style="font-weight:500">Heitt vatn (hitaveita)</div><div style="font-size:11px;color:var(--ink3);margin-top:2px">Mæligjald + notkun á m³</div></td>'
+        +         '<td style="padding:10px 8px;text-align:right;color:var(--ink2);font-size:11px;">101,90×365 + 227,56×'+s.veitHeit+' m³</td>'
+        +         '<td style="padding:10px 0;text-align:right;font-weight:600;font-variant-numeric:tabular-nums;">'+hmFmtKr(veit.heitt)+'</td></tr>'
+        +     '</tbody>'
+        +     '<tfoot><tr style="border-top:1px solid #0002;font-weight:600;"><td style="padding:10px 0;">Samtals Veitur</td><td></td><td style="text-align:right;font-variant-numeric:tabular-nums;">'+hmFmtKr(veit.total)+'</td></tr></tfoot>'
+        +   '</table>'
+        +   '<div style="font-size:11px;color:var(--ink3);margin-top:.75rem;line-height:1.5;">Heimild: Stjórnartíðindi 2024 (gjaldskrár 1631 kalt vatn, 1629 fráveita, 1428 heitt vatn) + Veitur 2026-tilkynning um +4,46% hækkun (byggingarvísitala). Verðin innihalda VSK þar sem á við (0% á vatni, 11% á heitu vatni, 24% á rafmagni).</div>'
+        + '</div>'
+      ) : '')
+
+    // ÚTSVAR — aðskilið kort (sýnt aðeins ef monthly > 0)
+    + (hasUtsvar ? (
+        '<div class="card" style="margin-bottom:1rem;padding:1.25rem;border-left:3px solid #C5832D;">'
+        +   '<div class="card-title" style="margin-bottom:4px;">Útsvar (tekjuskattur sveitarfélagsins) · '+meta.name+' '+s.year+'</div>'
+        +   '<div class="card-subtitle" style="margin-bottom:1rem;">Útsvar reiknast af tekjum, ekki fasteignamati — því birt aðskilið frá heimiliskostnaðinum að ofan.</div>'
+        +   '<div style="display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;margin-bottom:1rem;">'
+        +     '<div>'
+        +       '<div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--ink3);margin-bottom:.3rem;">Útsvar — heild á ári</div>'
+        +       '<div style="font-family:\'Playfair Display\',serif;font-size:32px;font-weight:700;color:#C5832D;line-height:1;">'+hmFmtKr(utsvarKr)+'</div>'
+        +       '<div style="font-size:13px;color:var(--ink2);margin-top:4px;">≈ '+hmFmtKr(utsvarKr/12)+' á mánuði</div>'
+        +     '</div>'
+        +     '<div style="font-size:12px;color:var(--ink2);text-align:right;line-height:1.6;max-width:280px;">'
+        +       '<div>Hlutfall: <strong>'+hmFmtPct(rate.utsvar)+'</strong></div>'
+        +       '<div>Mán.laun fyrir skatt: '+hmFmtKr(s.monthly)+'</div>'
+        +       '<div>− Persónuafsláttur: '+hmFmtKr(68691)+'</div>'
+        +       '<div>= Mán.stofn: '+hmFmtKr(Math.max(0, s.monthly-68691))+'</div>'
+        +     '</div>'
+        +   '</div>'
+        +   '<div style="font-size:11px;color:var(--ink3);line-height:1.55;padding:10px 12px;background:#0001;border-radius:6px;">'
+        +     'Formúla: <code style="background:#fff;padding:1px 4px;border-radius:3px;">útsvar = (mán.laun − 68.691 kr. persónuafsláttur) × 12 mán. × útsvarshlutfall</code>. '
+        +     'Lægst á Seltjarnarnesi (14,54%), hæst í Mosfellsbæ (14,97%). Hækkun ~1,2 prósentustig 2023 vegna yfirfærslu málefna fatlaðs fólks frá ríki til sveitarfélaganna.'
+        +   '</div>'
+        + '</div>'
+      ) : '')
 
     // ANNAÐ SEM HEIMILI BORGAR — lóðarleiga, útsvar (info, ekki í total)
     + '<div class="card" style="margin-bottom:1rem;padding:1.25rem;">'
@@ -8138,17 +8291,19 @@ function hmRender(){
         +   '</div>'
         + '</div>'
       ) : '')
-    // Útsvar
-    +     '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;padding:12px 0;'+(lod?'':'border-top:1px solid #0001;')+'">'
-    +       '<div>'
-    +         '<div style="font-weight:500;margin-bottom:3px;">Útsvar (tekjuskattur sveitarfélagsins)</div>'
-    +         '<div style="font-size:11px;color:var(--ink3);line-height:1.5;">Reiknast af tekjuskattsstofni — ekki af fasteignamatinu. Lægst á Seltjarnarnesi (14,54%), hæst í Mosfellsbæ (14,97%).</div>'
-    +         '<div style="font-size:11px;color:var(--ink3);margin-top:4px;">Dæmi: 800.000 kr. mán. tekjur → '+hmFmtKr(800000*12*rate.utsvar/100)+'/ári hjá '+meta.name+'.</div>'
-    +       '</div>'
-    +       '<div style="text-align:right;white-space:nowrap;">'
-    +         '<div style="font-size:13px;font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums;">'+hmFmtPct(rate.utsvar)+'</div>'
-    +       '</div>'
-    +     '</div>'
+    // Útsvar — sýnt aðeins ef notandi hefur EKKI sett laun (þá er það í aðalsundurliðun)
+    +     (hasUtsvar ? '' : (
+        '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;padding:12px 0;'+(lod?'':'border-top:1px solid #0001;')+'">'
+        +   '<div>'
+        +     '<div style="font-weight:500;margin-bottom:3px;">Útsvar (tekjuskattur sveitarfélagsins)</div>'
+        +     '<div style="font-size:11px;color:var(--ink3);line-height:1.5;">Reiknast af tekjuskattsstofni — ekki af fasteignamatinu. Lægst á Seltjarnarnesi (14,54%), hæst í Mosfellsbæ (14,97%). <strong>Sláðu inn launin þín að ofan til að sjá útsvar í heildinni.</strong></div>'
+        +     '<div style="font-size:11px;color:var(--ink3);margin-top:4px;">Dæmi: 800.000 kr. mán. tekjur → '+hmFmtKr(Math.max(0,800000-68691)*12*rate.utsvar/100)+'/ári hjá '+meta.name+'.</div>'
+        +   '</div>'
+        +   '<div style="text-align:right;white-space:nowrap;">'
+        +     '<div style="font-size:13px;font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums;">'+hmFmtPct(rate.utsvar)+'</div>'
+        +   '</div>'
+        + '</div>'
+      ))
     +   '</div>'
     + '</div>'
 
@@ -8173,7 +8328,11 @@ function hmRender(){
 
     // FOOTER
     + '<div style="font-size:11px;color:var(--ink3);line-height:1.6;max-width:720px;">'
-    +   '<strong>Heimildir:</strong> Byggðastofnun (Samanburður á fasteignamati og fasteignagjöldum 2021–2025), gjaldskrár sveitarfélaganna, fjárhagsáætlanir, Skatturinn (útsvarshlutföll). Krónutölur sorpgjalda 2018–2022 eru áætlaðar — staðfestar tölur frá 2024 og áfram. Útsvarshlutfall er sýnt en ekki innifalið í heildargjaldinu þar sem það reiknast af tekjum, ekki fasteignamati.'
+    +   '<strong>Heimildir og aðferð.</strong> '
+    +   '<em>Fasteignaskattur, fráveita, vatn:</em> Byggðastofnun, „Samanburður á fasteignamati og fasteignagjöldum 2021–2025" + opinberar gjaldskrár hvers sveitarfélags 2026 (kopavogur.is, hafnarfjordur.is o.s.frv.). '
+    +   '<em>Sorpgjöld:</em> typískt heimili = grunngjald + 1× 240L blandaður úrgangur + grenndar/endurvinnslustöðva­gjald. Kópavogur 2026 staðfestur (44.481 + 23.796 = 68.277 kr.). Hin sveitarfélögin: bestu áætlun út frá Byggðastofnun-gögnum og gjaldskrám síðustu ára. Tölur 2018–2022 og fyrir önnur sveitarfélög en Kóp eru flaggaðar sem áætlaðar. '
+    +   '<em>Útsvar:</em> Skatturinn (skatturinn.is); reiknast af tekjuskattsstofni eftir frádrátt persónuafsláttar (≈68.691 kr./mán. 2026). '
+    +   '<em>Reykjavík:</em> innheimtir EKKI vatns- og fráveitugjald með fasteignagjöldum — það fer um Veitur ohf. og er birt aðskilið.'
     + '</div>'
     + '</div>';
 
