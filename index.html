@@ -691,9 +691,15 @@ const MUNI_META = {
   hafn: {id:'hafn', name:'Hafnarfjörður',  shortName:'Hafnarfj.',      nameEf:'Hafnarfjarðar',    koen:'Hfj',  councilName:'Bæjarstjórn',    councilSize:11, stjoriTitle:'bæjarstjóri',    ibuar:30817},
   gard: {id:'gard', name:'Garðabær',       shortName:'Garðabær',       nameEf:'Garðabæjar',       koen:'Gbr',  councilName:'Bæjarstjórn',    councilSize:11, stjoriTitle:'bæjarstjóri',    ibuar:19022},
   mos:  {id:'mos',  name:'Mosfellsbær',    shortName:'Mosfellsb.',     nameEf:'Mosfellsbæjar',    koen:'Mos',  councilName:'Bæjarstjórn',    councilSize:9,  stjoriTitle:'bæjarstjóri',    ibuar:13699},
-  selt: {id:'selt', name:'Seltjarnarnes',  shortName:'Seltjarnarn.',   nameEf:'Seltjarnarness',   koen:'Slt',  councilName:'Bæjarstjórn',    councilSize:7,  stjoriTitle:'bæjarstjóri',    ibuar:4760}
+  selt: {id:'selt', name:'Seltjarnarnes',  shortName:'Seltjarnarn.',   nameEf:'Seltjarnarness',   koen:'Slt',  councilName:'Bæjarstjórn',    councilSize:7,  stjoriTitle:'bæjarstjóri',    ibuar:4760},
+  // Landsbyggðar-munir — bætt við 16. maí 2026 kosningum. Phase 1: meta-data
+  // til að picker virki. MUNI_DATA[id] verður fyllt inn í áföngum.
+  akur: {id:'akur', name:'Akureyri',       shortName:'Akureyri',       nameEf:'Akureyrar',        koen:'Ak',   councilName:'Bæjarstjórn',    councilSize:11, stjoriTitle:'bæjarstjóri',    ibuar:20620},
+  rnes: {id:'rnes', name:'Reykjanesbær',   shortName:'Reykjanesb.',    nameEf:'Reykjanesbæjar',   koen:'Rnb',  councilName:'Bæjarstjórn',    councilSize:11, stjoriTitle:'bæjarstjóri',    ibuar:22920},
+  isaf: {id:'isaf', name:'Ísafjarðarbær',  shortName:'Ísafj.bær',      nameEf:'Ísafjarðarbæjar',  koen:'Ísf',  councilName:'Bæjarstjórn',    councilSize:9,  stjoriTitle:'bæjarstjóri',    ibuar:3850},
+  mula: {id:'mula', name:'Múlaþing',       shortName:'Múlaþing',       nameEf:'Múlaþings',        koen:'Mþ',   councilName:'Sveitarstjórn',  councilSize:11, stjoriTitle:'sveitarstjóri',  ibuar:5023}
 };
-const MUNI_ORDER = ['rvk','kopv','hafn','gard','mos','selt'];
+const MUNI_ORDER = ['rvk','kopv','hafn','gard','mos','selt','akur','rnes','isaf','mula'];
 // Öll per-muni gögn vistuð hér (parties, rawCands, photos, finance, …). Fyllist inn
 // í áföngum; aðeins rvk er fullbúið í fasa 1.
 const MUNI_DATA = {};
