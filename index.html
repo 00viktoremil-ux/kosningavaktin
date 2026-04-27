@@ -1698,7 +1698,8 @@ const NAV_GROUPS = [
   ]},
   {id:'fjarmal', label:'Fjármál',           icon:'◇', pages:[
     {id:'samanburdur', label:'Samanburður sveitarfélaga'},
-    {id:'fjarmal', label:'Fjármál borgar'}
+    {id:'fjarmal', label:'Fjármál borgar'},
+    {id:'heimili', label:'Heimiliskostnaður'}
   ]},
   {id:'bakgr',   label:'Um vefinn',         icon:'ⓘ', pages:[
     {id:'umvefinn', label:'Um vefinn'}
@@ -1784,6 +1785,9 @@ function showPage(id, btn){
   // (gögn geta hafa breyst ef notandi kom við á annarri síðu fyrst)
   if(id === 'samanburdur'){
     try { if(typeof initSamanburdur === 'function') initSamanburdur(); } catch(e){}
+  }
+  if(id === 'heimili'){
+    try { if(typeof initHeimili === 'function') initHeimili(); } catch(e){}
   }
   window.scrollTo(0, 0);
 }
@@ -7798,6 +7802,325 @@ if (document.readyState === 'loading') {
 } else {
   initAll();
 }
+
+// ============================================================================
+// HEIMILISKOSTNAÐUR — reiknivél fyrir árlegan kostnað heimila vegna
+// sveitarfélagsgjalda (fasteignaskattur, fráveita, vatn, sorp).
+// Heimildir: Byggðastofnun (Samanburður á fasteignamati og fasteignagjöldum
+// 2021–2025), gjaldskrár sveitarfélaganna 2024–2025, fréttatilkynningar.
+// Reykjavík innheimtir EKKI vatns-/fráveitugjald með fasteignagjöldum (færist
+// um Veitur ohf.) — því settum við 0 fyrir þá liði í Rvk.
+// Kópavogur er með fasta krónutölu á m² fyrir lóðarleigu (sleppt í reiknivél
+// — krefst lóðarstærðar). Þessi V1 sýnir álagningarhlutfallið á heildar-
+// fasteignamati og föst sorpgjöld.
+// ============================================================================
+var HEIMILI_RATES = {
+  rvk:  {name:'Reykjavík',    short:'Rvk',  note:'Reykjavík innheimtir EKKI vatns- og fráveitugjald með fasteignagjöldum — það rennur til Veitna ohf. og er ekki innifalið hér.', yrs:{
+    2018:{fast:0.180, fraveita:0,    vatn:0,    sorp:26000, utsvar:14.52, est:true},
+    2019:{fast:0.180, fraveita:0,    vatn:0,    sorp:27000, utsvar:14.52, est:true},
+    2020:{fast:0.180, fraveita:0,    vatn:0,    sorp:28000, utsvar:14.52, est:true},
+    2021:{fast:0.180, fraveita:0,    vatn:0,    sorp:30000, utsvar:14.52, est:true},
+    2022:{fast:0.180, fraveita:0,    vatn:0,    sorp:32000, utsvar:14.52, est:true},
+    2023:{fast:0.180, fraveita:0,    vatn:0,    sorp:50000, utsvar:14.52, est:true},
+    2024:{fast:0.180, fraveita:0,    vatn:0,    sorp:70000, utsvar:14.93, est:false},
+    2025:{fast:0.180, fraveita:0,    vatn:0,    sorp:93000, utsvar:14.93, est:false}}},
+  kop:  {name:'Kópavogur',    short:'Kóp',  note:'Kópavogur lækkaði fasteignaskatt úr 0,225% (2018) í 0,162% (2025) — úr 0,205% í 0,162% á einu kjörtímabili. Heildargreiðsla í krónum hefur samt hækkað vegna hækkunar fasteignamats.', yrs:{
+    2018:{fast:0.225, fraveita:0.075, vatn:0.059, sorp:32000, utsvar:14.48, est:true},
+    2019:{fast:0.220, fraveita:0.075, vatn:0.059, sorp:35000, utsvar:14.48, est:true},
+    2020:{fast:0.215, fraveita:0.075, vatn:0.059, sorp:38000, utsvar:14.48, est:true},
+    2021:{fast:0.205, fraveita:0.075, vatn:0.059, sorp:42000, utsvar:14.48, est:false},
+    2022:{fast:0.205, fraveita:0.075, vatn:0.059, sorp:45000, utsvar:14.48, est:false},
+    2023:{fast:0.180, fraveita:0.060, vatn:0.059, sorp:55000, utsvar:14.93, est:true},
+    2024:{fast:0.165, fraveita:0.060, vatn:0.059, sorp:63834, utsvar:14.93, est:false},
+    2025:{fast:0.162, fraveita:0.056, vatn:0.055, sorp:67000, utsvar:14.93, est:false}}},
+  hafn: {name:'Hafnarfjörður',short:'Hafn', note:'Hafnarfjörður hefur lækkað fasteignaskatt verulega: 0,260% (2018) → 0,217% (2024–2025). Útsvar er 14,7% — eitt það lægsta á höfuðborgarsvæðinu.', yrs:{
+    2018:{fast:0.260, fraveita:0.130, vatn:0.110, sorp:30000, utsvar:14.52, est:true},
+    2019:{fast:0.260, fraveita:0.130, vatn:0.110, sorp:32000, utsvar:14.52, est:true},
+    2020:{fast:0.260, fraveita:0.130, vatn:0.110, sorp:35000, utsvar:14.52, est:true},
+    2021:{fast:0.250, fraveita:0.115, vatn:0.080, sorp:38000, utsvar:14.52, est:false},
+    2022:{fast:0.2461,fraveita:0.110, vatn:0.060, sorp:42000, utsvar:14.52, est:false},
+    2023:{fast:0.2231,fraveita:0.105, vatn:0.045, sorp:45000, utsvar:14.7,  est:false},
+    2024:{fast:0.217, fraveita:0.095, vatn:0.040, sorp:50000, utsvar:14.7,  est:false},
+    2025:{fast:0.217, fraveita:0.093, vatn:0.035, sorp:55000, utsvar:14.7,  est:false}}},
+  gard: {name:'Garðabær',     short:'Gbr',  note:'Garðabær hefur lækkað fasteignaskatt árlega: 0,200% (2018) → 0,161% (2025). Útsvar 14,71% — næstlægst á höfuðborgarsvæðinu.', yrs:{
+    2018:{fast:0.200, fraveita:0.150, vatn:0.110, sorp:28000, utsvar:13.7,  est:true},
+    2019:{fast:0.195, fraveita:0.150, vatn:0.100, sorp:30000, utsvar:13.7,  est:true},
+    2020:{fast:0.190, fraveita:0.150, vatn:0.090, sorp:33000, utsvar:13.7,  est:true},
+    2021:{fast:0.185, fraveita:0.150, vatn:0.082, sorp:35000, utsvar:13.7,  est:false},
+    2022:{fast:0.179, fraveita:0.150, vatn:0.080, sorp:38000, utsvar:13.85, est:false},
+    2023:{fast:0.166, fraveita:0.150, vatn:0.078, sorp:42000, utsvar:14.71, est:false},
+    2024:{fast:0.163, fraveita:0.150, vatn:0.078, sorp:45000, utsvar:14.71, est:false},
+    2025:{fast:0.161, fraveita:0.150, vatn:0.078, sorp:50000, utsvar:14.71, est:false}}},
+  mos:  {name:'Mosfellsbær',  short:'Mos',  note:'Mosfellsbær er ÞAÐ EINA á höfuðborgarsvæðinu sem hækkaði fasteignaskatt 2025 — úr 0,19% í 0,20%. Útsvar 14,97% — það hæsta á höfuðborgarsvæðinu.', yrs:{
+    2018:{fast:0.225, fraveita:0.105, vatn:0.085, sorp:28000, utsvar:14.48, est:true},
+    2019:{fast:0.225, fraveita:0.105, vatn:0.085, sorp:30000, utsvar:14.48, est:true},
+    2020:{fast:0.220, fraveita:0.105, vatn:0.080, sorp:33000, utsvar:14.48, est:true},
+    2021:{fast:0.225, fraveita:0.105, vatn:0.080, sorp:35000, utsvar:14.48, est:false},
+    2022:{fast:0.205, fraveita:0.095, vatn:0.075, sorp:38000, utsvar:14.52, est:false},
+    2023:{fast:0.195, fraveita:0.090, vatn:0.072, sorp:42000, utsvar:14.97, est:true},
+    2024:{fast:0.190, fraveita:0.089, vatn:0.070, sorp:50000, utsvar:14.97, est:false},
+    2025:{fast:0.200, fraveita:0.089, vatn:0.070, sorp:55000, utsvar:14.97, est:false}}},
+  selt: {name:'Seltjarnarnes',short:'Selt', note:'Seltjarnarnes er með lægsta útsvar á landinu (14,54%) og lágan fasteignaskatt (0,166%) — en hátt sorpgjald (75.000 kr./ári).', yrs:{
+    2018:{fast:0.175, fraveita:0.150,  vatn:0.090, sorp:35000, utsvar:13.7,  est:true},
+    2019:{fast:0.175, fraveita:0.150,  vatn:0.090, sorp:38000, utsvar:13.7,  est:true},
+    2020:{fast:0.175, fraveita:0.145,  vatn:0.088, sorp:42000, utsvar:13.7,  est:true},
+    2021:{fast:0.175, fraveita:0.1425, vatn:0.0855,sorp:50000, utsvar:13.7,  est:false},
+    2022:{fast:0.175, fraveita:0.1425, vatn:0.0855,sorp:55000, utsvar:13.85, est:false},
+    2023:{fast:0.166, fraveita:0.1425, vatn:0.0855,sorp:65000, utsvar:14.54, est:false},
+    2024:{fast:0.166, fraveita:0.1425, vatn:0.0855,sorp:75000, utsvar:14.54, est:false},
+    2025:{fast:0.166, fraveita:0.1425, vatn:0.0855,sorp:75000, utsvar:14.54, est:false}}}
+};
+var HEIMILI_MUNI_ORDER = ['rvk','kop','hafn','gard','mos','selt'];
+var HEIMILI_YEARS = [2018,2019,2020,2021,2022,2023,2024,2025];
+var HEIMILI_COLORS = {rvk:'#1B3F5E', kop:'#2E7D32', hafn:'#854F0B', gard:'#6A4C93', mos:'#C5832D', selt:'#A33B5E'};
+
+// State
+var HM_STATE = { mat: 80000000, muni: 'rvk', year: 2025 };
+
+function hmFmtKr(v){
+  if(v == null) return '—';
+  v = Math.round(v);
+  // 1.234.567 kr.
+  return v.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.') + ' kr.';
+}
+function hmFmtPct(v){
+  if(v == null) return '—';
+  // 0.180 → "0,18%" — höndlum sjálf til að tryggja kommusnið óháð locale browser-ins
+  var rounded = Math.round(v * 10000) / 10000;
+  var str = rounded.toFixed(rounded === Math.round(rounded*1000)/1000 ? 3 : 4);
+  // Strip trailing zeros after decimal point but keep at least 2 decimals
+  str = str.replace(/(\.\d{2})0+$/, '$1');
+  return str.replace('.', ',') + '%';
+}
+
+// Reiknar árlegan kostnað fyrir tiltekið muni × ár × fasteignamat.
+function hmCalc(muniId, year, mat){
+  var row = HEIMILI_RATES[muniId] && HEIMILI_RATES[muniId].yrs[year];
+  if(!row) return null;
+  var fast      = mat * row.fast      / 100;
+  var fraveita  = mat * row.fraveita  / 100;
+  var vatn      = mat * row.vatn      / 100;
+  var sorp      = row.sorp;
+  return {
+    fast:fast, fraveita:fraveita, vatn:vatn, sorp:sorp,
+    total: fast + fraveita + vatn + sorp,
+    rate: row, est: row.est
+  };
+}
+
+function initHeimili(){
+  var root = document.getElementById('page-heimili');
+  if(!root) return;
+  hmRender();
+}
+
+function hmSetMat(v){
+  v = Math.max(20000000, Math.min(400000000, parseInt(v,10)||80000000));
+  HM_STATE.mat = v;
+  hmRender();
+}
+function hmSetMuni(id){ HM_STATE.muni = id; hmRender(); }
+function hmSetYear(y){ HM_STATE.year = parseInt(y,10); hmRender(); }
+
+function hmRender(){
+  var root = document.getElementById('page-heimili');
+  if(!root) return;
+  var _sy = window.scrollY; // varðveita scroll við re-render
+  var s = HM_STATE;
+  var calc = hmCalc(s.muni, s.year, s.mat);
+  var meta = HEIMILI_RATES[s.muni];
+
+  // Inputs section
+  var muniBtns = HEIMILI_MUNI_ORDER.map(function(id){
+    var m = HEIMILI_RATES[id];
+    var active = id===s.muni;
+    return '<button class="hm-pill'+(active?' active':'')+'" onclick="hmSetMuni(\''+id+'\')" '
+      + 'style="padding:7px 14px;border-radius:99px;border:1px solid '
+      + (active?HEIMILI_COLORS[id]:'#0001')+';background:'+(active?HEIMILI_COLORS[id]:'#fff')
+      + ';color:'+(active?'#fff':'var(--ink)')+';font-size:13px;font-weight:'+(active?'600':'500')
+      + ';cursor:pointer;transition:all .12s;">'+m.short+'</button>';
+  }).join('');
+  var yearBtns = HEIMILI_YEARS.map(function(y){
+    var active = y===s.year;
+    return '<button class="hm-yr'+(active?' active':'')+'" onclick="hmSetYear('+y+')" '
+      + 'style="padding:6px 11px;border-radius:6px;border:1px solid '
+      + (active?'var(--ink)':'#0001')+';background:'+(active?'var(--ink)':'#fff')
+      + ';color:'+(active?'#fff':'var(--ink)')+';font-size:12px;font-weight:'+(active?'600':'500')
+      + ';cursor:pointer;">'+y+'</button>';
+  }).join('');
+
+  // Quick-pick buttons for fasteignamat
+  var matPresets = [50000000, 65000000, 80000000, 100000000, 130000000, 180000000];
+  var matBtns = matPresets.map(function(v){
+    var active = Math.abs(v - s.mat) < 100000;
+    return '<button onclick="hmSetMat('+v+')" '
+      + 'style="padding:5px 9px;border-radius:5px;border:1px solid '
+      + (active?'var(--gold)':'#0001')+';background:'+(active?'var(--gold)15':'#fff')
+      + ';font-size:11px;cursor:pointer;color:'+(active?'var(--ink)':'var(--ink2)')+';">'
+      + (v/1000000)+' m</button>';
+  }).join('');
+
+  // Sundurliðun
+  var rate = calc.rate;
+  var noVei = (s.muni === 'rvk');
+  var rows = [
+    {label:'Fasteignaskattur A', kr:calc.fast, pct:rate.fast, sub:'Álagningarhlutfall × fasteignamat'},
+    {label:'Fráveitugjald',      kr:calc.fraveita, pct:rate.fraveita, sub:noVei?'Greiðist til Veitna ohf., ekki Reykjavíkurborgar':'Hlutfall af fasteignamati'},
+    {label:'Vatnsgjald',         kr:calc.vatn,    pct:rate.vatn,     sub:noVei?'Greiðist til Veitna ohf., ekki Reykjavíkurborgar':'Hlutfall af fasteignamati'},
+    {label:'Sorphirðugjald',     kr:calc.sorp,    pct:null,          sub:'Fast árlegt gjald á íbúð'}
+  ];
+  var rowsHtml = rows.map(function(r){
+    var pctTxt = r.pct == null ? '<span style="color:var(--ink3)">fast gjald</span>'
+                                : (noVei && r.kr===0 ? '<span style="color:var(--ink3)">—</span>' : hmFmtPct(r.pct));
+    return '<tr>'
+      + '<td style="padding:10px 8px 10px 0;vertical-align:top;"><div style="font-weight:500">'+r.label+'</div><div style="font-size:11px;color:var(--ink3);margin-top:2px">'+r.sub+'</div></td>'
+      + '<td style="padding:10px 8px;text-align:right;color:var(--ink2);font-size:12px;font-variant-numeric:tabular-nums;">'+pctTxt+'</td>'
+      + '<td style="padding:10px 0;text-align:right;font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap;">'+hmFmtKr(r.kr)+'</td>'
+      + '</tr>';
+  }).join('');
+
+  // Comparison: total kostnaður á sama fasteignamati × öllum sveitarfélögum × valdu ári
+  var compRows = HEIMILI_MUNI_ORDER.map(function(id){
+    var c = hmCalc(id, s.year, s.mat);
+    return { id:id, name:HEIMILI_RATES[id].name, total:c?c.total:0, color:HEIMILI_COLORS[id] };
+  }).sort(function(a,b){return a.total - b.total;});
+  var maxTotal = Math.max.apply(null, compRows.map(function(r){return r.total;}));
+  var compHtml = compRows.map(function(r){
+    var w = maxTotal>0 ? (r.total/maxTotal)*100 : 0;
+    var hl = (r.id === s.muni);
+    return '<div style="display:flex;align-items:center;gap:10px;padding:6px 0;">'
+      + '<div style="width:90px;font-size:12px;font-weight:'+(hl?'600':'500')+';color:'+(hl?r.color:'var(--ink2)')+';">'+r.name+'</div>'
+      + '<div style="flex:1;height:24px;background:#0001;border-radius:4px;position:relative;overflow:hidden;">'
+      +   '<div style="position:absolute;inset:0;width:'+w.toFixed(1)+'%;background:'+r.color+(hl?'':'A0')+';border-radius:4px;"></div>'
+      + '</div>'
+      + '<div style="width:130px;text-align:right;font-size:12px;font-weight:'+(hl?'600':'500')+';font-variant-numeric:tabular-nums;color:'+(hl?'var(--ink)':'var(--ink2)')+';">'+hmFmtKr(r.total)+'</div>'
+      + '</div>';
+  }).join('');
+
+  // History line chart: total kostnaður allra muni × allra ára
+  var W = 720, H = 280, padL=56, padR=12, padT=14, padB=30;
+  var allTotals = [];
+  HEIMILI_MUNI_ORDER.forEach(function(id){
+    HEIMILI_YEARS.forEach(function(y){
+      var c = hmCalc(id, y, s.mat);
+      if(c) allTotals.push(c.total);
+    });
+  });
+  var ymax = Math.max.apply(null, allTotals);
+  var ymin = 0;
+  var x = function(y){ return padL + (y - HEIMILI_YEARS[0]) / (HEIMILI_YEARS.length-1) * (W-padL-padR); };
+  var yScale = function(v){ return padT + (1 - (v-ymin)/(ymax-ymin)) * (H-padT-padB); };
+  var lines = HEIMILI_MUNI_ORDER.map(function(id){
+    var pts = HEIMILI_YEARS.map(function(y){
+      var c = hmCalc(id, y, s.mat);
+      return c ? (x(y)+','+yScale(c.total)) : null;
+    }).filter(Boolean).join(' ');
+    var hl = (id === s.muni);
+    return '<polyline points="'+pts+'" fill="none" stroke="'+HEIMILI_COLORS[id]+'" stroke-width="'+(hl?'2.5':'1.2')+'" opacity="'+(hl?'1':'0.45')+'"/>';
+  }).join('');
+  var dots = HEIMILI_YEARS.map(function(y){
+    var c = hmCalc(s.muni, y, s.mat);
+    if(!c) return '';
+    var sel = (y === s.year);
+    return '<circle cx="'+x(y)+'" cy="'+yScale(c.total)+'" r="'+(sel?'5':'3')+'" fill="'+HEIMILI_COLORS[s.muni]+'"/>';
+  }).join('');
+  // Y-axis ticks
+  var yticks = '';
+  for(var i=0;i<=4;i++){
+    var v = ymin + (ymax-ymin)*i/4;
+    var yy = yScale(v);
+    yticks += '<line x1="'+padL+'" x2="'+(W-padR)+'" y1="'+yy+'" y2="'+yy+'" stroke="#0001" stroke-width="1"/>';
+    yticks += '<text x="'+(padL-6)+'" y="'+(yy+3)+'" text-anchor="end" font-size="10" fill="var(--ink3)" font-family="system-ui">'+Math.round(v/1000)+' þ.</text>';
+  }
+  var xlabels = HEIMILI_YEARS.map(function(y){
+    return '<text x="'+x(y)+'" y="'+(H-10)+'" text-anchor="middle" font-size="10" fill="var(--ink3)" font-family="system-ui">'+y+'</text>';
+  }).join('');
+  var legend = HEIMILI_MUNI_ORDER.map(function(id){
+    var hl = (id === s.muni);
+    return '<span style="display:inline-flex;align-items:center;gap:5px;margin-right:14px;font-size:11px;color:'+(hl?'var(--ink)':'var(--ink2)')+';font-weight:'+(hl?'600':'400')+';opacity:'+(hl?'1':'0.7')+';">'
+      + '<span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:'+HEIMILI_COLORS[id]+';"></span>'
+      + HEIMILI_RATES[id].name + '</span>';
+  }).join('');
+
+  // Compose
+  root.innerHTML = '<div style="max-width:1000px;margin:0 auto;padding:1.5rem;">'
+    + '<h2 style="font-family:\'Playfair Display\',serif;font-size:24px;margin-bottom:6px;">Heimiliskostnaður vegna sveitarfélagsgjalda</h2>'
+    + '<p style="font-size:13px;color:var(--ink2);margin-bottom:1.5rem;line-height:1.6;max-width:720px;">Settu inn fasteignamatið þitt og sjáðu árlega greiðslu til sveitarfélagsins — fasteignaskattur, fráveita, vatn og sorphirðugjald. Þú getur borið saman 6 sveitarfélög á höfuðborgarsvæðinu og séð hvernig kostnaðurinn hefur þróast frá 2018.</p>'
+
+    // INPUTS
+    + '<div class="card" style="margin-bottom:1rem;padding:1.25rem;">'
+    +   '<div style="display:grid;grid-template-columns:1fr;gap:1rem;">'
+    +     '<div>'
+    +       '<div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--ink3);margin-bottom:.4rem;">Fasteignamat</div>'
+    +       '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">'
+    +         '<input type="number" id="hm-mat-input" min="20000000" max="400000000" step="500000" value="'+s.mat+'" '
+    +           'onchange="hmSetMat(this.value)" '
+    +           'style="font-size:18px;font-weight:600;padding:8px 10px;border:1px solid #0002;border-radius:6px;width:170px;font-variant-numeric:tabular-nums;">'
+    +         '<span style="font-size:13px;color:var(--ink2);">kr. (heildarfasteignamat)</span>'
+    +       '</div>'
+    +       '<div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:8px;">'+matBtns+'</div>'
+    +     '</div>'
+    +     '<div>'
+    +       '<div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--ink3);margin-bottom:.4rem;">Sveitarfélag</div>'
+    +       '<div style="display:flex;gap:5px;flex-wrap:wrap;">'+muniBtns+'</div>'
+    +     '</div>'
+    +     '<div>'
+    +       '<div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--ink3);margin-bottom:.4rem;">Ár</div>'
+    +       '<div style="display:flex;gap:5px;flex-wrap:wrap;">'+yearBtns+'</div>'
+    +     '</div>'
+    +   '</div>'
+    + '</div>'
+
+    // RESULT — total + breakdown
+    + '<div class="card" style="margin-bottom:1rem;padding:1.25rem;background:linear-gradient(135deg,'+HEIMILI_COLORS[s.muni]+'08 0%,#fff 60%);border-left:3px solid '+HEIMILI_COLORS[s.muni]+';">'
+    +   '<div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:1rem;margin-bottom:1rem;">'
+    +     '<div>'
+    +       '<div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--ink3);margin-bottom:.3rem;">Heildargjöld á ári · '+meta.name+' '+s.year+'</div>'
+    +       '<div style="font-family:\'Playfair Display\',serif;font-size:38px;font-weight:700;color:'+HEIMILI_COLORS[s.muni]+';line-height:1;">'+hmFmtKr(calc.total)+'</div>'
+    +       '<div style="font-size:13px;color:var(--ink2);margin-top:6px;">≈ '+hmFmtKr(calc.total/12)+' á mánuði</div>'
+    +     '</div>'
+    +     '<div style="font-size:11px;color:var(--ink3);text-align:right;max-width:280px;line-height:1.5;">'+(rate.est?'<span style="color:#854F0B;">⚠ Áætluð gildi fyrir vatn/fráveitu/sorp 2018–2022</span><br>':'')+'Heildarfasteignamat: '+hmFmtKr(s.mat)+'</div>'
+    +   '</div>'
+    +   '<table style="width:100%;font-size:13px;border-collapse:collapse;">'
+    +     '<thead><tr style="font-size:11px;color:var(--ink3);text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid #0001;"><th style="text-align:left;padding:6px 0;font-weight:500;">Liður</th><th style="text-align:right;padding:6px 0;font-weight:500;">Hlutfall</th><th style="text-align:right;padding:6px 0;font-weight:500;">Kr./ári</th></tr></thead>'
+    +     '<tbody>'+rowsHtml+'</tbody>'
+    +     '<tfoot><tr style="border-top:1px solid #0002;font-weight:600;"><td style="padding:10px 0;">Samtals</td><td></td><td style="text-align:right;font-variant-numeric:tabular-nums;">'+hmFmtKr(calc.total)+'</td></tr></tfoot>'
+    +   '</table>'
+    +   (meta.note?'<div style="font-size:11px;color:var(--ink2);margin-top:1rem;padding:10px 12px;background:#FFF8E1;border-radius:6px;line-height:1.55;"><strong>'+meta.name+':</strong> '+meta.note+'</div>':'')
+    + '</div>'
+
+    // COMPARISON
+    + '<div class="card" style="margin-bottom:1rem;padding:1.25rem;">'
+    +   '<div class="card-title" style="margin-bottom:4px;">Samanburður '+s.year+' · sami fasteignamati</div>'
+    +   '<div class="card-subtitle" style="margin-bottom:1rem;">Heildargjöld heimilis (fasteignaskattur + fráveita + vatn + sorp) ef fasteignamatið er '+hmFmtKr(s.mat)+'</div>'
+    +   compHtml
+    +   '<div style="font-size:11px;color:var(--ink3);margin-top:.75rem;line-height:1.5;">Athugið: Reykjavík innheimtir ekki vatn/fráveitu með fasteignagjöldum (fer um Veitur ohf.) — því sýnast Rvk-tölurnar lægri en raunin er fyrir heimilið.</div>'
+    + '</div>'
+
+    // HISTORY
+    + '<div class="card" style="margin-bottom:1rem;padding:1.25rem;">'
+    +   '<div class="card-title" style="margin-bottom:4px;">Þróun 2018–2025 · '+meta.name+' í broddi</div>'
+    +   '<div class="card-subtitle" style="margin-bottom:1rem;">Heildargjöld á ári miðað við fasteignamat '+hmFmtKr(s.mat)+' — línan fyrir valið sveitarfélag er feitletruð.</div>'
+    +   '<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto;display:block;font-family:system-ui;">'
+    +     yticks + lines + dots + xlabels
+    +   '</svg>'
+    +   '<div style="margin-top:1rem;line-height:1.8;">'+legend+'</div>'
+    +   '<div style="font-size:11px;color:var(--ink3);margin-top:1rem;line-height:1.55;"><strong>Fyrirvari:</strong> Fasteignamatið þitt hefur líklega hækkað á tímabilinu — graphan sýnir gjöldin miðað við sama fasteignamat öll árin, svo þróunin endurspeglar bara breytingar á álagningar­hlutfalli og gjaldskrá. Til að sjá raunhækkun greiðslna þyrfti einnig að taka mið af hækkun fasteignamats sjálfs.</div>'
+    + '</div>'
+
+    // FOOTER
+    + '<div style="font-size:11px;color:var(--ink3);line-height:1.6;max-width:720px;">'
+    +   '<strong>Heimildir:</strong> Byggðastofnun (Samanburður á fasteignamati og fasteignagjöldum 2021–2025), gjaldskrár sveitarfélaganna, fjárhagsáætlanir, Skatturinn (útsvarshlutföll). Krónutölur sorpgjalda 2018–2022 eru áætlaðar — staðfestar tölur frá 2024 og áfram. Útsvarshlutfall er sýnt en ekki innifalið í heildargjaldinu þar sem það reiknast af tekjum, ekki fasteignamati.'
+    + '</div>'
+    + '</div>';
+
+  // Sync number input value (in case state changed via pill)
+  var inp = document.getElementById('hm-mat-input');
+  if(inp && parseInt(inp.value,10)!==s.mat) inp.value = s.mat;
+  // Endurheimta scroll
+  if(_sy) window.scrollTo(0, _sy);
+}
+
 </script>
 
 <!-- UM VEFINN -->
@@ -8046,6 +8369,8 @@ if (document.readyState === 'loading') {
   </div>
 </div>
 
+<!-- HEIMILISKOSTNAÐUR — reiknivél fyrir árlegan kostnað við sveitarfélagsgjöld -->
+<div id="page-heimili" class="page"></div>
 
 
 </body>
