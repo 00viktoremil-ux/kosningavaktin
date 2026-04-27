@@ -7814,68 +7814,78 @@ if (document.readyState === 'loading') {
 // — krefst lóðarstærðar). Þessi V1 sýnir álagningarhlutfallið á heildar-
 // fasteignamati og föst sorpgjöld.
 // ============================================================================
+// lod: Lóðarleiga — annað hvort 'kr_m2' (krónur á m²) eða 'pct' (% af lóðarmati).
+//      Reiknast EKKI sjálfkrafa inn í heildina því notandi þarf þá að slá inn
+//      lóðarstærð (kr_m2) eða aðskilið lóðarmat (pct). Birtum sem upplýsingu.
 var HEIMILI_RATES = {
   rvk:  {name:'Reykjavík',    short:'Rvk',  note:'Reykjavík innheimtir EKKI vatns- og fráveitugjald með fasteignagjöldum — það rennur til Veitna ohf. og er ekki innifalið hér.', yrs:{
-    2018:{fast:0.180, fraveita:0,    vatn:0,    sorp:26000, utsvar:14.52, est:true},
-    2019:{fast:0.180, fraveita:0,    vatn:0,    sorp:27000, utsvar:14.52, est:true},
-    2020:{fast:0.180, fraveita:0,    vatn:0,    sorp:28000, utsvar:14.52, est:true},
-    2021:{fast:0.180, fraveita:0,    vatn:0,    sorp:30000, utsvar:14.52, est:true},
-    2022:{fast:0.180, fraveita:0,    vatn:0,    sorp:32000, utsvar:14.52, est:true},
-    2023:{fast:0.180, fraveita:0,    vatn:0,    sorp:50000, utsvar:14.52, est:true},
-    2024:{fast:0.180, fraveita:0,    vatn:0,    sorp:70000, utsvar:14.93, est:false},
-    2025:{fast:0.180, fraveita:0,    vatn:0,    sorp:93000, utsvar:14.93, est:false}}},
-  kop:  {name:'Kópavogur',    short:'Kóp',  note:'Kópavogur lækkaði fasteignaskatt úr 0,225% (2018) í 0,162% (2025) — úr 0,205% í 0,162% á einu kjörtímabili. Heildargreiðsla í krónum hefur samt hækkað vegna hækkunar fasteignamats.', yrs:{
-    2018:{fast:0.225, fraveita:0.075, vatn:0.059, sorp:32000, utsvar:14.48, est:true},
-    2019:{fast:0.220, fraveita:0.075, vatn:0.059, sorp:35000, utsvar:14.48, est:true},
-    2020:{fast:0.215, fraveita:0.075, vatn:0.059, sorp:38000, utsvar:14.48, est:true},
-    2021:{fast:0.205, fraveita:0.075, vatn:0.059, sorp:42000, utsvar:14.48, est:false},
-    2022:{fast:0.205, fraveita:0.075, vatn:0.059, sorp:45000, utsvar:14.48, est:false},
-    2023:{fast:0.180, fraveita:0.060, vatn:0.059, sorp:55000, utsvar:14.93, est:true},
-    2024:{fast:0.165, fraveita:0.060, vatn:0.059, sorp:63834, utsvar:14.93, est:false},
-    2025:{fast:0.162, fraveita:0.056, vatn:0.055, sorp:67000, utsvar:14.93, est:false}}},
-  hafn: {name:'Hafnarfjörður',short:'Hafn', note:'Hafnarfjörður hefur lækkað fasteignaskatt verulega: 0,260% (2018) → 0,217% (2024–2025). Útsvar er 14,7% — eitt það lægsta á höfuðborgarsvæðinu.', yrs:{
-    2018:{fast:0.260, fraveita:0.130, vatn:0.110, sorp:30000, utsvar:14.52, est:true},
-    2019:{fast:0.260, fraveita:0.130, vatn:0.110, sorp:32000, utsvar:14.52, est:true},
-    2020:{fast:0.260, fraveita:0.130, vatn:0.110, sorp:35000, utsvar:14.52, est:true},
-    2021:{fast:0.250, fraveita:0.115, vatn:0.080, sorp:38000, utsvar:14.52, est:false},
-    2022:{fast:0.2461,fraveita:0.110, vatn:0.060, sorp:42000, utsvar:14.52, est:false},
-    2023:{fast:0.2231,fraveita:0.105, vatn:0.045, sorp:45000, utsvar:14.7,  est:false},
-    2024:{fast:0.217, fraveita:0.095, vatn:0.040, sorp:50000, utsvar:14.7,  est:false},
-    2025:{fast:0.217, fraveita:0.093, vatn:0.035, sorp:55000, utsvar:14.7,  est:false}}},
+    2018:{fast:0.180, fraveita:0,    vatn:0,    sorp:26000, utsvar:14.52, lod:{type:'pct', val:0.20}, est:true},
+    2019:{fast:0.180, fraveita:0,    vatn:0,    sorp:27000, utsvar:14.52, lod:{type:'pct', val:0.20}, est:true},
+    2020:{fast:0.180, fraveita:0,    vatn:0,    sorp:28000, utsvar:14.52, lod:{type:'pct', val:0.20}, est:true},
+    2021:{fast:0.180, fraveita:0,    vatn:0,    sorp:30000, utsvar:14.52, lod:{type:'pct', val:0.20}, est:true},
+    2022:{fast:0.180, fraveita:0,    vatn:0,    sorp:32000, utsvar:14.52, lod:{type:'pct', val:0.20}, est:true},
+    2023:{fast:0.180, fraveita:0,    vatn:0,    sorp:50000, utsvar:14.52, lod:{type:'pct', val:0.20}, est:true},
+    2024:{fast:0.180, fraveita:0,    vatn:0,    sorp:70000, utsvar:14.93, lod:{type:'pct', val:0.20}, est:false},
+    2025:{fast:0.180, fraveita:0,    vatn:0,    sorp:93000, utsvar:14.93, lod:{type:'pct', val:0.20}, est:false},
+    2026:{fast:0.180, fraveita:0,    vatn:0,    sorp:95000, utsvar:14.93, lod:{type:'pct', val:0.20}, est:true}}},
+  kop:  {name:'Kópavogur',    short:'Kóp',  note:'Kópavogur hefur lækkað fasteignaskatt árlega: 0,225% (2018) → 0,162% (2025) → 0,151% (2026). Lóðarleiga er föst krónutala á m² (23,62 kr./m² 2026), ekki prósenta. Heildargreiðsla í krónum hefur samt hækkað vegna hækkunar fasteignamats.', yrs:{
+    2018:{fast:0.225, fraveita:0.075, vatn:0.059, sorp:32000, utsvar:14.48, lod:{type:'kr_m2', val:14.5}, est:true},
+    2019:{fast:0.220, fraveita:0.075, vatn:0.059, sorp:35000, utsvar:14.48, lod:{type:'kr_m2', val:15.0}, est:true},
+    2020:{fast:0.215, fraveita:0.075, vatn:0.059, sorp:38000, utsvar:14.48, lod:{type:'kr_m2', val:16.0}, est:true},
+    2021:{fast:0.205, fraveita:0.075, vatn:0.059, sorp:42000, utsvar:14.48, lod:{type:'kr_m2', val:17.0}, est:false},
+    2022:{fast:0.205, fraveita:0.075, vatn:0.059, sorp:45000, utsvar:14.48, lod:{type:'kr_m2', val:18.5}, est:false},
+    2023:{fast:0.180, fraveita:0.060, vatn:0.059, sorp:55000, utsvar:14.93, lod:{type:'kr_m2', val:20.0}, est:true},
+    2024:{fast:0.165, fraveita:0.060, vatn:0.059, sorp:63834, utsvar:14.93, lod:{type:'kr_m2', val:21.43}, est:false},
+    2025:{fast:0.162, fraveita:0.056, vatn:0.055, sorp:67000, utsvar:14.93, lod:{type:'kr_m2', val:22.50}, est:false},
+    // 2026: staðfest af kopavogur.is/is/gjaldskra (apríl 2026) — fast 0,151%, fráv. 0,056%, vatn 0,055%, lóðarleiga 23,62 kr./m². Sorp: 240L blandaður 44.481 kr. + grenndarstöð 23.796 kr. = 68.277 kr. (algengasta tilvik). Bætist við sérpoki/lífúrgangur ef valið er aukastærð.
+    2026:{fast:0.151, fraveita:0.056, vatn:0.055, sorp:68277, utsvar:14.93, lod:{type:'kr_m2', val:23.62}, est:false}}},
+  hafn: {name:'Hafnarfjörður',short:'Hafn', note:'Hafnarfjörður hefur lækkað fasteignaskatt verulega: 0,260% (2018) → 0,217% (2024–2025) → 0,1999% (2026). Útsvar 14,7% — eitt það lægsta á höfuðborgarsvæðinu.', yrs:{
+    2018:{fast:0.260, fraveita:0.130, vatn:0.110, sorp:30000, utsvar:14.52, lod:{type:'pct', val:0.330}, est:true},
+    2019:{fast:0.260, fraveita:0.130, vatn:0.110, sorp:32000, utsvar:14.52, lod:{type:'pct', val:0.330}, est:true},
+    2020:{fast:0.260, fraveita:0.130, vatn:0.110, sorp:35000, utsvar:14.52, lod:{type:'pct', val:0.330}, est:true},
+    2021:{fast:0.250, fraveita:0.115, vatn:0.080, sorp:38000, utsvar:14.52, lod:{type:'pct', val:0.330}, est:false},
+    2022:{fast:0.2461,fraveita:0.110, vatn:0.060, sorp:42000, utsvar:14.52, lod:{type:'pct', val:0.330}, est:false},
+    2023:{fast:0.2231,fraveita:0.105, vatn:0.045, sorp:45000, utsvar:14.7,  lod:{type:'pct', val:0.330}, est:false},
+    2024:{fast:0.217, fraveita:0.095, vatn:0.040, sorp:50000, utsvar:14.7,  lod:{type:'pct', val:0.330}, est:false},
+    2025:{fast:0.217, fraveita:0.093, vatn:0.035, sorp:55000, utsvar:14.7,  lod:{type:'pct', val:0.330}, est:false},
+    2026:{fast:0.1999,fraveita:0.093, vatn:0.035, sorp:60000, utsvar:14.7,  lod:{type:'pct', val:0.330}, est:true}}},
   gard: {name:'Garðabær',     short:'Gbr',  note:'Garðabær hefur lækkað fasteignaskatt árlega: 0,200% (2018) → 0,161% (2025). Útsvar 14,71% — næstlægst á höfuðborgarsvæðinu.', yrs:{
-    2018:{fast:0.200, fraveita:0.150, vatn:0.110, sorp:28000, utsvar:13.7,  est:true},
-    2019:{fast:0.195, fraveita:0.150, vatn:0.100, sorp:30000, utsvar:13.7,  est:true},
-    2020:{fast:0.190, fraveita:0.150, vatn:0.090, sorp:33000, utsvar:13.7,  est:true},
-    2021:{fast:0.185, fraveita:0.150, vatn:0.082, sorp:35000, utsvar:13.7,  est:false},
-    2022:{fast:0.179, fraveita:0.150, vatn:0.080, sorp:38000, utsvar:13.85, est:false},
-    2023:{fast:0.166, fraveita:0.150, vatn:0.078, sorp:42000, utsvar:14.71, est:false},
-    2024:{fast:0.163, fraveita:0.150, vatn:0.078, sorp:45000, utsvar:14.71, est:false},
-    2025:{fast:0.161, fraveita:0.150, vatn:0.078, sorp:50000, utsvar:14.71, est:false}}},
-  mos:  {name:'Mosfellsbær',  short:'Mos',  note:'Mosfellsbær er ÞAÐ EINA á höfuðborgarsvæðinu sem hækkaði fasteignaskatt 2025 — úr 0,19% í 0,20%. Útsvar 14,97% — það hæsta á höfuðborgarsvæðinu.', yrs:{
-    2018:{fast:0.225, fraveita:0.105, vatn:0.085, sorp:28000, utsvar:14.48, est:true},
-    2019:{fast:0.225, fraveita:0.105, vatn:0.085, sorp:30000, utsvar:14.48, est:true},
-    2020:{fast:0.220, fraveita:0.105, vatn:0.080, sorp:33000, utsvar:14.48, est:true},
-    2021:{fast:0.225, fraveita:0.105, vatn:0.080, sorp:35000, utsvar:14.48, est:false},
-    2022:{fast:0.205, fraveita:0.095, vatn:0.075, sorp:38000, utsvar:14.52, est:false},
-    2023:{fast:0.195, fraveita:0.090, vatn:0.072, sorp:42000, utsvar:14.97, est:true},
-    2024:{fast:0.190, fraveita:0.089, vatn:0.070, sorp:50000, utsvar:14.97, est:false},
-    2025:{fast:0.200, fraveita:0.089, vatn:0.070, sorp:55000, utsvar:14.97, est:false}}},
-  selt: {name:'Seltjarnarnes',short:'Selt', note:'Seltjarnarnes er með lægsta útsvar á landinu (14,54%) og lágan fasteignaskatt (0,166%) — en hátt sorpgjald (75.000 kr./ári).', yrs:{
-    2018:{fast:0.175, fraveita:0.150,  vatn:0.090, sorp:35000, utsvar:13.7,  est:true},
-    2019:{fast:0.175, fraveita:0.150,  vatn:0.090, sorp:38000, utsvar:13.7,  est:true},
-    2020:{fast:0.175, fraveita:0.145,  vatn:0.088, sorp:42000, utsvar:13.7,  est:true},
-    2021:{fast:0.175, fraveita:0.1425, vatn:0.0855,sorp:50000, utsvar:13.7,  est:false},
-    2022:{fast:0.175, fraveita:0.1425, vatn:0.0855,sorp:55000, utsvar:13.85, est:false},
-    2023:{fast:0.166, fraveita:0.1425, vatn:0.0855,sorp:65000, utsvar:14.54, est:false},
-    2024:{fast:0.166, fraveita:0.1425, vatn:0.0855,sorp:75000, utsvar:14.54, est:false},
-    2025:{fast:0.166, fraveita:0.1425, vatn:0.0855,sorp:75000, utsvar:14.54, est:false}}}
+    2018:{fast:0.200, fraveita:0.150, vatn:0.110, sorp:28000, utsvar:13.7,  lod:{type:'pct', val:0.500}, est:true},
+    2019:{fast:0.195, fraveita:0.150, vatn:0.100, sorp:30000, utsvar:13.7,  lod:{type:'pct', val:0.500}, est:true},
+    2020:{fast:0.190, fraveita:0.150, vatn:0.090, sorp:33000, utsvar:13.7,  lod:{type:'pct', val:0.500}, est:true},
+    2021:{fast:0.185, fraveita:0.150, vatn:0.082, sorp:35000, utsvar:13.7,  lod:{type:'pct', val:0.500}, est:false},
+    2022:{fast:0.179, fraveita:0.150, vatn:0.080, sorp:38000, utsvar:13.85, lod:{type:'pct', val:0.500}, est:false},
+    2023:{fast:0.166, fraveita:0.150, vatn:0.078, sorp:42000, utsvar:14.71, lod:{type:'pct', val:0.500}, est:false},
+    2024:{fast:0.163, fraveita:0.150, vatn:0.078, sorp:45000, utsvar:14.71, lod:{type:'pct', val:0.500}, est:false},
+    2025:{fast:0.161, fraveita:0.150, vatn:0.078, sorp:50000, utsvar:14.71, lod:{type:'pct', val:0.500}, est:false},
+    2026:{fast:0.158, fraveita:0.150, vatn:0.078, sorp:52000, utsvar:14.71, lod:{type:'pct', val:0.500}, est:true}}},
+  mos:  {name:'Mosfellsbær',  short:'Mos',  note:'Mosfellsbær var ÞAÐ EINA á höfuðborgarsvæðinu sem hækkaði fasteignaskatt 2025 — úr 0,19% í 0,20%. ASÍ-úttekt fyrir 2026 nefnir lækkun aftur niður í 0,19%. Útsvar 14,97% — það hæsta á höfuðborgarsvæðinu.', yrs:{
+    2018:{fast:0.225, fraveita:0.105, vatn:0.085, sorp:28000, utsvar:14.48, lod:{type:'pct', val:0.316}, est:true},
+    2019:{fast:0.225, fraveita:0.105, vatn:0.085, sorp:30000, utsvar:14.48, lod:{type:'pct', val:0.316}, est:true},
+    2020:{fast:0.220, fraveita:0.105, vatn:0.080, sorp:33000, utsvar:14.48, lod:{type:'pct', val:0.316}, est:true},
+    2021:{fast:0.225, fraveita:0.105, vatn:0.080, sorp:35000, utsvar:14.48, lod:{type:'pct', val:0.316}, est:false},
+    2022:{fast:0.205, fraveita:0.095, vatn:0.075, sorp:38000, utsvar:14.52, lod:{type:'pct', val:0.316}, est:false},
+    2023:{fast:0.195, fraveita:0.090, vatn:0.072, sorp:42000, utsvar:14.97, lod:{type:'pct', val:0.310}, est:true},
+    2024:{fast:0.190, fraveita:0.089, vatn:0.070, sorp:50000, utsvar:14.97, lod:{type:'pct', val:0.310}, est:false},
+    2025:{fast:0.200, fraveita:0.089, vatn:0.070, sorp:55000, utsvar:14.97, lod:{type:'pct', val:0.310}, est:false},
+    2026:{fast:0.190, fraveita:0.089, vatn:0.070, sorp:58000, utsvar:14.97, lod:{type:'pct', val:0.310}, est:true}}},
+  selt: {name:'Seltjarnarnes',short:'Selt', note:'Seltjarnarnes er með lægsta útsvar á landinu (14,54%) og lágan fasteignaskatt (0,166%) — en hátt sorpgjald (≈75.000 kr./ári).', yrs:{
+    2018:{fast:0.175, fraveita:0.150,  vatn:0.090, sorp:35000, utsvar:13.7,  lod:{type:'pct', val:0.400}, est:true},
+    2019:{fast:0.175, fraveita:0.150,  vatn:0.090, sorp:38000, utsvar:13.7,  lod:{type:'pct', val:0.400}, est:true},
+    2020:{fast:0.175, fraveita:0.145,  vatn:0.088, sorp:42000, utsvar:13.7,  lod:{type:'pct', val:0.400}, est:true},
+    2021:{fast:0.175, fraveita:0.1425, vatn:0.0855,sorp:50000, utsvar:13.7,  lod:{type:'pct', val:0.400}, est:false},
+    2022:{fast:0.175, fraveita:0.1425, vatn:0.0855,sorp:55000, utsvar:13.85, lod:{type:'pct', val:0.400}, est:false},
+    2023:{fast:0.166, fraveita:0.1425, vatn:0.0855,sorp:65000, utsvar:14.54, lod:{type:'pct', val:0.400}, est:false},
+    2024:{fast:0.166, fraveita:0.1425, vatn:0.0855,sorp:75000, utsvar:14.54, lod:{type:'pct', val:0.400}, est:false},
+    2025:{fast:0.166, fraveita:0.1425, vatn:0.0855,sorp:75000, utsvar:14.54, lod:{type:'pct', val:0.400}, est:false},
+    2026:{fast:0.166, fraveita:0.1425, vatn:0.0855,sorp:78000, utsvar:14.54, lod:{type:'pct', val:0.400}, est:true}}}
 };
 var HEIMILI_MUNI_ORDER = ['rvk','kop','hafn','gard','mos','selt'];
-var HEIMILI_YEARS = [2018,2019,2020,2021,2022,2023,2024,2025];
+var HEIMILI_YEARS = [2018,2019,2020,2021,2022,2023,2024,2025,2026];
 var HEIMILI_COLORS = {rvk:'#1B3F5E', kop:'#2E7D32', hafn:'#854F0B', gard:'#6A4C93', mos:'#C5832D', selt:'#A33B5E'};
 
-// State
-var HM_STATE = { mat: 80000000, muni: 'rvk', year: 2025 };
+// State (sjálfgefið nýjasta ár, lod-stærð 100m² fyrir Kópavogur-reikning)
+var HM_STATE = { mat: 80000000, muni: 'rvk', year: 2026, lodM2: 100, lodMat: 15000000 };
 
 function hmFmtKr(v){
   if(v == null) return '—';
@@ -7963,6 +7973,18 @@ function hmRender(){
   // Sundurliðun
   var rate = calc.rate;
   var noVei = (s.muni === 'rvk');
+  var lod = rate.lod;
+  // Lóðarleiga reiknast EKKI í total (þarf sér-input). Birtum sem upplýsingu.
+  var lodSample = null, lodLabel = null;
+  if(lod){
+    if(lod.type === 'kr_m2'){
+      lodSample = lod.val * s.lodM2;
+      lodLabel = lod.val.toLocaleString('is-IS').replace('.',',') + ' kr./m² × '+s.lodM2+' m² (lóðarstærð)';
+    } else if(lod.type === 'pct'){
+      lodSample = s.lodMat * lod.val / 100;
+      lodLabel = hmFmtPct(lod.val) + ' × '+hmFmtKr(s.lodMat).replace(' kr.','')+' lóðarmat';
+    }
+  }
   var rows = [
     {label:'Fasteignaskattur A', kr:calc.fast, pct:rate.fast, sub:'Álagningarhlutfall × fasteignamat'},
     {label:'Fráveitugjald',      kr:calc.fraveita, pct:rate.fraveita, sub:noVei?'Greiðist til Veitna ohf., ekki Reykjavíkurborgar':'Hlutfall af fasteignamati'},
@@ -8087,6 +8109,47 @@ function hmRender(){
     +     '<tfoot><tr style="border-top:1px solid #0002;font-weight:600;"><td style="padding:10px 0;">Samtals</td><td></td><td style="text-align:right;font-variant-numeric:tabular-nums;">'+hmFmtKr(calc.total)+'</td></tr></tfoot>'
     +   '</table>'
     +   (meta.note?'<div style="font-size:11px;color:var(--ink2);margin-top:1rem;padding:10px 12px;background:#FFF8E1;border-radius:6px;line-height:1.55;"><strong>'+meta.name+':</strong> '+meta.note+'</div>':'')
+    + '</div>'
+
+    // ANNAÐ SEM HEIMILI BORGAR — lóðarleiga, útsvar (info, ekki í total)
+    + '<div class="card" style="margin-bottom:1rem;padding:1.25rem;">'
+    +   '<div class="card-title" style="margin-bottom:4px;">Annað sem heimili borgar í '+meta.name+' '+s.year+'</div>'
+    +   '<div class="card-subtitle" style="margin-bottom:1rem;">Þessir liðir reiknast ekki sjálfkrafa í heildina að ofan því þeir krefjast frekari upplýsinga (lóðarstærð, tekjur).</div>'
+    +   '<div style="display:grid;grid-template-columns:1fr;gap:14px;">'
+    // Lóðarleiga
+    +     (lod ? (
+        '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;padding:12px 0;border-bottom:1px solid #0001;">'
+        +   '<div>'
+        +     '<div style="font-weight:500;margin-bottom:3px;">Lóðarleiga</div>'
+        +     '<div style="font-size:11px;color:var(--ink3);line-height:1.5;">'
+        +       (lod.type==='kr_m2'
+            ? 'Föst krónutala á m² lóðar — sérstakt fyrir Kópavog. Margfaldast með stærð lóðarinnar.'
+            : 'Hlutfall af lóðarmati (sem er undirmengi fasteignamatsins). Lóðarmatið er lægra en heildarmatið.')
+        +     '</div>'
+        +     '<div style="font-size:11px;color:var(--ink3);margin-top:4px;">Dæmi: '+lodLabel+'</div>'
+        +   '</div>'
+        +   '<div style="text-align:right;white-space:nowrap;">'
+        +     '<div style="font-size:13px;font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums;">'
+        +       (lod.type==='kr_m2'
+              ? lod.val.toLocaleString('is-IS', {minimumFractionDigits:2, maximumFractionDigits:2}).replace('.',',') + ' kr./m²'
+              : hmFmtPct(lod.val))
+        +     '</div>'
+        +     '<div style="font-size:11px;color:var(--ink3);margin-top:2px;">≈ '+hmFmtKr(lodSample)+' í þessu dæmi</div>'
+        +   '</div>'
+        + '</div>'
+      ) : '')
+    // Útsvar
+    +     '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;padding:12px 0;'+(lod?'':'border-top:1px solid #0001;')+'">'
+    +       '<div>'
+    +         '<div style="font-weight:500;margin-bottom:3px;">Útsvar (tekjuskattur sveitarfélagsins)</div>'
+    +         '<div style="font-size:11px;color:var(--ink3);line-height:1.5;">Reiknast af tekjuskattsstofni — ekki af fasteignamatinu. Lægst á Seltjarnarnesi (14,54%), hæst í Mosfellsbæ (14,97%).</div>'
+    +         '<div style="font-size:11px;color:var(--ink3);margin-top:4px;">Dæmi: 800.000 kr. mán. tekjur → '+hmFmtKr(800000*12*rate.utsvar/100)+'/ári hjá '+meta.name+'.</div>'
+    +       '</div>'
+    +       '<div style="text-align:right;white-space:nowrap;">'
+    +         '<div style="font-size:13px;font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums;">'+hmFmtPct(rate.utsvar)+'</div>'
+    +       '</div>'
+    +     '</div>'
+    +   '</div>'
     + '</div>'
 
     // COMPARISON
