@@ -7895,11 +7895,15 @@ var HEIMILI_COLORS = {rvk:'#1B3F5E', kop:'#2E7D32', hafn:'#854F0B', gard:'#6A4C9
 
 // State (sjálfgefið nýjasta ár, lod-stærð 100m² fyrir Kópavogur-reikning)
 // monthly: mánaðarlaun fyrir skatt — 0 þýðir „útsvar ekki innifalið"
+// Sjálfgefið 2025 því allar tölur (fasteignaskattur, fráveita, vatn,
+// sorp) eru staðfestar úr Byggðastofnun-skýrslunni „Samanburður á
+// fasteignamati og fasteignagjöldum 2025". 2026-tölur eru blanda af
+// staðfestum (Kop, Rvk-Veitur) og áætluðum gildum og merkt sem slíkar.
 var HM_STATE = {
-  mat: 80000000, muni: 'rvk', year: 2026,
+  mat: 80000000, muni: 'rvk', year: 2025,
   lodM2: 100, lodMat: 15000000,
-  monthly: 0,                          // mán.laun fyrir skatt — 0 = sleppa útsvari
-  veitM2: 100, veitHeit: 250           // m² íbúðar + heitt vatn m³/ár (Veitur, Rvk)
+  monthly: 0,
+  veitM2: 100, veitHeit: 250
 };
 
 function hmFmtKr(v){
@@ -8033,11 +8037,13 @@ function hmRender(){
   }).join('');
   var yearBtns = HEIMILI_YEARS.map(function(y){
     var active = y===s.year;
+    var partial = (y === 2026); // 2026-tölur eru blanda af staðfestum og áætluðum
     return '<button class="hm-yr'+(active?' active':'')+'" onclick="hmSetYear('+y+')" '
+      + 'title="'+(partial?'2026 — sumar tölur eru áætlaðar (sjá fyrirvara neðar)':'Staðfestar tölur úr Byggðastofnun og opinberum gjaldskrám')+'" '
       + 'style="padding:6px 11px;border-radius:6px;border:1px solid '
       + (active?'var(--ink)':'#0001')+';background:'+(active?'var(--ink)':'#fff')
       + ';color:'+(active?'#fff':'var(--ink)')+';font-size:12px;font-weight:'+(active?'600':'500')
-      + ';cursor:pointer;">'+y+'</button>';
+      + ';cursor:pointer;">'+y+(partial?' *':'')+'</button>';
   }).join('');
 
   // Quick-pick buttons for fasteignamat
@@ -8136,7 +8142,14 @@ function hmRender(){
   // Compose
   root.innerHTML = '<div style="max-width:1000px;margin:0 auto;padding:1.5rem;">'
     + '<h2 style="font-family:\'Playfair Display\',serif;font-size:24px;margin-bottom:6px;">Heimiliskostnaður vegna sveitarfélagsgjalda</h2>'
-    + '<p style="font-size:13px;color:var(--ink2);margin-bottom:1.5rem;line-height:1.6;max-width:720px;">Settu inn fasteignamatið þitt og sjáðu árlega greiðslu til sveitarfélagsins — fasteignaskattur, fráveita, vatn og sorphirða. Berðu saman 6 sveitarfélög á höfuðborgarsvæðinu yfir 5 ár (2022–2026). Útsvar (tekjuskattur sveitarfélagsins) birtist sér á parti ef þú slærð inn mán.laun.</p>'
+    + '<p style="font-size:13px;color:var(--ink2);margin-bottom:1rem;line-height:1.6;max-width:720px;">Settu inn fasteignamatið þitt og sjáðu árlega greiðslu til sveitarfélagsins — fasteignaskattur, fráveita, vatn og sorphirða. Berðu saman 6 sveitarfélög á höfuðborgarsvæðinu yfir 5 ár (2022–2026). Útsvar (tekjuskattur sveitarfélagsins) birtist sér á parti ef þú slærð inn mán.laun.</p>'
+
+    // Fyrirvari um traust gagna
+    + '<div style="font-size:12px;color:var(--ink);background:#FFF8E1;border:1px solid #B8935A40;border-radius:8px;padding:12px 14px;margin-bottom:1.5rem;line-height:1.55;max-width:720px;">'
+    +   '<strong>⚠ Um traust gagna.</strong> '
+    +   '<strong>2022–2025-tölur</strong> eru staðfestar úr Byggðastofnun-skýrslum og opinberum gjaldskrám — háleynd traust. '
+    +   '<strong>2026-tölur (merkt með *)</strong> eru blanda af staðfestum gildum (Kópavogur fast 0,151%/sorp 68k, Veitur kaltvatn/fráveita +4,46%) og áætluðum gildum þar sem 2026-gjaldskrár hafa ekki birst opinberlega — sérstaklega sorp í Reykjavík/Mosfellsbæ/Seltjarnarnesi og fasteignaskattur Garðabæjar/Mosfellsbæjar. Nákvæm sundurliðun heimilda neðst á síðunni.'
+    + '</div>'
 
     // INPUTS
     + '<div class="card" style="margin-bottom:1rem;padding:1.25rem;">'
