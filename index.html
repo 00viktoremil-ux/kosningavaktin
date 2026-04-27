@@ -686,7 +686,7 @@ header{background:var(--ink);color:var(--white);padding:0 1.5rem;display:flex;al
 // Reykjavík er vefgrundvöllur; Kópavogur, Hafnarfjörður, Garðabær, Mosfellsbær
 // og Seltjarnarnes bætast við í áföngum.
 const MUNI_META = {
-  rvk:  {id:'rvk',  name:'Reykjavík',      shortName:'Reykjavík',      nameEf:'Reykjavíkur',      koen:'Rvk',  councilName:'Borgarstjórn',  councilSize:23, stjoriTitle:'borgarstjóri',  ibuar:145931},
+  rvk:  {id:'rvk',  name:'Reykjavík',      shortName:'Reykjavík',      nameEf:'Reykjavíkur',      koen:'Rvk',  councilName:'Borgarstjórn',  councilSize:23, stjoriTitle:'borgarstjóri',  ibuar:147042},
   kopv: {id:'kopv', name:'Kópavogur',      shortName:'Kópavogur',      nameEf:'Kópavogs',         koen:'Kóp',  councilName:'Bæjarstjórn',    councilSize:11, stjoriTitle:'bæjarstjóri',    ibuar:40870},
   hafn: {id:'hafn', name:'Hafnarfjörður',  shortName:'Hafnarfj.',      nameEf:'Hafnarfjarðar',    koen:'Hfj',  councilName:'Bæjarstjórn',    councilSize:11, stjoriTitle:'bæjarstjóri',    ibuar:30817},
   gard: {id:'gard', name:'Garðabær',       shortName:'Garðabær',       nameEf:'Garðabæjar',       koen:'Gbr',  councilName:'Bæjarstjórn',    councilSize:11, stjoriTitle:'bæjarstjóri',    ibuar:19022},
@@ -3618,6 +3618,15 @@ let FINANCE = [
    skipti:'Borgarstjóraskipti 16. jan 2024 — Einar Þorsteinsson tók við samkvæmt samkomulagi frá 2022.',
    athugasemd:'Fyrsta jákvæða A-niðurstaðan í fimm ár (+4,7 ma.). Lífeyrisskuldbinding tekjufærsla 0,8 ma. (áætlun 2,1 ma. gjaldfærsla). Verðbólga hjaðnar í 4,8% í des., stýrivextir lækka í 8,5%. Skuldaviðmið A-hluta 77% (lækkar 5%-stig).',
    adj:[]
+  },
+  {yr:2025,
+   A:{tekjur:206.6, gjold:null, nidurstada:-5.3, skatttekjur:null, eignir:null, skuldir:null, eiginfe:87.0, EBITDA:7.3},
+   AB:{tekjur:null, nidurstada:8.0, eignir:null, skuldir:560.5, eiginfe:null, EBITDA:54.1},
+   ibuar:147042, borgarstjori:'Einar Þorsteinsson → Heiða Björg Hilmisdóttir', bstAf:'S',
+   meirihluti:['S','P','VG','J','F'], kjor:'2022–2026',
+   skipti:'Meirihlutaslit 7. feb 2025 — Heiða Björg Hilmisdóttir (S) tók við 21. feb 2025 í 5-flokka samstarfi (S+P+VG+J+F).',
+   athugasemd:'Ársreikningur 2025 (birtur 16. apríl 2026). A-hluti í halla -5,3 ma. (5,7 ma. undir áætlun) en jákvæður samstæðurekstur +8,0 ma. EBITDA samstæðu lækkar um 8,9 ma. milli ára (úr 63,0 í 54,1). Heildarskuldir samstæðu hækka úr 525 í 560,5 ma. Skuldaviðmið án OR fer úr 104% í 106%.',
+   adj:[]
   }
 ];
 
@@ -3650,14 +3659,18 @@ let BUDGETS = {
   2020: null, 2019: null, 2018: null, 2017: null, 2016: null, 2015: null
 };
 
-// Viðbótarupplýsingar um 2025 (janúar–september hálfsársuppgjör, ekki lokaður ársreikningur)
+// Ársreikningur 2025 — birtur 16. apríl 2026 (Reykjavíkurborg / Nasdaq).
+// Heimild: https://view.news.eu.nasdaq.com/view?id=be39a7b2ec5b3b8e14dfaae872bf757db
+// Breytan heitir áfram „PARTIAL" af tæknilegum ástæðum (kallendur) en
+// gögn eru full ársreikningur, ekki partial.
 let FINANCE_2025_PARTIAL = {
-  yr:2025, timabil:'Jan–sept 2025',
-  A:{tekjur:null, nidurstada:2.1, EBITDA:10.3, skatttekjur:119.3},
-  AB:{tekjur:null, nidurstada:10.7, EBITDA:45.1, eignir:1004.0, skuldir:548.0, eiginfe:456.0},
+  yr:2025, timabil:'Ársreikningur 2025 (birtur 16. apríl 2026)',
+  A:{tekjur:206.6, nidurstada:-5.3, EBITDA:7.3, skatttekjur:null, eiginfe:87.0, skuldavidmid:80},
+  AB:{tekjur:null, nidurstada:8.0, EBITDA:54.1, eignir:null, skuldir:560.5, eiginfe:null, skuldavidmid:106},
+  ibuar:147042,
   borgarstjori:'Einar Þorsteinsson → Heiða Björg Hilmisdóttir', bstAf:'S',
   meirihluti:['S','P','VG','J','F'], kjor:'feb 2025–',
-  athugasemd:'Einar Þorsteinsson sleit 4-flokka meirihlutanum 7. feb 2025. Í yfirlýsingum nefndi hann húsnæðis- og þéttingarstefnu (vildi brjóta nýtt land í stað þéttingar), leikskólamál, framtíð Reykjavíkurflugvallar, bílastæðamál og skort á hagræðingu. Dóra Björt Guðjónsdóttir (P) sagði hins vegar að raunveruleg ástæða væri lélegt fylgi Framsóknar í könnunum. Nýr 5-flokka meirihluti (S+P+VG+J+F) tók við 21. feb 2025 undir forystu Heiðu Bjargar Hilmisdóttur. Fullur ársreikningur 2025 birtist í lok apríl/byrjun maí 2026 — fyrir kjördag.'
+  athugasemd:'Halli A-hluta (-5,3 ma., 5,7 ma. undir áætlun) en jákvæður samstæðurekstur (+8,0 ma.). EBITDA samstæðu lækkar um 8,9 ma. milli ára (úr 63,0 í 54,1). Heildarskuldir samstæðu 560,5 ma. — skuldaviðmið án Orkuveitu hækkar í 106% (var 104% 2024). Pólitískt: Einar Þorsteinsson (B) sleit 4-flokka meirihluta 7. feb 2025; Heiða Björg Hilmisdóttir (S) tók við 21. feb í 5-flokka meirihluta (S+P+VG+J+F).'
 };
 
 // Kjörtímabil fyrir pólitíska samhengiskort (Borgarstjórnir-flipinn)
@@ -5903,7 +5916,7 @@ var SAMANB_MUNI_ORDER = ['rvk','kopv','hafn','gard','mos','selt'];
 // o.fl.) — birt í ársreikningum sveitarfélaga. Lögbundið hámark 150%.
 // null = ekki birt í opinberri heimild sem fannst við verifíkeringu apríl 2026.
 var SAMANB_SKULDAVIDMID_OPINBERT = {
-  rvk:  {val: 104,  yr: 2024, src: 'Reykjavíkurborg ársreikningur 2024 (samstæða án OR)'},
+  rvk:  {val: 106,  yr: 2025, src: 'Reykjavíkurborg ársreikningur 2025 (samstæða án OR), birtur apríl 2026'},
   kopv: {val: 77,   yr: 2024, src: 'Kópavogur ársreikningur 2024 (samstæða)'},
   hafn: {val: 90,   yr: 2024, src: 'Hafnarfjörður ársreikningur 2024'},
   gard: {val: 97,   yr: 2024, src: 'Garðabær ársreikningur 2024 — óstaðfest úr frumgögnum'},
@@ -7064,8 +7077,8 @@ function render2025Banner(){
   el.style.display = 'block';
   el.innerHTML = '<div style="background:linear-gradient(135deg,var(--gold-l),var(--bg));border:0.5px solid var(--gold);border-radius:12px;padding:1rem 1.25rem;margin-bottom:1.25rem;display:flex;gap:1rem;flex-wrap:wrap;align-items:center;">'
     +'<div style="flex:1;min-width:220px">'
-      +'<div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--gold);margin-bottom:3px">Bráðabirgðatölur · '+d.timabil+'</div>'
-      +'<div style="font-family:\'Playfair Display\',serif;font-size:16px;color:var(--ink);margin-bottom:3px">Árshlutareikningur 2025 (jan–sept)</div>'
+      +'<div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--gold);margin-bottom:3px">'+d.timabil+'</div>'
+      +'<div style="font-family:\'Playfair Display\',serif;font-size:16px;color:var(--ink);margin-bottom:3px">Lykiltölur ársreiknings 2025</div>'
       +'<div style="font-size:12px;color:var(--ink2);line-height:1.5">'+d.athugasemd+'</div>'
     +'</div>'
     +'<div style="display:flex;gap:.75rem;flex-wrap:wrap">'
@@ -7883,15 +7896,45 @@ var HEIMILI_RATES = {
     2024:{fast:0.166, fraveita:0.1425, vatn:0.0855,sorp:75000, utsvar:14.54, lod:{type:'pct', val:0.400}, est:false},
     2025:{fast:0.166, fraveita:0.1425, vatn:0.0855,sorp:75000, utsvar:14.54, lod:{type:'pct', val:0.400}, est:false},
     // 2026 sorp: blandaður 51.400 + lífúrg. 12.800 (140L) + pappír/plast 20.100 + grunngjald 25.000 ≈ 109.300 kr (úr seltjarnarnes.is/sorphirdadagatal — flag: ekki staðfest með PDF).
-    2026:{fast:0.166, fraveita:0.1425, vatn:0.0855,sorp:109300,utsvar:14.54, lod:{type:'pct', val:0.400}, est:true}}}
+    2026:{fast:0.166, fraveita:0.1425, vatn:0.0855,sorp:109300,utsvar:14.54, lod:{type:'pct', val:0.400}, est:true}}},
+  // ---- Landsbyggðar-munir (frá og með 2024) ----
+  // 2022/2023 nota sömu tölur og 2024 — ekki staðfest, einungis til ásetningar svo
+  // graphan brotni ekki. Allt merkt est:true fyrir þau ár.
+  akur: {name:'Akureyri', short:'Akur', note:'Akureyri hefur tiltölulega há fasteignagjöld (0,28%–0,31% f-skattur) en lágt vatns/fráveitugjöld eru fast krónutala (Norðurorka). Útsvar 14,97% — hámark.', yrs:{
+    2022:{fast:0.28, fraveita_kr:62000, vatn_kr:38000, sorp:48000, utsvar:14.52, lod:{type:'pct', val:1.00}, est:true},
+    2023:{fast:0.28, fraveita_kr:63000, vatn_kr:39000, sorp:49000, utsvar:14.74, lod:{type:'pct', val:1.00}, est:true},
+    2024:{fast:0.28, fraveita_kr:65000, vatn_kr:40000, sorp:50268, utsvar:14.97, lod:{type:'pct', val:1.00}, est:true},
+    2025:{fast:0.31, fraveita_kr:72759, vatn_kr:42000, sorp:82400, utsvar:14.97, lod:{type:'pct', val:1.00}, est:false},
+    2026:{fast:0.28, fraveita_kr:75000, vatn_kr:45000, sorp:85000, utsvar:14.97, lod:{type:'pct', val:1.00}, est:true}}},
+  rnes: {name:'Reykjanesbær', short:'Rnes', note:'Reykjanesbær hefur staðfest 0,250% fasteignaskatt og lækkaði fráveitugjald í 0,10% fyrir 2026 (úr 0,13–0,15% áður). Vatn er fast gjald frá HS Veitum. Útsvar 14,97%.', yrs:{
+    2022:{fast:0.250, fraveita:0.180, vatn_kr:43000, sorp:38000, utsvar:14.52, lod:{type:'pct', val:1.50}, est:true},
+    2023:{fast:0.250, fraveita:0.165, vatn_kr:44500, sorp:39500, utsvar:14.74, lod:{type:'pct', val:1.50}, est:true},
+    2024:{fast:0.250, fraveita:0.150, vatn_kr:46400, sorp:40560, utsvar:14.97, lod:{type:'pct', val:1.50}, est:true},
+    2025:{fast:0.250, fraveita:0.130, vatn_kr:48500, sorp:45000, utsvar:14.97, lod:{type:'pct', val:1.50}, est:false},
+    2026:{fast:0.250, fraveita:0.100, vatn_kr:51000, sorp:47000, utsvar:14.97, lod:{type:'pct', val:1.50}, est:true}}},
+  isaf: {name:'Ísafjarðarbær', short:'Ísaf', note:'Ísafjarðarbær er með hæsta fasteignaskatt á sambandi (0,540% 2024 → 0,50% 2025 → 0,48% 2026 — mikil lækkun). Vatn er ódýrasta á landinu (fast gjald). Sorp er hátt vegna fjarlægðarflutninga. Útsvar 14,97%.', yrs:{
+    2022:{fast:0.540, fraveita:0.250, vatn_kr:4200, sorp:95000, utsvar:14.52, lod:{type:'pct', val:1.50}, est:true},
+    2023:{fast:0.540, fraveita:0.240, vatn_kr:4300, sorp:100000, utsvar:14.52, lod:{type:'pct', val:1.50}, est:true},
+    2024:{fast:0.540, fraveita:0.230, vatn_kr:4448, sorp:107000, utsvar:14.74, lod:{type:'pct', val:1.50}, est:true},
+    2025:{fast:0.500, fraveita_kr:50692, vatn_kr:4802, sorp:117260, utsvar:14.97, lod:{type:'pct', val:1.50}, est:false},
+    2026:{fast:0.480, fraveita_kr:55000, vatn_kr:5000, sorp:122000, utsvar:14.97, lod:{type:'pct', val:1.50}, est:true}}},
+  mula: {name:'Múlaþing', short:'Mul', note:'Múlaþing (Egilsstaðir o.fl.) er með 0,45% fasteignaskatt og 0,30% fráveitugjald. Vatn er fast gjald með m²-stuðli. Útsvar 14,74%.', yrs:{
+    2022:{fast:0.45, fraveita:0.30, vatn_kr:55000, sorp:46000, utsvar:14.52, lod:{type:'pct', val:0.75}, est:true},
+    2023:{fast:0.45, fraveita:0.30, vatn_kr:57500, sorp:48500, utsvar:14.52, lod:{type:'pct', val:0.75}, est:true},
+    2024:{fast:0.45, fraveita:0.30, vatn_kr:59854, sorp:51400, utsvar:14.52, lod:{type:'pct', val:0.75}, est:true},
+    2025:{fast:0.45, fraveita:0.30, vatn_kr:61856, sorp:74200, utsvar:14.74, lod:{type:'pct', val:0.75}, est:false},
+    2026:{fast:0.45, fraveita:0.30, vatn_kr:63000, sorp:78000, utsvar:14.74, lod:{type:'pct', val:0.75}, est:true}}}
 };
-var HEIMILI_MUNI_ORDER = ['rvk','kop','hafn','gard','mos','selt'];
+var HEIMILI_MUNI_ORDER = ['rvk','kop','hafn','gard','mos','selt','akur','rnes','isaf','mula'];
 // Höldum okkur við 5 ár 2022–2026 — fyrir þau eru álagningarhlutföll
 // staðfest í Byggðastofnun-skýrslum og opinberum gjaldskrám. Eldri
 // gögn (2018–2021) tiltæk í HEIMILI_RATES en birtum ekki í UI til að
 // halda síðunni einfaldri og forðast áætlaðar tölur.
 var HEIMILI_YEARS = [2022,2023,2024,2025,2026];
-var HEIMILI_COLORS = {rvk:'#1B3F5E', kop:'#2E7D32', hafn:'#854F0B', gard:'#6A4C93', mos:'#C5832D', selt:'#A33B5E'};
+var HEIMILI_COLORS = {
+  rvk:'#1B3F5E', kop:'#2E7D32', hafn:'#854F0B', gard:'#6A4C93', mos:'#C5832D', selt:'#A33B5E',
+  akur:'#0B6E4F', rnes:'#1F5582', isaf:'#7E2D40', mula:'#856332'
+};
 
 // State (sjálfgefið nýjasta ár, lod-stærð 100m² fyrir Kópavogur-reikning)
 // monthly: mánaðarlaun fyrir skatt — 0 þýðir „útsvar ekki innifalið"
@@ -7935,12 +7978,17 @@ function hmFmtPct(v){
 // Fyrir Reykjavík: vatn/fráveita er innheimt af Veitum — bætum Veitur-kostn.
 // (kalt vatn + fráveita, EKKI heitt vatn) við svo samanburður sé sanngjarn.
 // husType: 'einb' (einbýli, full tunnur) eða 'fjol' (fjölbýli, ~40% per íbúð)
+//
+// fraveita/vatn geta verið prósenta af fasteignamati EÐA fast krónutala.
+// Ef row.fraveita_kr er sett: bara þátt af mati ekki, notum krónutöluna.
+// Sama um row.vatn_kr. Þetta er notað fyrir landsbyggðar-muni þar sem
+// gjaldskrá Norðurorku/HS Veitna er „fastagjald + kr/m²" frekar en %.
 function hmCalc(muniId, year, mat, veitM2, husType){
   var row = HEIMILI_RATES[muniId] && HEIMILI_RATES[muniId].yrs[year];
   if(!row) return null;
   var fast      = mat * row.fast      / 100;
-  var fraveita  = mat * row.fraveita  / 100;
-  var vatn      = mat * row.vatn      / 100;
+  var fraveita  = (row.fraveita_kr != null) ? row.fraveita_kr : (mat * row.fraveita / 100);
+  var vatn      = (row.vatn_kr     != null) ? row.vatn_kr     : (mat * row.vatn     / 100);
   var sorpFactor = (husType === 'einb') ? 1.0 : HM_FJOL_FACTOR;
   var sorp      = row.sorp * sorpFactor;
   // Rvk: bætum við áætluðum Veitur-kalda-vatns- og fráveitugjaldi.
@@ -8383,7 +8431,7 @@ function hmRender(){
         <div><div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.07em;color:var(--ink3);margin-bottom:3px">Frambjóðendur</div><div style="font-size:13px;color:var(--ink);line-height:1.6">reykjavik.is/kosningar<br>Vefsíður framboða (xd.is, xs.is, vidreisn.is, midflokkurinn.is o.fl.)</div></div>
         <div><div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.07em;color:var(--ink3);margin-bottom:3px">Kannanir</div><div style="font-size:13px;color:var(--ink);line-height:1.6">kosningaspa.is (Baldur Héðinsson)<br>Gallup Þjóðarpúls<br>Maskína Borgarviti<br>Wikipedia: Borgarstjórnarkosningar 2026</div></div>
         <div><div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.07em;color:var(--ink3);margin-bottom:3px">Stefnumál</div><div style="font-size:13px;color:var(--ink);line-height:1.6">Opinberar stefnuskrár framboða<br>Fréttaumfjöllun 2025-2026</div></div>
-        <div><div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.07em;color:var(--ink3);margin-bottom:3px">Fjármál borgar</div><div style="font-size:13px;color:var(--ink);line-height:1.6">Ársreikningar Reykjavíkurborgar 2015–2024<br>Árshlutareikningur 2025<br>Hagstofa Íslands (VNV, íbúafjöldi)</div></div>
+        <div><div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.07em;color:var(--ink3);margin-bottom:3px">Fjármál borgar</div><div style="font-size:13px;color:var(--ink);line-height:1.6">Ársreikningar Reykjavíkurborgar 2015–2025<br>Hagstofa Íslands (VNV, íbúafjöldi)</div></div>
         <div><div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.07em;color:var(--ink3);margin-bottom:3px">Fréttir</div><div style="font-size:13px;color:var(--ink);line-height:1.6">RSS-straumar frá RÚV, Vísi, Mbl, DV, Heimildinni, Viljanum — uppfærist á 10 mín fresti</div></div>
         <div><div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.07em;color:var(--ink3);margin-bottom:3px">Myndir frambjóðenda</div><div style="font-size:13px;color:var(--ink);line-height:1.6">Vefsíður framboða (S, D, C, M, F, P)<br>reykjavik.is/borgarfulltruar<br>Opinber portraitmyndir (Wikipedia, mannlif.is)</div></div>
       </div>
