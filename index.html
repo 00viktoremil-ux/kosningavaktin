@@ -7883,15 +7883,45 @@ var HEIMILI_RATES = {
     2024:{fast:0.166, fraveita:0.1425, vatn:0.0855,sorp:75000, utsvar:14.54, lod:{type:'pct', val:0.400}, est:false},
     2025:{fast:0.166, fraveita:0.1425, vatn:0.0855,sorp:75000, utsvar:14.54, lod:{type:'pct', val:0.400}, est:false},
     // 2026 sorp: blandaður 51.400 + lífúrg. 12.800 (140L) + pappír/plast 20.100 + grunngjald 25.000 ≈ 109.300 kr (úr seltjarnarnes.is/sorphirdadagatal — flag: ekki staðfest með PDF).
-    2026:{fast:0.166, fraveita:0.1425, vatn:0.0855,sorp:109300,utsvar:14.54, lod:{type:'pct', val:0.400}, est:true}}}
+    2026:{fast:0.166, fraveita:0.1425, vatn:0.0855,sorp:109300,utsvar:14.54, lod:{type:'pct', val:0.400}, est:true}}},
+  // ---- Landsbyggðar-munir (frá og með 2024) ----
+  // 2022/2023 nota sömu tölur og 2024 — ekki staðfest, einungis til ásetningar svo
+  // graphan brotni ekki. Allt merkt est:true fyrir þau ár.
+  akur: {name:'Akureyri', short:'Akur', note:'Akureyri hefur tiltölulega há fasteignagjöld (0,28%–0,31% f-skattur) en lágt vatns/fráveitugjöld eru fast krónutala (Norðurorka). Útsvar 14,97% — hámark.', yrs:{
+    2022:{fast:0.28, fraveita_kr:62000, vatn_kr:38000, sorp:48000, utsvar:14.52, lod:{type:'pct', val:1.00}, est:true},
+    2023:{fast:0.28, fraveita_kr:63000, vatn_kr:39000, sorp:49000, utsvar:14.74, lod:{type:'pct', val:1.00}, est:true},
+    2024:{fast:0.28, fraveita_kr:65000, vatn_kr:40000, sorp:50268, utsvar:14.97, lod:{type:'pct', val:1.00}, est:true},
+    2025:{fast:0.31, fraveita_kr:72759, vatn_kr:42000, sorp:82400, utsvar:14.97, lod:{type:'pct', val:1.00}, est:false},
+    2026:{fast:0.28, fraveita_kr:75000, vatn_kr:45000, sorp:85000, utsvar:14.97, lod:{type:'pct', val:1.00}, est:true}}},
+  rnes: {name:'Reykjanesbær', short:'Rnes', note:'Reykjanesbær hefur staðfest 0,250% fasteignaskatt og lækkaði fráveitugjald í 0,10% fyrir 2026 (úr 0,13–0,15% áður). Vatn er fast gjald frá HS Veitum. Útsvar 14,97%.', yrs:{
+    2022:{fast:0.250, fraveita:0.180, vatn_kr:43000, sorp:38000, utsvar:14.52, lod:{type:'pct', val:1.50}, est:true},
+    2023:{fast:0.250, fraveita:0.165, vatn_kr:44500, sorp:39500, utsvar:14.74, lod:{type:'pct', val:1.50}, est:true},
+    2024:{fast:0.250, fraveita:0.150, vatn_kr:46400, sorp:40560, utsvar:14.97, lod:{type:'pct', val:1.50}, est:true},
+    2025:{fast:0.250, fraveita:0.130, vatn_kr:48500, sorp:45000, utsvar:14.97, lod:{type:'pct', val:1.50}, est:false},
+    2026:{fast:0.250, fraveita:0.100, vatn_kr:51000, sorp:47000, utsvar:14.97, lod:{type:'pct', val:1.50}, est:true}}},
+  isaf: {name:'Ísafjarðarbær', short:'Ísaf', note:'Ísafjarðarbær er með hæsta fasteignaskatt á sambandi (0,540% 2024 → 0,50% 2025 → 0,48% 2026 — mikil lækkun). Vatn er ódýrasta á landinu (fast gjald). Sorp er hátt vegna fjarlægðarflutninga. Útsvar 14,97%.', yrs:{
+    2022:{fast:0.540, fraveita:0.250, vatn_kr:4200, sorp:95000, utsvar:14.52, lod:{type:'pct', val:1.50}, est:true},
+    2023:{fast:0.540, fraveita:0.240, vatn_kr:4300, sorp:100000, utsvar:14.52, lod:{type:'pct', val:1.50}, est:true},
+    2024:{fast:0.540, fraveita:0.230, vatn_kr:4448, sorp:107000, utsvar:14.74, lod:{type:'pct', val:1.50}, est:true},
+    2025:{fast:0.500, fraveita_kr:50692, vatn_kr:4802, sorp:117260, utsvar:14.97, lod:{type:'pct', val:1.50}, est:false},
+    2026:{fast:0.480, fraveita_kr:55000, vatn_kr:5000, sorp:122000, utsvar:14.97, lod:{type:'pct', val:1.50}, est:true}}},
+  mula: {name:'Múlaþing', short:'Mul', note:'Múlaþing (Egilsstaðir o.fl.) er með 0,45% fasteignaskatt og 0,30% fráveitugjald. Vatn er fast gjald með m²-stuðli. Útsvar 14,74%.', yrs:{
+    2022:{fast:0.45, fraveita:0.30, vatn_kr:55000, sorp:46000, utsvar:14.52, lod:{type:'pct', val:0.75}, est:true},
+    2023:{fast:0.45, fraveita:0.30, vatn_kr:57500, sorp:48500, utsvar:14.52, lod:{type:'pct', val:0.75}, est:true},
+    2024:{fast:0.45, fraveita:0.30, vatn_kr:59854, sorp:51400, utsvar:14.52, lod:{type:'pct', val:0.75}, est:true},
+    2025:{fast:0.45, fraveita:0.30, vatn_kr:61856, sorp:74200, utsvar:14.74, lod:{type:'pct', val:0.75}, est:false},
+    2026:{fast:0.45, fraveita:0.30, vatn_kr:63000, sorp:78000, utsvar:14.74, lod:{type:'pct', val:0.75}, est:true}}}
 };
-var HEIMILI_MUNI_ORDER = ['rvk','kop','hafn','gard','mos','selt'];
+var HEIMILI_MUNI_ORDER = ['rvk','kop','hafn','gard','mos','selt','akur','rnes','isaf','mula'];
 // Höldum okkur við 5 ár 2022–2026 — fyrir þau eru álagningarhlutföll
 // staðfest í Byggðastofnun-skýrslum og opinberum gjaldskrám. Eldri
 // gögn (2018–2021) tiltæk í HEIMILI_RATES en birtum ekki í UI til að
 // halda síðunni einfaldri og forðast áætlaðar tölur.
 var HEIMILI_YEARS = [2022,2023,2024,2025,2026];
-var HEIMILI_COLORS = {rvk:'#1B3F5E', kop:'#2E7D32', hafn:'#854F0B', gard:'#6A4C93', mos:'#C5832D', selt:'#A33B5E'};
+var HEIMILI_COLORS = {
+  rvk:'#1B3F5E', kop:'#2E7D32', hafn:'#854F0B', gard:'#6A4C93', mos:'#C5832D', selt:'#A33B5E',
+  akur:'#0B6E4F', rnes:'#1F5582', isaf:'#7E2D40', mula:'#856332'
+};
 
 // State (sjálfgefið nýjasta ár, lod-stærð 100m² fyrir Kópavogur-reikning)
 // monthly: mánaðarlaun fyrir skatt — 0 þýðir „útsvar ekki innifalið"
@@ -7935,12 +7965,17 @@ function hmFmtPct(v){
 // Fyrir Reykjavík: vatn/fráveita er innheimt af Veitum — bætum Veitur-kostn.
 // (kalt vatn + fráveita, EKKI heitt vatn) við svo samanburður sé sanngjarn.
 // husType: 'einb' (einbýli, full tunnur) eða 'fjol' (fjölbýli, ~40% per íbúð)
+//
+// fraveita/vatn geta verið prósenta af fasteignamati EÐA fast krónutala.
+// Ef row.fraveita_kr er sett: bara þátt af mati ekki, notum krónutöluna.
+// Sama um row.vatn_kr. Þetta er notað fyrir landsbyggðar-muni þar sem
+// gjaldskrá Norðurorku/HS Veitna er „fastagjald + kr/m²" frekar en %.
 function hmCalc(muniId, year, mat, veitM2, husType){
   var row = HEIMILI_RATES[muniId] && HEIMILI_RATES[muniId].yrs[year];
   if(!row) return null;
   var fast      = mat * row.fast      / 100;
-  var fraveita  = mat * row.fraveita  / 100;
-  var vatn      = mat * row.vatn      / 100;
+  var fraveita  = (row.fraveita_kr != null) ? row.fraveita_kr : (mat * row.fraveita / 100);
+  var vatn      = (row.vatn_kr     != null) ? row.vatn_kr     : (mat * row.vatn     / 100);
   var sorpFactor = (husType === 'einb') ? 1.0 : HM_FJOL_FACTOR;
   var sorp      = row.sorp * sorpFactor;
   // Rvk: bætum við áætluðum Veitur-kalda-vatns- og fráveitugjaldi.
