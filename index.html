@@ -7903,8 +7903,17 @@ var HM_STATE = {
   mat: 80000000, muni: 'rvk', year: 2025,
   lodM2: 100, lodMat: 15000000,
   monthly: 0,
-  veitM2: 100, veitHeit: 250
+  veitM2: 100, veitHeit: 250,
+  // einb = einbýli/parhús (eigin tunnur, fullt sorpgjald)
+  // fjol = fjölbýli (sameiginlegar tunnur, ~40% af gjaldi á íbúð)
+  // Sjálfgefið fjölbýli — algengasta tilvikið á höfuðborgarsvæðinu (~65% íbúða).
+  hus: 'fjol'
 };
+// Stuðstugull: hvers vegna fjölbýli ≈ 40% af einbýli-sorpi
+// Dæmi notanda: 7 íbúða stigagangur með 3 blandaðar + 3 pappír + 1 plast +
+// 1 lífræn = 8 tunnur. Per íbúð: ~44k vs ~116k einbýli í Rvk.
+// 44/116 ≈ 0,38. Tökum 0,40 sem varlegt meðaltal yfir öll sveitarfélög.
+var HM_FJOL_FACTOR = 0.40;
 
 function hmFmtKr(v){
   if(v == null) return '—';
@@ -7925,13 +7934,15 @@ function hmFmtPct(v){
 // Reiknar árlegan HEIMILISKOSTNAÐ (fasteignagjöld). Útsvar er aðskilið.
 // Fyrir Reykjavík: vatn/fráveita er innheimt af Veitum — bætum Veitur-kostn.
 // (kalt vatn + fráveita, EKKI heitt vatn) við svo samanburður sé sanngjarn.
-function hmCalc(muniId, year, mat, veitM2){
+// husType: 'einb' (einbýli, full tunnur) eða 'fjol' (fjölbýli, ~40% per íbúð)
+function hmCalc(muniId, year, mat, veitM2, husType){
   var row = HEIMILI_RATES[muniId] && HEIMILI_RATES[muniId].yrs[year];
   if(!row) return null;
   var fast      = mat * row.fast      / 100;
   var fraveita  = mat * row.fraveita  / 100;
   var vatn      = mat * row.vatn      / 100;
-  var sorp      = row.sorp;
+  var sorpFactor = (husType === 'einb') ? 1.0 : HM_FJOL_FACTOR;
+  var sorp      = row.sorp * sorpFactor;
   // Rvk: bætum við áætluðum Veitur-kalda-vatns- og fráveitugjaldi.
   // Heitt vatn er ekki innifalið (sambærilegt þjónusta hjá öðrum munum
   // er á eigin gjaldskrá og ekki sveitarfélagsmál).
@@ -8012,13 +8023,17 @@ function hmSetVeitHeit(v){
   HM_STATE.veitHeit = v;
   hmRender();
 }
+function hmSetHus(t){
+  HM_STATE.hus = (t==='einb' ? 'einb' : 'fjol');
+  hmRender();
+}
 
 function hmRender(){
   var root = document.getElementById('page-heimili');
   if(!root) return;
   var _sy = window.scrollY; // varðveita scroll við re-render
   var s = HM_STATE;
-  var calc = hmCalc(s.muni, s.year, s.mat, s.veitM2);
+  var calc = hmCalc(s.muni, s.year, s.mat, s.veitM2, s.hus);
   var meta = HEIMILI_RATES[s.muni];
   var hasUtsvar = s.monthly > 0;
   var utsvarKr = hmUtsvar(s.muni, s.year, s.monthly);
@@ -8063,7 +8078,7 @@ function hmRender(){
     {label:'Fasteignaskattur A', kr:calc.fast, pct:rate.fast, sub:'Álagningarhlutfall × fasteignamat'},
     {label:'Fráveitugjald',      kr:calc.fraveita, pct:isRvk?null:rate.fraveita, sub:isRvk?'Innheimt af Veitum ohf. — fastagjald + 519,68 kr./m² × '+s.veitM2+' m²':'Hlutfall af fasteignamati'},
     {label:'Vatnsgjald',         kr:calc.vatn,    pct:isRvk?null:rate.vatn,     sub:isRvk?'Innheimt af Veitum ohf. — fastagjald + 216,66 kr./m² × '+s.veitM2+' m² (kalt vatn)':'Hlutfall af fasteignamati'},
-    {label:'Sorphirðugjald',     kr:calc.sorp,    pct:null,          sub:'Typískt heimili (240L blandaður + lífúrg. + pappír/plast + endurv.) · '+(rate.est?'<span style="color:#854F0B">áætluð tala</span>':'staðfest gjaldskrá')}
+    {label:'Sorphirðugjald',     kr:calc.sorp,    pct:null,          sub:(s.hus==='einb'?'Einbýli — eigin tunnur (240L blandaður + lífúrg. + pappír/plast + endurv.)':'Fjölbýli — ~40% af einbýlis-gjaldi (sameiginlegar tunnur deilt á íbúðir)')+' · '+(rate.est?'<span style="color:#854F0B">áætluð tala</span>':'staðfest gjaldskrá')}
   ];
   var rowsHtml = rows.map(function(r){
     var pctTxt = r.pct == null ? '<span style="color:var(--ink3)">'+(r.kr>0&&isRvk?'sjá útreikning':'fast gjald')+'</span>'
@@ -8078,7 +8093,7 @@ function hmRender(){
   // Comparison: heimiliskostnaður á sama fasteignamati × 6 muni × valdu ári.
   // Rvk: bætum Veitur-kalda-vatni og fráveitu við svo samanburður sé sanngjarn.
   var compRows = HEIMILI_MUNI_ORDER.map(function(id){
-    var c = hmCalc(id, s.year, s.mat, s.veitM2);
+    var c = hmCalc(id, s.year, s.mat, s.veitM2, s.hus);
     return { id:id, name:HEIMILI_RATES[id].name, total:c?c.total:0, color:HEIMILI_COLORS[id] };
   }).sort(function(a,b){return a.total - b.total;});
   var maxTotal = Math.max.apply(null, compRows.map(function(r){return r.total;}));
@@ -8099,7 +8114,7 @@ function hmRender(){
   var allTotals = [];
   HEIMILI_MUNI_ORDER.forEach(function(id){
     HEIMILI_YEARS.forEach(function(y){
-      var c = hmCalc(id, y, s.mat, s.veitM2);
+      var c = hmCalc(id, y, s.mat, s.veitM2, s.hus);
       if(c) allTotals.push(c.total);
     });
   });
@@ -8109,14 +8124,14 @@ function hmRender(){
   var yScale = function(v){ return padT + (1 - (v-ymin)/(ymax-ymin)) * (H-padT-padB); };
   var lines = HEIMILI_MUNI_ORDER.map(function(id){
     var pts = HEIMILI_YEARS.map(function(y){
-      var c = hmCalc(id, y, s.mat, s.veitM2);
+      var c = hmCalc(id, y, s.mat, s.veitM2, s.hus);
       return c ? (x(y)+','+yScale(c.total)) : null;
     }).filter(Boolean).join(' ');
     var hl = (id === s.muni);
     return '<polyline points="'+pts+'" fill="none" stroke="'+HEIMILI_COLORS[id]+'" stroke-width="'+(hl?'2.5':'1.2')+'" opacity="'+(hl?'1':'0.45')+'"/>';
   }).join('');
   var dots = HEIMILI_YEARS.map(function(y){
-    var c = hmCalc(s.muni, y, s.mat, s.veitM2);
+    var c = hmCalc(s.muni, y, s.mat, s.veitM2, s.hus);
     if(!c) return '';
     var sel = (y === s.year);
     return '<circle cx="'+x(y)+'" cy="'+yScale(c.total)+'" r="'+(sel?'5':'3')+'" fill="'+HEIMILI_COLORS[s.muni]+'"/>';
@@ -8171,6 +8186,20 @@ function hmRender(){
     +     '<div>'
     +       '<div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--ink3);margin-bottom:.4rem;">Ár</div>'
     +       '<div style="display:flex;gap:5px;flex-wrap:wrap;">'+yearBtns+'</div>'
+    +     '</div>'
+    +     '<div>'
+    +       '<div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--ink3);margin-bottom:.4rem;">Húsnæðistegund <span style="text-transform:none;letter-spacing:0;color:var(--ink3);font-weight:400;">(hefur áhrif á sorpgjald)</span></div>'
+    +       '<div style="display:flex;gap:5px;flex-wrap:wrap;">'
+    +         ['fjol','einb'].map(function(h){
+        var active = (s.hus===h);
+        var label = (h==='fjol' ? 'Fjölbýli (sameiginl. tunnur)' : 'Einbýli/parhús (eigin tunnur)');
+        return '<button onclick="hmSetHus(\''+h+'\')" '
+          + 'style="padding:6px 12px;border-radius:6px;border:1px solid '
+          + (active?'var(--ink)':'#0001')+';background:'+(active?'var(--ink)':'#fff')
+          + ';color:'+(active?'#fff':'var(--ink)')+';font-size:12px;font-weight:'+(active?'600':'500')
+          + ';cursor:pointer;">'+label+'</button>';
+      }).join('')
+    +       '</div>'
     +     '</div>'
     +     '<div>'
     +       '<div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--ink3);margin-bottom:.4rem;">Mánaðarlaun fyrir skatt <span style="text-transform:none;letter-spacing:0;color:var(--ink3);font-weight:400;">(0 kr. = sleppa útsvari)</span></div>'
