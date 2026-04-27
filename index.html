@@ -1837,32 +1837,135 @@ function applyRoute(){
   updateMuniPicker();
 }
 
+// MUNI_PREVIEW — hluti­upplýsingar per muni sem ekki eru með fullt MUNI_DATA enn.
+// Sýndar í showComingSoon þangað til full síða er tilbúin (parties, rawCands, ...).
+// Heimildir: Wikipedia, opinberar fréttatilkynningar, framboðsvefir.
+var MUNI_PREVIEW = {
+  akur: {
+    bstName:'Ásthildur Sturludóttir', bstFlokkur:null, bstNote:'Ráðin (ekki kjörin) bæjarstjóri síðan 2018; samningur endurnýjaður eftir 2022',
+    meirihluti:['L (Bæjarlistinn)','D (Sjálfstæðisfl.)','M (Miðflokkur)'], maetiSeats:6,
+    framboð2026:[
+      {b:'B', n:'Framsóknarflokkurinn', oddv:'Sunna Hlín Jóhannesdóttir'},
+      {b:'C', n:'Viðreisn',             oddv:'Lovísa Oktovía Eyvindsdóttir'},
+      {b:'D', n:'Sjálfstæðisflokkurinn',oddv:'Berglind Ósk Guðmundsdóttir'},
+      {b:'L', n:'Bæjarlistinn',         oddv:'Óðinn Svan Óðinsson'},
+      {b:'M', n:'Miðflokkurinn',        oddv:'Hlynur Jóhannsson'},
+      {b:'S', n:'Samfylkingin',         oddv:'Sindri S. Kristjánsson'},
+      {b:'V', n:'Vinstrihreyfingin – grænt framboð', oddv:'Jana Salóme Ingibjargar Jósepsdóttir'},
+      {b:'Y', n:'Akureyrarlistinn (nýtt)', oddv:'Þórhallur Jónsson'}
+    ],
+    urslit2022:[
+      {b:'L', n:'Bæjarlistinn',         pct:18.7, sæti:3},
+      {b:'D', n:'Sjálfstæðisflokkurinn',pct:17.97,sæti:2},
+      {b:'B', n:'Framsóknarflokkurinn', pct:17,   sæti:2},
+      {b:'F', n:'Flokkur fólksins',     pct:12,   sæti:1, note:'Ekki framboð 2026'},
+      {b:'S', n:'Samfylkingin',         pct:12,   sæti:1},
+      {b:'M', n:'Miðflokkurinn',        pct:8,    sæti:1},
+      {b:'V', n:'Vinstri græn',         pct:7,    sæti:1},
+      {b:'K', n:'Kattaframboðið',       pct:4,    sæti:0},
+      {b:'P', n:'Píratar',              pct:3,    sæti:0}
+    ],
+    kjorsokn2022:64.1,
+    note:'8 framboðslistar samþykktir á Akureyri fyrir 2026 — einn fleiri en 2022 því Akureyrarlistinn er nýr (Þórhallur Jónsson sagði sig úr D og stofnaði). Flokkur fólksins býður ekki fram aftur.'
+  },
+  rnes: {
+    bstName:'Kjartan Már Kjartansson', bstFlokkur:null, bstNote:'Ráðin bæjarstjóri',
+    meirihluti:['B (Framsókn)','D (Sjálfstæðisfl.)','S (Samfylking)'], maetiSeats:9,
+    note:'Framboðslistar 2026 hafa ekki verið staðfestir með beinni heimild en framboðsfrestur er rétt liðinn. Listar bætast við þegar staðfestir.'
+  },
+  isaf: {
+    bstName:'Sigríður Júlía Brynleifsdóttir', bstFlokkur:null, bstNote:'Núverandi bæjarstjóri',
+    meirihluti:[], maetiSeats:null,
+    note:'Framboðslistar 2026 hafa ekki verið staðfestir með beinni heimild. Bæjarstjórn 9 fulltrúar.'
+  },
+  mula: {
+    bstName:'Dagmar Ýr Stefánsdóttir', bstFlokkur:null, bstNote:'Núverandi sveitarstjóri',
+    meirihluti:[], maetiSeats:null,
+    note:'Framboðslistar 2026 hafa ekki verið staðfestir með beinni heimild. Sveitarstjórn 11 fulltrúar. Múlaþing varð til 2020 við sameiningu Borgarfjarðarhrepps, Djúpavogshrepps, Fljótsdalshéraðs og Seyðisfjarðarkaupstaðar.'
+  }
+};
+
+function _muniPreviewHtml(muniId){
+  var m = MUNI_META[muniId];
+  var p = MUNI_PREVIEW[muniId];
+  if(!p){
+    return '<div style="font-size:14px;color:var(--ink2);line-height:1.6;">Kosningavaktin er í smíðum fyrir '+m.name+'. Framboð, frambjóðendur, stefnumál og fjármál bætast við á næstu dögum.</div>';
+  }
+  var html = '<div style="text-align:left;max-width:680px;margin:0 auto;">';
+  // Bæjarstjóri
+  html += '<div style="margin-bottom:1.25rem;padding-bottom:1.25rem;border-bottom:0.5px solid #854F0B40;">'
+    + '<div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:#854F0B;margin-bottom:4px;">Núverandi '+m.stjoriTitle+'</div>'
+    + '<div style="font-family:\'Playfair Display\',serif;font-size:20px;color:var(--ink);margin-bottom:2px;">'+p.bstName+'</div>'
+    + '<div style="font-size:12px;color:var(--ink2);">'+p.bstNote+'</div>'
+    + (p.meirihluti && p.meirihluti.length ? '<div style="font-size:12px;color:var(--ink2);margin-top:6px;"><strong>Meirihluti:</strong> '+p.meirihluti.join(' + ')+(p.maetiSeats?' ('+p.maetiSeats+' sæti af '+m.councilSize+')':'')+'</div>' : '')
+    + '</div>';
+  // Framboð 2026
+  if(p.framboð2026 && p.framboð2026.length){
+    html += '<div style="margin-bottom:1.25rem;">'
+      + '<div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:#854F0B;margin-bottom:8px;">Framboð 2026 ('+p.framboð2026.length+')</div>'
+      + '<div style="display:grid;gap:6px;">'
+      + p.framboð2026.map(function(f){
+          return '<div style="display:flex;gap:10px;align-items:baseline;font-size:13px;padding:6px 10px;background:#fff;border-radius:6px;border:0.5px solid #0001;">'
+            + '<span style="font-family:\'Playfair Display\',serif;font-size:16px;font-weight:700;color:#854F0B;min-width:24px;">'+f.b+'</span>'
+            + '<span style="flex:1;"><strong>'+f.n+'</strong> · oddviti '+f.oddv+'</span>'
+            + '</div>';
+        }).join('')
+      + '</div>'
+      + '</div>';
+  }
+  // 2022 úrslit
+  if(p.urslit2022 && p.urslit2022.length){
+    html += '<div style="margin-bottom:1.25rem;">'
+      + '<div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:#854F0B;margin-bottom:8px;">Úrslit 2022'+(p.kjorsokn2022?' · kjörsókn '+p.kjorsokn2022+'%':'')+'</div>'
+      + '<table style="width:100%;font-size:12px;border-collapse:collapse;background:#fff;border-radius:6px;overflow:hidden;border:0.5px solid #0001;">'
+      + '<thead><tr style="background:#FAF8F3;font-size:11px;color:var(--ink3);text-transform:uppercase;letter-spacing:.06em;"><th style="padding:6px 10px;text-align:left;">Listi</th><th style="padding:6px 10px;text-align:right;">%</th><th style="padding:6px 10px;text-align:right;">Sæti</th></tr></thead>'
+      + '<tbody>'
+      + p.urslit2022.map(function(r){
+          return '<tr><td style="padding:6px 10px;"><strong>'+r.b+'</strong> · '+r.n+(r.note?' <span style="font-size:10px;color:var(--ink3)">('+r.note+')</span>':'')+'</td>'
+            + '<td style="padding:6px 10px;text-align:right;font-variant-numeric:tabular-nums;">'+r.pct+'%</td>'
+            + '<td style="padding:6px 10px;text-align:right;font-weight:'+(r.sæti>0?'600':'400')+';font-variant-numeric:tabular-nums;color:'+(r.sæti>0?'var(--ink)':'var(--ink3)')+';">'+r.sæti+'</td></tr>';
+        }).join('')
+      + '</tbody></table>'
+      + '</div>';
+  }
+  // Note
+  if(p.note){
+    html += '<div style="font-size:12px;color:var(--ink2);background:#FAF8F3;padding:10px 12px;border-radius:6px;line-height:1.55;">'+p.note+'</div>';
+  }
+  html += '</div>';
+  return html;
+}
+
 // Bráðabirgða-stubbur ef notandi smellir á sveitarfélag sem er ekki tilbúið.
 // Fasi 1 sýnir skilaboð og skilur eftir núverandi muni virkt. Þegar gögn koma
 // í fasa 2-4 hverfur þetta sjálfkrafa (availableMunis-listinn stækkar).
 function showComingSoon(muniId){
   var m = MUNI_META[muniId];
   if(!m) return;
-  var el = document.querySelector('.page.vis') || document.getElementById('page-forsida');
-  var msg = '<div style="max-width:560px;margin:2rem auto;padding:2rem;background:#FFF8E1;border:0.5px solid #854F0B40;border-radius:12px;text-align:center;">'
-    +'<div style="font-family:\'Playfair Display\',serif;font-size:24px;color:#854F0B;margin-bottom:8px;">'+m.name+' kemur von bráðar</div>'
-    +'<div style="font-size:14px;color:var(--ink2);line-height:1.6;">Kosningavaktin er í smíðum fyrir '+m.name+'. Framboð, frambjóðendur, stefnumál og fjármál bætast við á næstu dögum.</div>'
-    +'<div style="margin-top:16px;"><button class="pbtn" onclick="location.hash=\'#/rvk/forsida\'" style="padding:8px 14px;background:var(--ink);color:#fff;border:0;border-radius:6px;cursor:pointer;">Tilbaka í Reykjavík</button></div>'
+  var hasPreview = MUNI_PREVIEW && MUNI_PREVIEW[muniId];
+  var msg = '<div style="max-width:740px;margin:2rem auto;padding:2rem;background:#FFF8E1;border:0.5px solid #854F0B40;border-radius:12px;">'
+    +'<div style="text-align:center;margin-bottom:1.25rem;">'
+    +  '<div style="font-family:\'Playfair Display\',serif;font-size:28px;color:#854F0B;margin-bottom:6px;">'+m.councilName+'arkosningar '+m.shortName+' 2026</div>'
+    +  '<div style="font-size:13px;color:var(--ink2);">'+(hasPreview?'Forskoðun — ítarleg síða í vinnslu':'Síða í smíðum')+' · '+m.councilSize+' fulltrúar · '+m.ibuar.toLocaleString('is-IS').replace(/,/g,'.')+' íbúar</div>'
+    +'</div>'
+    + _muniPreviewHtml(muniId)
+    +'<div style="text-align:center;margin-top:1.5rem;display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">'
+    +'  <button onclick="location.hash=\'#/rvk/forsida\'" style="padding:8px 14px;background:var(--ink);color:#fff;border:0;border-radius:6px;cursor:pointer;font-family:inherit;">Tilbaka í Reykjavík</button>'
+    +'  <button onclick="location.hash=\'#/'+muniId+'/heimili\'" style="padding:8px 14px;background:#fff;color:var(--ink);border:0.5px solid #0001;border-radius:6px;cursor:pointer;font-family:inherit;">Sjá heimiliskostnað</button>'
+    +'</div>'
     +'</div>';
   var coming = document.getElementById('page-coming-soon');
   if(!coming){
     coming = document.createElement('div');
     coming.id = 'page-coming-soon';
     coming.className = 'page';
-    // Síðurnar eru direct children af body, svo hengjum við við sama foreldri
-    // og einhverri annarri síðu til að varðveita CSS/scoping.
     var ref = document.getElementById('page-forsida') || document.querySelector('.page');
     (ref ? ref.parentNode : document.body).appendChild(coming);
   }
   coming.innerHTML = msg;
   document.querySelectorAll('.page').forEach(function(p){p.classList.remove('vis');});
   coming.classList.add('vis');
-  document.title = m.name+' · Kosningavaktin (í smíðum)';
+  document.title = m.name+' · Kosningavaktin'+(hasPreview?'':' (í smíðum)');
 }
 
 // Stuðningur við hash-ruting við hleðslu (t.d. #/rvk/flokkar eða gamalt #/flokkar)
