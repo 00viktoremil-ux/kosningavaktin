@@ -5597,6 +5597,296 @@ MUNI_DATA.selt = {
   ]
 };
 
+// ============================================================================
+// === AKUREYRI — landsbyggðar-muni #1 =========================================
+// ============================================================================
+// 8 framboðslistar samþykktir 2026 (akureyri.is). 11 fulltrúa bæjarstjórn.
+// Núverandi meirihluti L+D+M (6 sæti) frá 2022; bæjarstjóri Ásthildur
+// Sturludóttir er ráðin (ekki kjörin) frá 2018 og samningur var endurnýjaður
+// eftir 2022-kosningar. Pólitísk hreyfing 2025-2026: Þórhallur Jónsson sagði
+// sig úr D og stofnaði Akureyrarlistann (Y); Hilda Jana Gísladóttir hætti hjá
+// S og Sindri Kristjánsson tók við sem oddvitaefni; Lovísa Oktovía leiðir
+// nýtt framboð Viðreisnar sem ekki bauð fram 2022.
+// Heimildir: akureyri.is/atta-frambodslistar-samthykktir-vegna-sveitarstjornar-
+// kosninga-2026, kosningasaga.wordpress.com (úrslit 2022), framboðsvefir
+// flokkanna á Akureyri, Wikipedia (Akureyri).
+var AKUR_RAW = [
+  // B — Framsóknarflokkurinn (Sunna Hlín Jóhannesdóttir, 2 sæti 2022)
+  ['B',1,'Sunna Hlín Jóhannesdóttir','framhaldsskólakennari og varabæjarfulltrúi'],
+  ['B',2,'Gunnar Már Gunnarsson','verkefnastjóri og bæjarfulltrúi'],
+  ['B',3,'Sverre Andreas Jakobsson','frambjóðandi'],
+  ['B',4,'Guðbjörg Anna Björnsdóttir','frambjóðandi'],
+  // C — Viðreisn (Lovísa Oktovía Eyvindsdóttir, nýtt framboð 2026)
+  ['C',1,'Lovísa Oktovía Eyvindsdóttir','stjórnmálafræðingur og varaþingmaður'],
+  ['C',2,'Elías Gunnar Þorbjörnsson','skólastjóri Giljaskóla'],
+  ['C',3,'Þóroddur Ingvarsson','svæfinga- og gjörgæslulæknir'],
+  ['C',4,'Elísabet Ögn Jóhannsdóttir','verkefnastjóri menningarmála hjá Akureyrarbæ'],
+  // D — Sjálfstæðisflokkurinn (Berglind Ósk Guðmundsdóttir, 2 sæti 2022)
+  ['D',1,'Berglind Ósk Guðmundsdóttir','fyrrverandi alþingismaður'],
+  ['D',2,'Heimir Örn Árnason','bæjarfulltrúi og formaður bæjarráðs'],
+  ['D',3,'Arna Rut Gunnarsdóttir','framkvæmdastjóri'],
+  ['D',4,'Þórhallur Harðarson','fjármála- og rekstrarstjóri'],
+  // L — Bæjarlistinn (Óðinn Svan Óðinsson, 3 sæti 2022 — stærsti flokkurinn)
+  ['L',1,'Óðinn Svan Óðinsson','fjölmiðlamaður og frétta- og dagskrárritstjóri'],
+  ['L',2,'Brynja Hlíf Þorsteinsdóttir','bæjarfulltrúi og lífeindafræðingur'],
+  ['L',3,'Preben Jón Pétursson','mjólkurtæknifræðingur'],
+  ['L',4,'María Pálsdóttir','leikkona og frumkvöðull'],
+  ['L',5,'Andri Teitsson','bæjarfulltrúi og verkfræðingur'],
+  // M — Miðflokkurinn (Hlynur Jóhannsson, 1 sæti 2022)
+  ['M',1,'Hlynur Jóhannsson','íþróttakennari, bæjarfulltrúi og rekstrarstjóri'],
+  ['M',2,'Inga Dís Sigurðardóttir','kennari og varabæjarfulltrúi'],
+  ['M',3,'Egill Einarsson','verslunarmaður'],
+  ['M',4,'Katrín Vilhjálmsdóttir','snyrtifræðingur og hjúkrunarfræðinemi'],
+  ['M',5,'Hannes Karlsson','rekstrarstjóri'],
+  // S — Samfylkingin (Sindri S. Kristjánsson, 1 sæti 2022)
+  ['S',1,'Sindri S. Kristjánsson','skrifstofustjóri og varabæjarfulltrúi'],
+  ['S',2,'Hanna Dóra Markúsdóttir','grunnskólakennari'],
+  ['S',3,'Sigrún Steinarsdóttir','stofnandi Matargjafa Akureyrar og nágrennis'],
+  ['S',4,'Jóhannes Már Pétursson','háskólanemi'],
+  ['S',5,'Zane Brikovska','starfsmaður á meðferðarheimilinu Bjargey'],
+  // V — Vinstrihreyfingin – grænt framboð (Jana Salóme Ingibjargar, 1 sæti 2022)
+  ['V',1,'Jana Salóme Ingibjargar Jósepsdóttir','bæjarfulltrúi'],
+  // Y — Akureyrarlistinn (nýtt framboð 2026, Þórhallur Jónsson sagði sig úr D)
+  ['Y',1,'Þórhallur Jónsson','framkvæmdastjóri og fyrrv. varabæjarfulltrúi'],
+  ['Y',2,'Karen Sigurbjörnsdóttir','mannauðsfulltrúi'],
+  ['Y',3,'Helgi Steinar Halldórsson','fasteignasali og ljósamaður']
+];
+
+MUNI_DATA.akur = {
+  parties: [
+    // Sæti = 2022 úrslit. Pct = 0 (engar 2026-kannanir á Akureyri enn).
+    {id:'B', name:'Framsóknarflokkurinn',  color:'#1E8A3E', pct:0, seats:2},
+    {id:'C', name:'Viðreisn',              color:'#D84315', pct:0, seats:0},
+    {id:'D', name:'Sjálfstæðisflokkurinn', color:'#1565C0', pct:0, seats:2},
+    {id:'L', name:'Bæjarlistinn',          color:'#A33B5E', pct:0, seats:3},
+    {id:'M', name:'Miðflokkurinn',         color:'#6A1B9A', pct:0, seats:1},
+    {id:'S', name:'Samfylkingin',          color:'#C62828', pct:0, seats:1},
+    {id:'V', name:'Vinstri græn',          color:'#2E7D32', pct:0, seats:1},
+    {id:'Y', name:'Akureyrarlistinn',      color:'#854F0B', pct:0, seats:0}
+  ],
+  rawCands: AKUR_RAW,
+  photos: {},
+  bios: {
+    'L-1':'Óðinn Svan Óðinsson leiðir Bæjarlistann (L) sem fékk flest atkvæði 2022 (18,7%, 3 sæti) og er hluti af núverandi meirihluta. Fjölmiðlamaður og frétta- og dagskrárritstjóri.',
+    'D-1':'Berglind Ósk Guðmundsdóttir er fyrrverandi alþingismaður Sjálfstæðisflokksins (2021–2024) og leiðir nýjan lista flokksins á Akureyri 2026 — eftir að Þórhallur Jónsson sagði sig úr flokknum og stofnaði Akureyrarlistann.',
+    'B-1':'Sunna Hlín Jóhannesdóttir er framhaldsskólakennari og varabæjarfulltrúi Framsóknar á Akureyri.',
+    'M-1':'Hlynur Jóhannsson er íþróttakennari, bæjarfulltrúi Miðflokksins og rekstrarstjóri.',
+    'C-1':'Lovísa Oktovía Eyvindsdóttir er stjórnmálafræðingur og varaþingmaður. Leiðir nýtt framboð Viðreisnar sem ekki bauð fram 2022.',
+    'S-1':'Sindri S. Kristjánsson er skrifstofustjóri og varabæjarfulltrúi Samfylkingarinnar; tók við oddvitastóli af Hildu Jönu Gísladóttur.',
+    'V-1':'Jana Salóme Ingibjargar Jósepsdóttir er bæjarfulltrúi Vinstri grænna.',
+    'Y-1':'Þórhallur Jónsson er framkvæmdastjóri og fyrrv. varabæjarfulltrúi Sjálfstæðisflokksins. Sagði sig úr D 2025/2026 og stofnaði Akureyrarlistann (Y).'
+  },
+  partyInfo: {
+    B: {fullname:'Framsóknarflokkurinn',          ideology:'Miðjuflokkur, áhersla á byggðamál og atvinnulíf', founded:1916},
+    C: {fullname:'Viðreisn',                      ideology:'Frjálslyndur miðjuflokkur, ábyrgur rekstur',     founded:2016},
+    D: {fullname:'Sjálfstæðisflokkurinn',         ideology:'Miðju-hægri, frjálslyndir markaðir',            founded:1929},
+    L: {fullname:'Bæjarlistinn (L-listi)',         ideology:'Óháður bæjarlisti — sögulega stór á Akureyri',  founded:2002},
+    M: {fullname:'Miðflokkurinn',                 ideology:'Miðju-hægri, áhersla á útlendingamál',          founded:2017},
+    S: {fullname:'Samfylkingin',                  ideology:'Miðju-vinstri, jafnaðarmenn',                   founded:2000},
+    V: {fullname:'Vinstrihreyfingin – grænt framboð', ideology:'Vinstri-grænn, umhverfisvernd og jöfnuður', founded:1999},
+    Y: {fullname:'Akureyrarlistinn',              ideology:'Nýr listi 2026 — Þórhallur Jónsson sagði sig úr D', founded:2026}
+  },
+  stefnumal: {
+    B: ['Velferð barna og fjölskyldna', 'Þjónusta við eldra fólk', 'Verðmætasköpun og atvinnuþróun á Norðurlandi'],
+    C: ['Þjónusta við íbúa með áherslu á börn og skólamál', 'Skóla- og leikskólastarf', 'Ábyrgur rekstur sveitarfélagsins'],
+    D: ['Lækkun álagna og ábyrgur rekstur', 'Atvinnumál og uppbygging', 'Skóla- og fjölskyldumál'],
+    L: ['Heildstæð uppbygging Akureyrar (skipulag og húsnæði)', 'Skóla- og íþróttamál — m.a. Hlíðarfjall sem hjarta vetraríþrótta', 'Menning og fjölbreytt atvinnulíf'],
+    M: ['Aðhald í rekstri og lækkun álagna', 'Samgöngu- og skipulagsmál', 'Bætt þjónusta við íbúa'],
+    S: ['Húsnæðis- og skipulagsmál', 'Velferð, jöfnuður og skólamál', 'Loftslags- og umhverfismál'],
+    V: ['Umhverfis- og loftslagsmál', 'Velferð og jöfnuður', 'Skóla- og leikskólamál'],
+    Y: ['Atvinnulíf, uppbygging og skipulag', 'Skólar, eldri borgarar, menning og íþróttir', 'Lækkun álagna og aukið samtal við ríkið']
+  },
+  sattmali2022: 'Þríflokkasamstarf L+D+M (6 sæti af 11) eftir kosningar 14. maí 2022. Bæjarlistinn (L) með 3 sæti, Sjálfstæðisflokkurinn (D) með 2 og Miðflokkurinn (M) með 1. Ásthildur Sturludóttir, sem hafði verið ráðin bæjarstjóri 2018, hélt áfram með endurnýjuðum samningi.',
+  // Fjármál: ársreikningar Akureyrarbæjar 2023-2024 (verður fylld nákvæmar
+  // við handvirkan PDF-import; eftirfarandi eru áætluð gildi og ætti að
+  // staðfesta með akureyri.is/arsreikningar).
+  finance: [
+    {yr:2023, A:{tekjur:25.0, gjold:24.5, nidurstada:0.5, skatttekjur:18.5, EBITDA:2.8},
+            AB:{tekjur:32.0, nidurstada:0.4, skuldir:24.0, EBITDA:5.5},
+            ibuar:20088, borgarstjori:'Ásthildur Sturludóttir', bstAf:null,
+            meirihluti:['L','D','M'], kjor:'2022–2026', est:true,
+            athugasemd:'Áætluð gildi — ekki staðfest úr ársreikningi. Þjónustusamningur við ríkið um málefni fatlaðs fólks þungur á rekstri.'},
+    {yr:2024, A:{tekjur:27.5, gjold:26.7, nidurstada:0.8, skatttekjur:20.2, EBITDA:3.2},
+            AB:{tekjur:35.0, nidurstada:0.6, skuldir:25.5, EBITDA:6.0},
+            ibuar:20620, borgarstjori:'Ásthildur Sturludóttir', bstAf:null,
+            meirihluti:['L','D','M'], kjor:'2022–2026', est:true,
+            athugasemd:'Áætluð gildi — ekki staðfest úr ársreikningi. Sambærilegt rekstrarsnið og 2023.'}
+  ],
+  budgets: {},
+  finance2025Partial: null,
+  kjortimabil: [
+    {
+      titill: '2022–2026 (núverandi)',
+      bst: 'Ásthildur Sturludóttir (ráðin)',
+      meirihluti: ['L','D','M'],
+      ar: [2022, 2023, 2024, 2025],
+      lykilmal: [
+        'Fyrsta þríflokkasamstarf L+D+M á Akureyri eftir áratuga D-meirihluta',
+        'Ásthildur Sturludóttir (ópólitísk) heldur áfram sem ráðin bæjarstjóri',
+        'Þróun „brothættra byggða" í nágrenni Akureyrar með aðstoð ríkis (Gunnar Már sá um það fyrir Framsókn)',
+        'Spenna á kjörtímabilinu: Þórhallur Jónsson (D) sagði sig úr flokki 2025/26 og stofnaði nýjan Akureyrarlista (Y)'
+      ]
+    }
+  ]
+};
+
+// ============================================================================
+// === REYKJANESBÆR — landsbyggðar-muni #2 =====================================
+// ============================================================================
+// 11 fulltrúa bæjarstjórn. 5 listar fengu sæti 2022 (D 3, B 3, S 3, Y 1, U 1).
+// Núverandi meirihluti B+S+Y (7 sæti) — sá sami og frá 2018. Bæjarstjóri
+// Kjartan Már Kjartansson. 2026-listar ekki staðfestir með beinni heimild,
+// en oddvitar þriggja stóru meirihlutaflokkanna eru þekktir.
+var RNES_RAW = [
+  // B — Framsóknarflokkurinn (Halldóra Fríða Þorvaldsdóttir, 3 sæti 2022)
+  ['B',1,'Halldóra Fríða Þorvaldsdóttir','bæjarfulltrúi og forseti bæjarstjórnar'],
+  // D — Sjálfstæðisflokkurinn (Margrét Þórarinsdóttir, 3 sæti 2022)
+  ['D',1,'Margrét Þórarinsdóttir','bæjarfulltrúi'],
+  // S — Samfylkingin (Friðjón Einarsson, 3 sæti 2022)
+  ['S',1,'Friðjón Einarsson','bæjarfulltrúi og formaður bæjarráðs'],
+  // Y — Bein leið (1 sæti 2022 — oddviti óstaðfestur 2026)
+  ['Y',1,'Oddviti óstaðfestur','frambjóðandi'],
+  // U — Umbót (1 sæti 2022 — oddviti óstaðfestur 2026)
+  ['U',1,'Oddviti óstaðfestur','frambjóðandi']
+];
+MUNI_DATA.rnes = {
+  parties: [
+    {id:'B', name:'Framsóknarflokkurinn',  color:'#1E8A3E', pct:0, seats:3},
+    {id:'D', name:'Sjálfstæðisflokkurinn', color:'#1565C0', pct:0, seats:3},
+    {id:'S', name:'Samfylkingin',          color:'#C62828', pct:0, seats:3},
+    {id:'U', name:'Umbót',                 color:'#37474F', pct:0, seats:1},
+    {id:'Y', name:'Bein leið',             color:'#854F0B', pct:0, seats:1}
+  ],
+  rawCands: RNES_RAW,
+  photos: {},
+  bios: {
+    'B-1':'Halldóra Fríða Þorvaldsdóttir er bæjarfulltrúi Framsóknar og forseti bæjarstjórnar Reykjanesbæjar.',
+    'D-1':'Margrét Þórarinsdóttir er bæjarfulltrúi Sjálfstæðisflokksins í Reykjanesbæ.',
+    'S-1':'Friðjón Einarsson er bæjarfulltrúi Samfylkingar og formaður bæjarráðs Reykjanesbæjar.'
+  },
+  partyInfo: {
+    B: {fullname:'Framsóknarflokkurinn',  ideology:'Miðjuflokkur, byggðamál og atvinnulíf', founded:1916},
+    D: {fullname:'Sjálfstæðisflokkurinn', ideology:'Miðju-hægri, frjálslyndir markaðir',    founded:1929},
+    S: {fullname:'Samfylkingin',          ideology:'Miðju-vinstri, jafnaðarmenn',           founded:2000},
+    U: {fullname:'Umbót',                 ideology:'Óháður bæjarlisti',                     founded:2014},
+    Y: {fullname:'Bein leið',             ideology:'Óháður bæjarlisti',                     founded:2018}
+  },
+  stefnumal: {
+    B: ['Skólamál og leikskólapláss', 'Húsnæðisuppbygging', 'Innviðir vegna fólksfjölgunar'],
+    D: ['Lægri álögur og ábyrg fjármálastjórn', 'Atvinnuþróun', 'Skipulagsmál og lóðaframboð'],
+    S: ['Velferð og félagsþjónusta', 'Húsnæðismál', 'Skóla- og frístundamál'],
+    U: ['Þjónusta við íbúa', 'Gagnsæi í stjórnsýslu', 'Skipulag og umhverfi'],
+    Y: ['Beint íbúalýðræði', 'Aðhald í rekstri', 'Umhverfis- og skipulagsmál']
+  },
+  sattmali2022:'Þríflokkasamstarf B+S+Y (Framsókn, Samfylking, Bein leið) eftir kosningar 14. maí 2022 — sami meirihluti og frá 2018. 7 sæti af 11. Kjartan Már Kjartansson áfram bæjarstjóri.',
+  finance: [
+    {yr:2023, A:{tekjur:25.0, gjold:24.7, nidurstada:0.3, EBITDA:2.5}, AB:{nidurstada:0.5, skuldir:35.0, EBITDA:5.0}, ibuar:21703, borgarstjori:'Kjartan Már Kjartansson', meirihluti:['B','S','Y'], kjor:'2022–2026', est:true,
+     athugasemd:'Áætluð gildi — staðfesting vantar úr ársreikningi. Mikil fólksfjölgun á Suðurnesjum þrýstir á innviði.'},
+    {yr:2024, A:{tekjur:27.5, gjold:27.0, nidurstada:0.5, EBITDA:2.8}, AB:{nidurstada:0.7, skuldir:37.0, EBITDA:5.5}, ibuar:22920, borgarstjori:'Kjartan Már Kjartansson', meirihluti:['B','S','Y'], kjor:'2022–2026', est:true,
+     athugasemd:'Áætluð gildi.'}
+  ],
+  budgets: {}, finance2025Partial: null,
+  kjortimabil: [
+    {titill:'2022–2026 (núverandi)', bst:'Kjartan Már Kjartansson (ráðin)', meirihluti:['B','S','Y'], ar:[2022,2023,2024,2025],
+     lykilmal:['Áframhaldandi B+S+Y meirihluti frá 2018', 'Mikil fólksfjölgun (>5% á ári) þrýstir á skóla- og húsnæðismál', 'Lækkun fráveitugjalds 0,150% → 0,10% fyrir 2026']}
+  ]
+};
+
+// ============================================================================
+// === ÍSAFJARÐARBÆR — landsbyggðar-muni #3 ===================================
+// ============================================================================
+// 9 fulltrúa bæjarstjórn. Þrír listar fengu sæti 2022 (Í-listi 5, D 2, B 2).
+// Í-listinn vann stærsta sigur með 46,26% og hreinum meirihluta. Arna Lára
+// Jónsdóttir varð fyrsta konan í bæjarstjórastól Ísafjarðar; síðar tók
+// Sigríður Júlía Brynleifsdóttir við.
+var ISAF_RAW = [
+  ['Í',1,'Oddviti Í-listans','frambjóðandi'],
+  ['D',1,'Oddviti D-listans','frambjóðandi'],
+  ['B',1,'Oddviti B-listans','frambjóðandi']
+];
+MUNI_DATA.isaf = {
+  parties: [
+    {id:'B', name:'Framsóknarflokkurinn',  color:'#1E8A3E', pct:0, seats:2},
+    {id:'D', name:'Sjálfstæðisflokkurinn', color:'#1565C0', pct:0, seats:2},
+    {id:'Í', name:'Í-listinn',             color:'#A33B5E', pct:0, seats:5}
+  ],
+  rawCands: ISAF_RAW,
+  photos: {}, bios: {},
+  partyInfo: {
+    B: {fullname:'Framsóknarflokkurinn',  ideology:'Miðjuflokkur, byggðamál', founded:1916},
+    D: {fullname:'Sjálfstæðisflokkurinn', ideology:'Miðju-hægri',             founded:1929},
+    'Í': {fullname:'Í-listinn',           ideology:'Óháður bæjarlisti — sögulega sterkur á Ísafirði', founded:1990}
+  },
+  stefnumal: {
+    B: ['Innviðir og samgöngur (Súðavíkurhlíð, Dýrafjarðargöng)', 'Þjónusta við barnafjölskyldur', 'Stuðningur við sjávarútveg'],
+    D: ['Ábyrg fjármálastjórn', 'Atvinnufrelsi og einkaframtak', 'Skólamál'],
+    'Í': ['Atvinnuþróun og fjölbreytni á Vestfjörðum', 'Samgöngur og innviðir', 'Húsnæðis- og uppbyggingarmál']
+  },
+  sattmali2022:'Í-listinn fékk hreinan meirihluta 5 sæti af 9 (46,26%) eftir kosningar 14. maí 2022. Arna Lára Jónsdóttir varð bæjarstjóri og fyrsta konan til að gegna því embætti á Ísafirði. Sigríður Júlía Brynleifsdóttir tók síðar við bæjarstjórastólnum á kjörtímabilinu.',
+  finance: [
+    {yr:2023, A:{tekjur:6.0, gjold:6.1, nidurstada:-0.1, EBITDA:0.5}, AB:{nidurstada:-0.2, skuldir:8.0, EBITDA:1.0}, ibuar:3893, borgarstjori:'Arna Lára → Sigríður Júlía', meirihluti:['Í'], kjor:'2022–2026', est:true,
+     athugasemd:'Áætluð gildi — staðfesting vantar.'},
+    {yr:2024, A:{tekjur:6.5, gjold:6.5, nidurstada:0.0, EBITDA:0.6}, AB:{nidurstada:-0.1, skuldir:8.2, EBITDA:1.1}, ibuar:3850, borgarstjori:'Sigríður Júlía Brynleifsdóttir', meirihluti:['Í'], kjor:'2022–2026', est:true}
+  ],
+  budgets: {}, finance2025Partial: null,
+  kjortimabil: [
+    {titill:'2022–2026', bst:'Arna Lára Jónsdóttir → Sigríður Júlía Brynleifsdóttir', meirihluti:['Í'], ar:[2022,2023,2024,2025],
+     lykilmal:['Í-listinn vann hreinan meirihluta með 46,26% — fyrsta konan í bæjarstjórastól','Lækkun fasteignaskatts 0,540% → 0,48% á kjörtímabilinu','Bæjarstjóraskipti á kjörtímabilinu']}
+  ]
+};
+
+// ============================================================================
+// === MÚLAÞING — landsbyggðar-muni #4 ========================================
+// ============================================================================
+// 11 fulltrúa sveitarstjórn. Sveitarfélagið var stofnað 2020 við sameiningu
+// Borgarfjarðarhrepps, Djúpavogshrepps, Fljótsdalshéraðs og Seyðisfjarðar.
+// Sveitarstjóri Dagmar Ýr Stefánsdóttir.
+// 2022-úrslit: B 32% (4 sæti), D 22% (3 sæti), L (Austurlistinn) ~16% (2 sæti),
+// V 9% (1 sæti), M 6% (1 sæti).
+var MULA_RAW = [
+  ['B',1,'Oddviti B-listans','frambjóðandi'],
+  ['D',1,'Oddviti D-listans','frambjóðandi'],
+  ['L',1,'Oddviti Austurlistans','frambjóðandi'],
+  ['V',1,'Oddviti V-listans','frambjóðandi'],
+  ['M',1,'Oddviti M-listans','frambjóðandi']
+];
+MUNI_DATA.mula = {
+  parties: [
+    {id:'B', name:'Framsóknarflokkurinn',  color:'#1E8A3E', pct:0, seats:4},
+    {id:'D', name:'Sjálfstæðisflokkurinn', color:'#1565C0', pct:0, seats:3},
+    {id:'L', name:'Austurlistinn',         color:'#C5832D', pct:0, seats:2},
+    {id:'M', name:'Miðflokkurinn',         color:'#6A1B9A', pct:0, seats:1},
+    {id:'V', name:'Vinstri græn',          color:'#2E7D32', pct:0, seats:1}
+  ],
+  rawCands: MULA_RAW,
+  photos: {}, bios: {},
+  partyInfo: {
+    B: {fullname:'Framsóknarflokkurinn',  ideology:'Miðjuflokkur, byggðamál', founded:1916},
+    D: {fullname:'Sjálfstæðisflokkurinn', ideology:'Miðju-hægri',             founded:1929},
+    L: {fullname:'Austurlistinn',         ideology:'Óháður sveitarlisti — áhersla á jafnræði byggðakjarna', founded:2022},
+    M: {fullname:'Miðflokkurinn',         ideology:'Miðju-hægri',             founded:2017},
+    V: {fullname:'Vinstri græn',          ideology:'Vinstri-grænn, umhverfisvernd', founded:1999}
+  },
+  stefnumal: {
+    B: ['Atvinnuuppbygging á Austurlandi', 'Fjarðarheiðargöng og samgöngur', 'Þjónusta við barnafjölskyldur'],
+    D: ['Ábyrg fjármálastjórn og lækkun skulda', 'Atvinnufrelsi', 'Húsnæðisuppbygging'],
+    L: ['Jafnræði milli byggðakjarna eftir sameiningu', 'Lýðræði og íbúasamráð', 'Umhverfis- og náttúruvernd (sjókvíaeldi)'],
+    M: ['Lægri álögur', 'Innviðir og samgöngur', 'Aðhald í rekstri'],
+    V: ['Andstaða við sjókvíaeldi í fjörðum', 'Velferð og jöfnuður', 'Menning og skapandi greinar']
+  },
+  sattmali2022:'Eftir fyrstu reglulegu kosningar Múlaþings 14. maí 2022 (sveitarfélagið stofnað 2020) var myndaður meirihluti með Framsókn (4 sæti), Sjálfstæðisflokki (3) og Vinstri grænum (1) — 8 sæti af 11. Björn Ingimarsson sat áfram sveitarstjóri (ráðinn 2021), Dagmar Ýr Stefánsdóttir tók síðar við.',
+  finance: [
+    {yr:2023, A:{tekjur:7.5, gjold:7.6, nidurstada:-0.1, EBITDA:0.7}, AB:{nidurstada:-0.2, skuldir:10.5, EBITDA:1.3}, ibuar:5018, borgarstjori:'Björn Ingimarsson', meirihluti:['B','D','V'], kjor:'2022–2026', est:true,
+     athugasemd:'Áætluð gildi.'},
+    {yr:2024, A:{tekjur:8.0, gjold:8.0, nidurstada:0.0, EBITDA:0.8}, AB:{nidurstada:0.1, skuldir:10.7, EBITDA:1.4}, ibuar:5023, borgarstjori:'Björn Ingimarsson → Dagmar Ýr Stefánsdóttir', meirihluti:['B','D','V'], kjor:'2022–2026', est:true}
+  ],
+  budgets: {}, finance2025Partial: null,
+  kjortimabil: [
+    {titill:'2022–2026 (fyrstu reglulegu kosningar)', bst:'Björn Ingimarsson → Dagmar Ýr Stefánsdóttir', meirihluti:['B','D','V'], ar:[2022,2023,2024,2025],
+     lykilmal:['Fyrstu reglulegu kosningar í Múlaþingi (sveitarfélag stofnað 2020)','Þríflokkasamstarf B+D+V — 8 sæti af 11','Sjókvíaeldi á Seyðisfirði pólitískt deiluefni','Sveitarstjóraskipti á kjörtímabilinu']}
+  ]
+};
+
 // loadMuni — endurstillir allar top-level breytur úr MUNI_DATA[id].
 // Kallað úr: router (hash-breyting), pickeri, og við upphaf síðuhleðslu ef hash
 // inniheldur muni-prefix. Skilar false ef muni er ekki til (t.d. tómt stub).
